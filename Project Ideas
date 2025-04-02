@@ -1,0 +1,22 @@
+Bomb Plan Ideas
+Wires:
+Give the user two hexcode to perform bitwise arithmetic which will result in two hexcode which the user will connect to create the color of the hex code achieved. They will have to figure out if
+
+
+
+Keypad:
+Mix up keypad numbers (ex. Move row 1 2 3 to the bottom so keypad is 456, 789, 123, *0#
+
+Buttons:
+Flashing different colors
+
+
+Toggles:
+Specific sequence of the toggles (ex. On, on, off) defuses the bomb
+
+
+Timer:
+Speed up/slow down timer if the user does the wrong or right thing
+Reset timer back to a higher countdown when it gets low (ex. When it hits 1 min, reset to 5 min if the user does something specific)
+
+
