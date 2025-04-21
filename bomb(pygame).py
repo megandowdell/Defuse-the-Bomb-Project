@@ -15,30 +15,6 @@ import sys
 ###########
 # functions
 ###########
-# generates the bootup sequence on the LCD
-def bootup(n=0):
-    # if we're not animating (or we're at the end of the bootup text)
-    if (not ANIMATE or n == len(boot_text)):
-        # if we're not animating, just print the text for debugging
-        if (not ANIMATE):
-            print(boot_text.replace("\x00", ""))
-        print("Bootup complete. Setting up phases...")
-        # setup the phase threads, execute them, and check their statuses
-        if (RPi):
-            setup_phases()
-            check_phases()
-    # if we're animating
-    else:
-        # add the next character (but don't render \x00 since it specifies a longer pause)
-        if (boot_text[n] != "\x00"):
-            sys.stdout.write(boot_text[n]) # takes a single character from your boot text and prints it to the terminal window
-            sys.stdout.flush() # makes sure that character appears immediately on screen
-
-        # scroll the next character after a slight delay (\x00 is a longer delay)
-        delay = 0.025 if boot_text[n] != "\x00" else 0.75
-        time.sleep(delay)
-        bootup(n + 1)
-
 # sets up the phase threads
 def setup_phases():
     global timer, keypad, wires, button, toggles
@@ -192,6 +168,7 @@ strikes_left = NUM_STRIKES
 active_phases = NUM_PHASES
 
 # "boot" the bomb
-bootup()
-
+if (RPi):
+    setup_phases()
+    check_phases()
 #display the Pygame GUI -TBD
