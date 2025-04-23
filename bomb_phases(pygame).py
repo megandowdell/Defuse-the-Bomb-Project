@@ -1,7 +1,7 @@
 #################################
 # CSC 102 Defuse the Bomb Project
 # GUI and Phase class definitions
-# Team: # HAS BEEN CHECKED AND CONVERTED
+# Team: Christa, Khalil, Megan, Matt
 #################################
 
 # import the configs
