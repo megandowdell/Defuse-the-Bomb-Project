@@ -1,6 +1,7 @@
 #Hopscotch
 #Megan Dowdell
 
+from bomb_phases import *
 import tkinter as tk
 from tkinter import messagebox
 import random
