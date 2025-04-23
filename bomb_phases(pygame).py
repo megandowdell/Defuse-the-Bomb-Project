@@ -428,21 +428,23 @@ class Button(PhaseThread):
 
 # the toggle switches phase
 class Toggles(PhaseThread):
-    def __init__(self, component, target, name="Toggles"):
-        super().__init__(name, component, target)
+    def __init__(self, pins, name="Toggles"):
+        super().__init__(name)
+        self._value = ""
+        # the toggle switch pins
+        self._pins = pins
 
     # runs the thread
     def run(self):
-        # TODO
-        pass
+        self._running = True
+        while (True):
+            # get the toggle switch values (0->False, 1->True)
+            self._value = "".join([str(int(pin.value)) for pin in self._pins])
+            sleep(0.1)
+        self._running = False
 
-    # returns the toggle switches state as a string
     def __str__(self):
-        if (self._defused):
-            return "DEFUSED"
-        else:
-            # TODO
-            pass
+        return f"{self._value}/{int(self._value, 2)}"
 
 # Main game loop function to add to bomb.py
 def pygame_main_loop(lcd):
