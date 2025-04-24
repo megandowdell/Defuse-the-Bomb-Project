@@ -113,9 +113,6 @@ def show_menu(screen):
     PURPLE= (67, 0, 117)
     YELLOW = (234, 202, 87)
     GREY = (149, 143, 137)
-    #GREEN = (0, 213, 136)
-    #BLACK = (0, 0, 0)
-    #PINK = (255, 64, 119)
     
     # Font sizes based on reference design
     base_title_size = 45
@@ -150,7 +147,7 @@ def show_menu(screen):
         title_text = title_font.render("Squid-ish Games", True, BEIGE)
         subtitle_text = subtitle_font.render("Error 404: Mercy Not Found", True, YELLOW)
         
-        # Reference positions (from your original design)
+        # Reference positions
         base_title_pos = (dev_width // 2, 60)
         base_subtitle_pos = (dev_width // 2, 150)
         
@@ -240,7 +237,6 @@ def show_about_game_screen(screen):
     PURPLE= (67, 0, 117)
     YELLOW = (234, 202, 87)
     GREY = (149, 143, 137)
-    BLACK = (0, 0, 0)
     
     # Base font sizes for reference design
     base_title_size = 40
