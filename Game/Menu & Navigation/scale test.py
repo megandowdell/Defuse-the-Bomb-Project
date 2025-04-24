@@ -110,9 +110,9 @@ def show_menu(screen):
     #PINK = (255, 64, 119)
     
     # Font sizes based on reference design
-    base_title_size = 80
-    base_subtitle_size = 45
-    base_menu_size = 40
+    base_title_size = 45
+    base_subtitle_size = 30
+    base_menu_size = 35
     
     # Scale font sizes based on current screen
     title_size = scale_font_size(base_title_size, (WIDTH, HEIGHT))
@@ -354,8 +354,8 @@ def show_about_game_screen(screen):
         
         # 'Back" and 'Continue' buttons - scale from reference positions
         base_button_height = 40
-        base_button_widths = [100, 150]  # Approximate widths for Back and Continue
-        base_button_y = dev_height - 50
+        base_button_widths = [200, 250]  # Approximate widths for Back and Continue
+        base_button_y = dev_height - 90
         
         # Scale button dimensions
         button_height = int(base_button_height * HEIGHT / dev_height)
@@ -363,7 +363,7 @@ def show_about_game_screen(screen):
         
         # Center buttons with appropriate spacing
         total_width = sum(button_widths) + int(WIDTH * 0.05)  # 5% of width as spacing
-        start_x = (WIDTH - total_width) // 2
+        start_x = (WIDTH - total_width) // 5
         button_y = int(base_button_y * HEIGHT / dev_height)
         
         button_rects = []
@@ -444,6 +444,7 @@ def soldier_select(screen):
     title_font = pygame.font.Font("font1.otf", title_size)
     char_font = pygame.font.Font("font5.otf", char_size)
     desc_font = pygame.font.Font("font5.otf", desc_size)
+    button_font = pygame.font.Font("font2.otf", char_size)
     
     # Soldier options with descriptions
     soldiers = [
@@ -591,7 +592,7 @@ def soldier_select(screen):
         soldier_desc = soldiers[selected_index]['description']
         
         # Reference description box dimensions and position
-        base_desc_box = pygame.Rect(50, dev_height - 150, dev_width - 100, 80)
+        base_desc_box = pygame.Rect(50, dev_height - 175, dev_width - 100, 80)
         desc_box_rect = scale_rect(base_desc_box, (WIDTH, HEIGHT))
         
         desc_box = pygame.Surface((desc_box_rect.width, desc_box_rect.height), pygame.SRCALPHA)
@@ -612,15 +613,14 @@ def soldier_select(screen):
             screen.blit(desc_text, (text_x, text_y))
         
         # Reference button positions and dimensions
-        base_select_button = pygame.Rect(dev_width//2 - 75, dev_height - 60, 150, 40)
-        base_back_button = pygame.Rect(50, dev_height - 60, 100, 40)
+        base_back_button = pygame.Rect(50, dev_height - 70, 200, 40)
         
-#         # Scale buttons to current screen size
+        # Scale buttons to current screen size
         back_button = scale_rect(base_back_button, (WIDTH, HEIGHT))
         
         # Draw Back button
         pygame.draw.rect(screen, GREY, back_button, border_radius=10)
-        back_text = char_font.render("Back", True, BEIGE)
+        back_text = button_font.render("Back", True, BEIGE)
         back_text_x = back_button.centerx - back_text.get_width()//2
         back_text_y = back_button.centery - back_text.get_height()//2
         screen.blit(back_text, (back_text_x, back_text_y))
