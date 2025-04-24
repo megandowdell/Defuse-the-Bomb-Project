@@ -3,7 +3,6 @@ import sys # to exitgame
 from pygame.locals import * # handles events, mouse/keyboard controls etc.
 import os  # for environment variables
 
-
 # Game audio
 pygame.mixer.init()
 pygame.mixer.music.load("pink_soldiers.mp3")
@@ -62,16 +61,19 @@ def wrap_text(text, font, max_width):
     return lines
 
 # Define Team class
-class Soldier:
+class Team:
     # Constructor
-    def __init__(self, name, role):
+    def __init__(self, name, status, role):
         self._name = name
+        self._status = status
         self._role = role
     
     # Getters
     def get_name(self):
         return self._name
     
+    def get_status(self):
+        return self._status
     def get_role(self):
         return self._role
         
@@ -79,20 +81,26 @@ class Soldier:
     def set_name(self, new_name):
         self._name = new_name
     
+    def set_status(self, new_status):
+        self._status = new_status
+        
     def set_role(self, new_role):
-        self._role = new_role
+        self._status = new_role
 
     
     # Deleters
     def del_name(self):
         del self._name
-    
+    def del_status(self):
+        del self._role
     def del_role(self):
         del self._role
     
     # Property methods
     name = property(get_name, set_name, del_name)
+    status = property(get_status, set_status, del_status)
     role = property(get_role, set_role, del_role)
+    
 
 
 # Subroutine to display menu
@@ -127,7 +135,6 @@ def show_menu(screen):
     bg_image = pygame.image.load("menu.jpg")
     bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
     
-    # Changed menu items to have four buttons as requested
     menu_items = ["Start", "About Game", "Meet Team", "Quit"]
     selected_index = 0
     clock = pygame.time.Clock() # Manages frame rate of game
@@ -198,10 +205,8 @@ def show_menu(screen):
                     selected_index = (selected_index + 1) % len(menu_items)
                 elif event.key == pygame.K_RETURN:
                     if menu_items[selected_index] == "Start":
-                        # Changed to go to "Meet Team" instead of starting game directly
                         return "Meet Team"
                     elif menu_items[selected_index] == "About Game":
-                        # Renamed from "How to Play" to "About Game"
                         return "About Game"
                     elif menu_items[selected_index] == "Meet Team":
                         return "Meet Team"
@@ -213,10 +218,8 @@ def show_menu(screen):
                 for rect, item in button_rects:
                     if rect.collidepoint(mouse_pos):
                         if item == "Start":
-                            # Changed to go to "Meet Team" instead of starting game directly
                             return "Meet Team"
                         elif item == "About Game":
-                            # Renamed from "How to Play" to "About Game"
                             return "About Game"
                         elif item == "Meet Team":
                             return "Meet Team"
@@ -405,7 +408,7 @@ def show_about_game_screen(screen):
                     if htp_items[selected_index] == "Back": # Back button returns to menu
                         return "Menu"  
                     elif htp_items[selected_index] == "Continue": # Continue button proceeds to game just as Start button would on the menu page
-                        return "Meet Team"  # Changed to go to "Meet Team" instead of "Start"
+                        return "Meet Team"  
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = pygame.mouse.get_pos()
                 for rect, item in button_rects:
@@ -413,13 +416,13 @@ def show_about_game_screen(screen):
                         if item == "Back":
                             return "Menu"  
                         elif item == "Continue":
-                            return "Meet Team"  # Changed to go to "Meet Team" instead of "Start"
+                            return "Meet Team"  
         
         pygame.display.flip()
         clock.tick(60)
 
 # Subroutine to select characters
-def soldier_select(screen):
+def show_meet_team(screen):
     WIDTH, HEIGHT = screen.get_size()
     pygame.display.set_caption("Meet The Team")
     
@@ -434,39 +437,41 @@ def soldier_select(screen):
     base_title_size = 50
     base_char_size = 30
     base_desc_size = 18
+    base_button_size = 20
     
     # Scale font sizes
     title_size = scale_font_size(base_title_size, (WIDTH, HEIGHT))
     char_size = scale_font_size(base_char_size, (WIDTH, HEIGHT))
     desc_size = scale_font_size(base_desc_size, (WIDTH, HEIGHT))
+    button_size = scale_font_size(base_button_size, (WIDTH, HEIGHT))
     
     # Fonts
     title_font = pygame.font.Font("font1.otf", title_size)
     char_font = pygame.font.Font("font5.otf", char_size)
     desc_font = pygame.font.Font("font5.otf", desc_size)
-    button_font = pygame.font.Font("font2.otf", char_size)
+    button_font = pygame.font.Font("font2.otf", button_size)
     
-    # Soldier options with descriptions
-    soldiers = [
-        {"name": "Christa", "role": "Masked Officer", 
-         "description": "Humanity's strongest soldier. Exceptional combat skills with ODM gear. Stoic and disciplined."},
-        {"name": "Khalil", "role": "Masked Officer", 
-         "description": "Brilliant Titan researcher who combines scientific curiosity with unorthodoz tactics to the battlefield. Eccentric but effective leader."},
-        {"name": "Matt", "role": "Masked Officer",  
-         "description": "Visionary commander driven by truth, known for his bold strategies and unwavering resolve."},
-        {"name": "Megan", "role": "Masked Officer", 
-         "description": "Visionary commander driven by truth, known for his bold strategies and unwavering resolve."}
+    # teammate options with descriptions
+    teammates = [
+        {"name": "Christa", "status": "Sophomore", "role": "Interface Architect", 
+         "description": "Majors in Computer Science and minors in Physics and Mathematics. Responsible for our the game's..."},
+        {"name": "Khalil", "status": "Junior", "role": "Sequence Strategist", 
+         "description": "Majors in Computer Science and Chemistry. Responsible for our the game's..."},
+        {"name": "Matt", "status": "Junior",  "role": "Motion Engineer", 
+         "description": "Majors in Mathematics. Responsible for our the game's..."},
+        {"name": "Megan", "status": "Junior", "role": "Grid Tactician", 
+         "description": "Majors in Mathematics with Computer Science. Responsible for our the game's..."}
     ]
     
     # Reference image size
     base_img_size = 150
     img_size = int(base_img_size * min(WIDTH/dev_width, HEIGHT/dev_height))
     
-    # Soldier images - scale responsively
-    soldier_images = {}
-    for soldier in soldiers:
-        img = pygame.image.load(f"{soldier['name'].split()[0].lower()}.jpg")
-        soldier_images[soldier['name']] = pygame.transform.scale(img, (img_size, img_size))
+    # teammate images - scale responsively
+    teammate_images = {}
+    for teammate in teammates:
+        img = pygame.image.load(f"{teammate['name'].split()[0].lower()}.jpg")
+        teammate_images[teammate['name']] = pygame.transform.scale(img, (img_size, img_size))
     
     # Background image
     bg_image = pygame.image.load("meet_team.jpg")
@@ -492,20 +497,20 @@ def soldier_select(screen):
         title_x, title_y = scale_position(base_title_pos[0], base_title_pos[1], (WIDTH, HEIGHT))
         screen.blit(title_text, (title_x - title_text.get_width() // 2, title_y))
         
-        soldier_rects = []
+        teammate_rects = []
         
         # Adaptive layout based on orientation
         if is_portrait:
-            # Use a 2x2 grid for soldier cards in portrait mode
+            # Use a 2x2 grid for teammate cards in portrait mode
             cards_per_row = 2
-            rows = (len(soldiers) + cards_per_row - 1) // cards_per_row
+            rows = (len(teammates) + cards_per_row - 1) // cards_per_row
             
             # Scale card dimensions
             card_width = int(WIDTH * 0.4)
             card_height = int(HEIGHT * 0.25)
             card_spacing = int(WIDTH * 0.05)
             
-            for i, soldier in enumerate(soldiers):
+            for i, teammate in enumerate(teammates):
                 row = i // cards_per_row
                 col = i % cards_per_row
                 
@@ -524,21 +529,25 @@ def soldier_select(screen):
                 if is_selected:
                     pygame.draw.rect(screen, YELLOW, card_rect, 3, border_radius=10)
                 
-                # Draw soldier image
-                soldier_img = soldier_images[soldier['name']]
-                soldier_img_rect = soldier_img.get_rect(center=(card_x + card_width//2, card_y + card_height * 0.3))
-                screen.blit(soldier_img, soldier_img_rect)
+                # Draw teammate image
+                teammate_img = teammate_images[teammate['name']]
+                teammate_img_rect = teammate_img.get_rect(center=(card_x + card_width//2, card_y + card_height * 0.3))
+                screen.blit(teammate_img, teammate_img_rect)
                 
-                # Draw soldier info - just name and role now
-                name_text = char_font.render(soldier['name'], True, YELLOW if is_selected else BEIGE)
+                # Draw teammate info 
+                name_text = char_font.render(teammate['name'], True, YELLOW if is_selected else BEIGE)
                 name_y = card_y + int(card_height * 0.6)
                 screen.blit(name_text, (card_x + card_width//2 - name_text.get_width()//2, name_y))
                 
-                role_text = desc_font.render(soldier['role'], True, BEIGE)
-                role_y = name_y + name_text.get_height() + 5
+                status_text = desc_font.render(teammate['status'], True, BEIGE)
+                status_y = name_y + name_text.get_height() + 5
+                screen.blit(status_text, (card_x + card_width//2 - status_text.get_width()//2, status_y))
+                
+                role_text = desc_font.render(teammate['role'], True, YELLOW)
+                role_y = status_y + status_text.get_height() + 5
                 screen.blit(role_text, (card_x + card_width//2 - role_text.get_width()//2, role_y))
                 
-                soldier_rects.append((card_rect, i))
+                teammate_rects.append((card_rect, i))
         else:
             # In landscape mode, display cards in a row
             # Reference card dimensions and positions
@@ -551,14 +560,14 @@ def soldier_select(screen):
             
             # Calculate total width needed for all cards with spacing
             card_spacing = int(WIDTH * 0.02)
-            total_width = (card_width * len(soldiers)) + (card_spacing * (len(soldiers) - 1))
+            total_width = (card_width * len(teammates)) + (card_spacing * (len(teammates) - 1))
             start_x = (WIDTH - total_width) // 2
             
             # Reference vertical position
             base_card_y = dev_height // 2 - 150
             card_y = int(base_card_y * HEIGHT / dev_height)
             
-            for i, soldier in enumerate(soldiers):
+            for i, teammate in enumerate(teammates):
                 is_selected = i == selected_index
                 
                 # Calculate card position
@@ -572,24 +581,28 @@ def soldier_select(screen):
                 if is_selected:
                     pygame.draw.rect(screen, YELLOW, card_rect, 3, border_radius=10)
                 
-                # Draw soldier image
-                soldier_img = soldier_images[soldier['name']]
-                soldier_img_rect = soldier_img.get_rect(center=(card_x + card_width//2, card_y + int(card_height * 0.25)))
-                screen.blit(soldier_img, soldier_img_rect)
+                # Draw teammate image
+                teammate_img = teammate_images[teammate['name']]
+                teammate_img_rect = teammate_img.get_rect(center=(card_x + card_width//2, card_y + int(card_height * 0.25)))
+                screen.blit(teammate_img, teammate_img_rect)
                 
-                # Draw soldier info - just name and role now
-                name_text = char_font.render(soldier['name'], True, YELLOW if is_selected else BEIGE)
+                # Draw teammate info 
+                name_text = char_font.render(teammate['name'], True, YELLOW if is_selected else BEIGE)
                 name_y = card_y + int(card_height * 0.55)
                 screen.blit(name_text, (card_x + card_width//2 - name_text.get_width()//2, name_y))
                 
-                role_text = desc_font.render(soldier['role'], True, BEIGE)
-                role_y = name_y + name_text.get_height() + 5
+                status_text = desc_font.render(teammate['status'], True, BEIGE)
+                status_y = name_y + name_text.get_height() + 5
+                screen.blit(status_text, (card_x + card_width//2 - status_text.get_width()//2, status_y))
+                
+                role_text = desc_font.render(teammate['role'], True, YELLOW)
+                role_y = status_y + status_text.get_height() + 5
                 screen.blit(role_text, (card_x + card_width//2 - role_text.get_width()//2, role_y))
                 
-                soldier_rects.append((card_rect, i))
+                teammate_rects.append((card_rect, i))
         
-        # Soldier description - displayed in a dedicated box at the bottom
-        soldier_desc = soldiers[selected_index]['description']
+        # teammate description - displayed in a dedicated box at the bottom
+        teammate_desc = teammates[selected_index]['description']
         
         # Reference description box dimensions and position
         base_desc_box = pygame.Rect(50, dev_height - 175, dev_width - 100, 80)
@@ -602,7 +615,7 @@ def soldier_select(screen):
         
         # Draw description text
         max_desc_width = desc_box_rect.width - 40
-        desc_lines = wrap_text(soldier_desc, desc_font, max_desc_width)
+        desc_lines = wrap_text(teammate_desc, desc_font, max_desc_width)
         
         for i, line in enumerate(desc_lines):
             if i >= 2:  # Limit to 2 lines for consistent display
@@ -631,19 +644,19 @@ def soldier_select(screen):
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    selected_index = (selected_index - 1) % len(soldiers)
+                    selected_index = (selected_index - 1) % len(teammates)
                 elif event.key == pygame.K_RIGHT:
-                    selected_index = (selected_index + 1) % len(soldiers)
+                    selected_index = (selected_index + 1) % len(teammates)
                 elif event.key == pygame.K_RETURN:
-                    # Return the selected soldier as a Soldier object
-                    selected_soldier = soldiers[selected_index]
-                    return Soldier(selected_soldier["name"], selected_soldier["role"])
+                    # Return the selected teammate as a teammate object
+                    selected_teammate = teammates[selected_index]
+                    return teammate(selected_teammate["name"], selected_teammate["status"], selected_teammate["role"])
                 elif event.key == pygame.K_ESCAPE:
                     return "Menu"
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = pygame.mouse.get_pos()
-                # Check for soldier card clicks
-                for rect, idx in soldier_rects:
+                # Check for teammate card clicks
+                for rect, idx in teammate_rects:
                     if rect.collidepoint(mouse_pos):
                         selected_index = idx
             
@@ -681,27 +694,24 @@ def main():
         if game_state == "menu":
             menu_choice = show_menu(screen)
             if menu_choice == "Start":
-                # Changed to go to "Meet Team" instead of "character_select"
                 game_state = "Meet Team"
-            elif menu_choice == "About Game":  # Renamed from "How to Play"
-                game_state = "About Game"  # Renamed from "how_to_play"
+            elif menu_choice == "About Game":  
+                game_state = "About Game"  
             elif menu_choice == "Meet Team":
                 game_state = "Meet Team"
         
-        elif game_state == "About Game":  # Renamed from "how_to_play"
-            # Changed function name to match the renamed function
+        elif game_state == "About Game":  
             htp_choice = show_about_game_screen(screen)
             if htp_choice == "Menu":
                 game_state = "menu"
-            elif htp_choice == "Meet Team":  # Changed from "Start"
-                game_state = "Meet Team"  # Changed from "character_select"
+            elif htp_choice == "Meet Team":  
+                game_state = "Meet Team"  
         
-        elif game_state == "Meet Team":  # This now corresponds to "character_select"
-            soldier = soldier_select(screen)
-            if soldier == "Menu":
+        elif game_state == "Meet Team":  
+            teammate = show_meet_team(screen)
+            if teammate == "Menu":
                 game_state = "menu"
             else:
-                # After character selection, go back to menu for now
                 game_state = "menu"
         
         for event in pygame.event.get():
