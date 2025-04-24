@@ -1,14 +1,14 @@
 # Hopscotch Game Phase – Defuse the Bomb
 # Megan Dowdell
 
-# ---------- Imports ----------
+# Imports
 import pygame           # Main game engine
 import random           # Used for randomly placing safe tiles
 import sys              # System exit
 # import RPi.GPIO as GPIO  # Uncomment if using GPIO on Raspberry Pi
 # import time               # For delay/reset between turns
 
-# ---------- Pygame Setup ----------
+# Pygame Setup
 pygame.init()
 pygame.font.init()
 
@@ -18,7 +18,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Hopscotch Phase")
 clock = pygame.time.Clock()
 
-# ---------- Colors ----------
+# Colors
 BG = (10, 10, 10)            # Background
 SAFE = (114, 197, 100)       # Green for correct tile (currently unused)
 FAIL = (180, 38, 38)         # Red for incorrect choice
@@ -26,18 +26,18 @@ TEXT = (240, 240, 240)       # Light text
 ACTIVE = (202, 95, 241)      # Purple highlight for current row
 DIM = (80, 80, 80)           # Gray for inactive rows
 
-# ---------- Fonts ----------
+# Fonts
 FONT = pygame.font.SysFont("Arial", 30)
 BIG_FONT = pygame.font.SysFont("Arial", 50)
 
-# ---------- Layout Config ----------
+# Layout Configuration
 TILE_WIDTH = 100
 TILE_HEIGHT = 60
 TILE_GAP = 40      # Space between tiles
 ROWS = 5           # Total levels
 COLS = 4           # Columns (A–D)
 
-# ---------- Tile Generator ----------
+# Tile Generator
 def generate_board(successes_per_row=1):
     board = []
     for _ in range(ROWS):
@@ -45,7 +45,7 @@ def generate_board(successes_per_row=1):
         board.append(safe)  # Each row has 1 correct tile (change for more)
     return board
 
-# ---------- Positioning Function ----------
+# Positioning Function 
 def get_tile_rect(row, col, current_row):
     # Push earlier rows off screen
     y_offset = -(current_row * (TILE_HEIGHT + 60))
@@ -53,7 +53,7 @@ def get_tile_rect(row, col, current_row):
     y = 150 + row * (TILE_HEIGHT + 60) + y_offset
     return pygame.Rect(x, y, TILE_WIDTH, TILE_HEIGHT)
 
-# ---------- Board Drawing ----------
+# Board Drawing
 def draw_board(board, current_row, selected_tile=None):
     screen.fill(BG)
 
@@ -78,7 +78,7 @@ def draw_board(board, current_row, selected_tile=None):
 
     pygame.display.flip()
 
-# ---------- Play a Turn (for GPIO or internal use) ----------
+# Play a Turn (for GPIO or internal use)
 def play_turn(board, current_row, selected_col):
     """
     Processes a move based on selected column (0-3).
@@ -94,7 +94,7 @@ def play_turn(board, current_row, selected_col):
     draw_board(board, current_row)
     return current_row, result
 
-# ---------- Optional GPIO Reset (not needed in GUI testing) ----------
+# Optional GPIO Reset (not needed in GUI testing)
 def wait_for_toggle_reset(toggle_pins):
     """
     Pauses game until all toggles are back to "down".
@@ -108,7 +108,7 @@ def wait_for_toggle_reset(toggle_pins):
             break
         time.sleep(0.05)
 
-# ---------- Main Game (for mouse-based local testing) ----------
+# Main Game (for local testing) 
 def play_game():
     board = generate_board(successes_per_row=1)
     current_row = 0
@@ -139,7 +139,7 @@ def play_game():
 
         clock.tick(60)
 
-# ---------- Run Standalone ----------
+# Run Standalone
 if __name__ == "__main__":
     won = play_game()
     screen.fill(BG)
