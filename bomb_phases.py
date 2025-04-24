@@ -14,6 +14,10 @@ from time import sleep
 import os
 import sys
 
+#Hopscotch import
+from Hopscotch import play_turn, draw_board, generate_board
+
+
 #########
 # classes
 #########
@@ -457,3 +461,40 @@ def pygame_main_loop(lcd):
         
         # Maintain frame rate
         clock.tick(60)
+
+
+
+#def phase_1():
+    # Tic Tac Toe phase
+
+#def phase_2():
+    # Red Light Green Light
+    
+#def phase_3():
+    #Simon Says
+    
+# ---- Phase 4: Hopscotch ---#
+
+# Initialize hopscotch board and progress tracker
+hopscotch_board = generate_board(successes_per_row=1)
+current_hopscotch_row = 0
+hopscotch_result = None  # Can be None, "win", or "lose"
+
+def phase_4(selected_col):
+    global current_hopscotch_row, hopscotch_result
+
+    if hopscotch_result is not None:
+        return hopscotch_result  # Game is done for this round
+
+    # selected_col is 0–3 based on the GPIO toggle input
+    current_hopscotch_row, hopscotch_result = play_turn(
+        hopscotch_board, current_hopscotch_row, selected_col
+    )
+
+    if hopscotch_result == "win":
+        print("Hopscotch: SUCCESS")
+    elif hopscotch_result == "lose":
+        print("Hopscotch: BOOM")
+
+    return hopscotch_result  # Used by bomb controller to move to next phase or end game
+    #Hopscotch
