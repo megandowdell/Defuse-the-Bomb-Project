@@ -718,5 +718,5 @@ def main():
     sys.exit()
 
     # Set to true when testing RPi mode
-    os.environ['RPI_MODE'] = 'TRUE'
-    main()
+os.environ['RPI_MODE'] = 'TRUE'
+main()
