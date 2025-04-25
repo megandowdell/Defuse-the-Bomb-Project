@@ -717,8 +717,6 @@ def main():
     pygame.quit()
     sys.exit()
 
-if __name__ == "__main__":
     # Set to true when testing RPi mode
-    os.environ['RPI_MODE'] = 'FALSE'
-    
+    os.environ['RPI_MODE'] = 'TRUE'
     main()
