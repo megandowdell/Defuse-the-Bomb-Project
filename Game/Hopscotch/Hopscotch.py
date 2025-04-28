@@ -37,6 +37,11 @@ TILE_GAP = 40      # Space between tiles
 ROWS = 5           # Total levels
 COLS = 4           # Columns (A–D)
 
+
+# number of strikes for hopscotch
+lives = 5
+
+
 # Tile Generator
 def generate_board(successes_per_row=1):
     board = []
@@ -75,6 +80,11 @@ def draw_board(board, current_row, selected_tile=None):
     # Level display
     level_text = FONT.render(f"Level: {current_row + 1}", True, TEXT)
     screen.blit(level_text, (20, 20))
+    
+    # Lives display
+    lives_text = FONT.render(f"Lives: {lives}", True, TEXT)
+    screen.blit(lives_text, (WIDTH - 180, 20))  # top-right corner
+
 
     pygame.display.flip()
 
@@ -107,14 +117,16 @@ def wait_for_toggle_reset(toggle_pins):
         if all_down:
             break
         time.sleep(0.05)
-
-# Main Game (for local testing) 
+        
+        
+# Main Game (for local testing)
 def play_game():
-    board = generate_board(successes_per_row=1)
+    board = generate_board(successes_per_row=1)  # Create board once
     current_row = 0
+    lives = 5  # Start with 5 lives
 
     while True:
-        draw_board(board, current_row)
+        draw_board(board, current_row, lives)  # Now we also pass lives to draw
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -128,16 +140,22 @@ def play_game():
                     tile_rect = get_tile_rect(current_row, col, current_row)
                     if tile_rect.collidepoint(mouse_pos):
                         if col in board[current_row]:
+                            # Correct tile: advance to next row
                             current_row += 1
                             if current_row == ROWS:
-                                return True
+                                return True  # WIN!
                         else:
+                            # Wrong tile: lose a life
+                            lives -= 1
+                            # Flash red tile
                             pygame.draw.rect(screen, FAIL, tile_rect)
                             pygame.display.flip()
-                            pygame.time.delay(800)
-                            return False
+                            pygame.time.delay(500)
 
-        clock.tick(60)
+                            if lives == 0:
+                                return False  # LOSE after 5 wrong tries
+
+        clock.tick(60)  # Maintain 60
 
 # Run Standalone
 if __name__ == "__main__":
