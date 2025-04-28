@@ -1,48 +1,76 @@
 import time
-import threading
+import random
+from bomb_configs import *
+from bomb_phases import *
 
-class RedLightGreenLight:
-    def __init__(self):
-        self.distance = 0
-        self.target_distance = 10
-        self.light = "green"
-        self.game_over = False
-        self.lock = threading.Lock()
+# Set up LED control
+def set_led(color):
+    #Set the RGB LED based on the current light color
+    if not RPi:
+        return
 
-    def light_changer(self):
-        while not self.game_over:
-            time.sleep(3)  
-            with self.lock:
-                self.light = "red" if self.light == "green" else "green"
-                print(f"\n[LIGHT] The light is now {self.light.upper()}!")
+    if color == "green":
+        component_button_RGB[0].value = True   # Red OFF
+        component_button_RGB[1].value = False  # Green ON
+        component_button_RGB[2].value = True   # Blue OFF
+    elif color == "red":
+        component_button_RGB[0].value = False  # Red ON
+        component_button_RGB[1].value = True   # Green OFF
+        component_button_RGB[2].value = True   # Blue OFF
+    else:
+        # turn everything off
+        for pin in component_button_RGB:
+            pin.value = True
 
-    def play(self):
-        print("Welcome to Red Light, Green Light!")
-        print("Type 'move' to move forward. Reach the goal without moving on RED.\n")
-        time.sleep(1)
+def check_button_press():
+    """Check if the button is pressed."""
+    if not RPi:
+        return False
 
-        light_thread = threading.Thread(target=self.light_changer)
-        light_thread.start()
+    return component_button_state.value
 
-        while not self.game_over:
-            user_input = input(">> ").strip().lower()
+def RedLightGreenLight():
+    #Main Red Light Green Light game 
+    print("Welcome to Red Light, Green Light!")
+    print("Press the button ONLY when the light is GREEN.")
 
-            with self.lock:
-                if user_input == "move":
-                    if self.light == "red":
-                        print("You moved on RED! You lose!")
-                        self.game_over = True
-                    else:
-                        self.distance += 1
-                        print(f"You moved forward! Current distance: {self.distance}/{self.target_distance}")
-                        if self.distance >= self.target_distance:
-                            print("Congratulations! You reached the goal and survived!")
-                            self.game_over = True
+    # Initial light color
+    light_color = "red"
+    set_led(light_color)
+    
+    game_time = 20  # seconds to win
+    start_time = time.time()
+
+    while (time.time() - start_time) < game_time:
+        # Randomly change the light every 2-5 seconds
+        next_change = random.uniform(2, 5)
+        change_time = time.time() + next_change
+
+        while time.time() < change_time:
+            if check_button_press():
+                print("Button Pressed!")
+
+                if light_color == "green":
+                    print("Good move!")
                 else:
-                    print("You stayed still.")
+                    print("You pressed during RED! You lose!")
+                    set_led("off")
+                    return  # End the game immediately
 
-        light_thread.join()
+            
+                time.sleep(0.3)
+
+            time.sleep(0.05)  #
+
+        # Switch the light
+        light_color = "green" if light_color == "red" else "red"
+        set_led(light_color)
+        print(f"The light is now {light_color.upper()}!")
+
+    # Survived the game
+    print("Congratulations! You survived and won!")
+    set_led("off")
+
 
 if __name__ == "__main__":
-    game = RedLightGreenLightGame()
-    game.play()
+    RedLightGreenLight()
