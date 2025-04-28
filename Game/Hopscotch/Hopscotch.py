@@ -59,7 +59,7 @@ def get_tile_rect(row, col, current_row):
     return pygame.Rect(x, y, TILE_WIDTH, TILE_HEIGHT)
 
 # Board Drawing
-def draw_board(board, current_row, selected_tile=None):
+def draw_board(board, current_row, lives, selected_tile=None):
     screen.fill(BG)
 
     for row in range(ROWS):
@@ -101,7 +101,7 @@ def play_turn(board, current_row, selected_col):
     else:
         result = "lose"
 
-    draw_board(board, current_row)
+    draw_board(board, current_row, lives)
     return current_row, result
 
 # Optional GPIO Reset (not needed in GUI testing)
@@ -147,6 +147,7 @@ def play_game():
                         else:
                             # Wrong tile: lose a life
                             lives -= 1
+                            current_row = 0
                             # Flash red tile
                             pygame.draw.rect(screen, FAIL, tile_rect)
                             pygame.display.flip()
