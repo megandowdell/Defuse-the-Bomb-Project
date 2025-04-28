@@ -43,7 +43,7 @@ lives = 5
 
 
 # Tile Generator
-def generate_board(successes_per_row=1):
+def generate_board(successes_per_row=2):
     board = []
     for _ in range(ROWS):
         safe = random.sample(range(COLS), successes_per_row)
@@ -121,7 +121,7 @@ def wait_for_toggle_reset(toggle_pins):
         
 # Main Game (for local testing)
 def play_game():
-    board = generate_board(successes_per_row=1)  # Create board once
+    board = generate_board(successes_per_row=2)  # Create board once
     current_row = 0
     lives = 5  # Start with 5 lives
 
