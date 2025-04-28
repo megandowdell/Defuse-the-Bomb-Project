@@ -38,9 +38,6 @@ ROWS = 5           # Total levels
 COLS = 4           # Columns (A–D)
 
 
-# number of strikes for hopscotch
-lives = 5
-
 
 # Tile Generator
 def generate_board(successes_per_row=2):
@@ -123,7 +120,7 @@ def wait_for_toggle_reset(toggle_pins):
 def play_game():
     board = generate_board(successes_per_row=2)  # Create board once
     current_row = 0
-    lives = 5  # Start with 5 lives
+    lives = 3  # Start with 5 lives
 
     while True:
         draw_board(board, current_row, lives)  # Now we also pass lives to draw
