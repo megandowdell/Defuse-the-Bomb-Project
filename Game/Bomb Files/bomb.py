@@ -102,16 +102,16 @@ def check_phases():
     if (toggles._running):
         # print toggles status for debugging
         print(f"Toggles: {toggles}")
+        result = phase_4(toggles)
         # the phase is defused -> stop the thread
-        if (toggles._defused):
+        
+        if result == "win":
+            toggles._defused = True
             toggles._running = False
             active_phases -= 1
-            print("Toggles defused!")
-        # the phase has failed -> strike
-        elif (toggles._failed):
-            strike()
-            # reset the toggles
-            toggles._failed = False
+            print("Hopscotch defused!")
+        elif result == "lose":
+            toggles._failed = True
 
     # Note the strikes on GUI for debugging
     print(f"Strikes left: {strikes_left}")
