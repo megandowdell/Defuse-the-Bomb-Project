@@ -14,11 +14,6 @@ from time import sleep
 import os
 import sys
 
-#mini game imports
-from ..TicTacToe.TicTacToe import play_tic_tac_toe
-from ..Hopscotch.Hopscotch import play_turn, draw_board, generate_board
-
-
 
 #########
 # classes
