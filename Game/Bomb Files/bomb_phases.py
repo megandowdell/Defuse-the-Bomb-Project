@@ -15,8 +15,8 @@ import os
 import sys
 
 #mini game imports
-from TicTacToe import play_tic_tac_toe
-from Hopscotch import play_turn, draw_board, generate_board
+from ..TicTacToe.TicTacToe import play_tic_tac_toe
+from ..Hopscotch.Hopscotch import play_turn, draw_board, generate_board
 
 
 
@@ -485,22 +485,32 @@ def phase_1():
 # Initialize hopscotch board and progress tracker
 hopscotch_board = generate_board(successes_per_row=1)
 current_hopscotch_row = 0
-hopscotch_result = None  # Can be None, "win", or "lose"
+hopscotch_result = None  # Can be none, win, or lose
 
-def phase_4(selected_col):
+def phase_4(toggles):
     global current_hopscotch_row, hopscotch_result
 
     if hopscotch_result is not None:
-        return hopscotch_result  # Game is done for this round
+        return hopscotch_result
 
-    # selected_col is 0–3 based on the GPIO toggle input
-    current_hopscotch_row, hopscotch_result = play_turn(
-        hopscotch_board, current_hopscotch_row, selected_col
-    )
+    toggle_val = toggles._value  # example: "0100"
+    
+    # Wait for a single toggle to be flipped up
+    if toggle_val.count("1") == 1:
+        selected_col = toggle_val.find("1")
+        
+        # Process the turn
+        current_hopscotch_row, hopscotch_result = play_turn(
+            hopscotch_board, current_hopscotch_row, selected_col
+        )
 
-    if hopscotch_result == "win":
-        print("Hopscotch: SUCCESS")
-    elif hopscotch_result == "lose":
-        print("Hopscotch: BOOM")
+        if hopscotch_result == "win":
+            print("Hopscotch: SUCCESS")
+        elif hopscotch_result == "lose":
+            print("Hopscotch: BOOM")
 
-    return hopscotch_result  # Used by bomb controller to move to next phase or end game
+        # Optionally, reset toggles before next input
+        if RPi:
+            wait_for_toggle_reset(component_toggles)
+
+    return hopscotch_result
