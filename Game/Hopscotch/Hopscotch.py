@@ -38,6 +38,89 @@ ROWS = 5           # Total levels
 COLS = 4           # Columns (A–D)
 
 
+def test_hopscotch_with_toggles():
+    import pygame
+    pygame.init()
+    pygame.font.init()
+
+    from Toggles import Toggles  # adjust path if needed
+
+    try:
+        import board
+        from digitalio import DigitalInOut
+        RPi = True
+    except ImportError:
+        RPi = False
+        print("GPIO not available. Using keyboard simulation mode.")
+
+    # Set up screen
+    global screen, clock
+    screen = pygame.display.set_mode((600, 800))
+    pygame.display.set_caption("Hopscotch Test Mode")
+    clock = pygame.time.Clock()
+
+    # Set up toggles or keyboard fallback
+    if RPi:
+        toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.D21)]
+        toggles = Toggles(toggle_pins)
+        toggles.start()
+    else:
+        toggles = None
+
+    board_state = generate_board(successes_per_row=2)
+    current_row = 0
+    lives = 3
+    key_lock = False
+
+    running = True
+    while running:
+        draw_board(board_state, current_row, lives)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        selected_column = None
+
+        if RPi:
+            if toggles.has_changed():
+                selected_column = toggles.get_toggle_index()
+        else:
+            keys = pygame.key.get_pressed()
+            if not key_lock:
+                if keys[pygame.K_1]:
+                    selected_column = 0
+                    key_lock = True
+                elif keys[pygame.K_2]:
+                    selected_column = 1
+                    key_lock = True
+                elif keys[pygame.K_3]:
+                    selected_column = 2
+                    key_lock = True
+                elif keys[pygame.K_4]:
+                    selected_column = 3
+                    key_lock = True
+            else:
+                if not (keys[pygame.K_1] or keys[pygame.K_2] or keys[pygame.K_3] or keys[pygame.K_4]):
+                    key_lock = False
+
+        if selected_column is not None:
+            if selected_column in board_state[current_row]:
+                current_row += 1
+                if current_row == ROWS:
+                    print("WIN")
+                    running = False
+            else:
+                lives -= 1
+                current_row = 0
+                print("WRONG TILE — Strike!")
+                if lives == 0:
+                    print("BOOM!")
+                    running = False
+
+        clock.tick(30)
+
 
 # Tile Generator
 def generate_board(successes_per_row=2):
@@ -157,7 +240,7 @@ def play_game():
 
 # Run Standalone
 if __name__ == "__main__":
-    won = play_game()
+    won = test_hopscotch_with_toggles()
     screen.fill(BG)
     msg = "SUCCESS!" if won else "BOOM!"
     text = BIG_FONT.render(msg, True, TEXT)
