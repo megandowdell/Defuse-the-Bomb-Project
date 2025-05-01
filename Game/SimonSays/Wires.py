@@ -17,15 +17,16 @@ class PhaseThread(Thread):
 class Wires(PhaseThread):
     def __init__(self, pins, config=None, name="Wires"):
         super().__init__(name)
-        self._value = ""
+        # All wires start as connected - initialize with all 1's
+        self._value = "1" * len(pins)
         # the jumper wire pins
         self._pins = pins
-        # Default configuration
+        # Default configuration - assuming all wires start connected
         self._config = {
-            'pull': Pull.DOWN,  # Can be Pull.UP or Pull.DOWN depending on your circuit
-            'connected_state': True,  # What value indicates a connected wire
-            'poll_rate': 0.1,  # How frequently to check the wires (seconds)
-            'debounce': False,  # Enable debounce for noisy connections
+            'pull': Pull.UP,     # Using Pull.UP since we expect wires to be connected to GND
+            'connected_state': False,  # When using pull-up, a connected wire reads as False
+            'poll_rate': 0.1,    # How frequently to check the wires (seconds)
+            'debounce': True,    # Enable debounce for stability with physical wires
             'debounce_time': 0.05  # Debounce time in seconds
         }
         
@@ -37,7 +38,7 @@ class Wires(PhaseThread):
         self._setup_pins()
         
         # For tracking state changes
-        self._prev_value = ""
+        self._prev_value = self._value
         self._state_changed = False
     
     def _setup_pins(self):
@@ -57,6 +58,7 @@ class Wires(PhaseThread):
             # Only update if both readings match
             if reading1 == reading2:
                 # Convert to 1/0 based on what we consider "connected"
+                # 1 means connected, 0 means disconnected in the output
                 return "".join([str(int(val == self._config['connected_state'])) for val in reading1])
             return self._value  # Return previous value if readings don't match
         else:
@@ -98,24 +100,37 @@ class Wires(PhaseThread):
             return f"{self._value}/{int(self._value, 2)}"
         return "0/0"  # Default if no value yet
 
+# Example of how to use this enhanced Wires class:
 if __name__ == "__main__":
     # Example pin setup (adjust for your specific board)
     wire_pins = [DigitalInOut(i) for i in (board.D14, board.D15, board.D18, board.D23, board.D24)]
     
-    # Example with custom configuration
+    # For a bomb game where all wires start connected:
+    # - Use pull-up resistors (wires connect to GND when connected)
+    # - A connected wire will read as False with pull-ups
+    # - When a wire is cut/disconnected, it will read as True
     wires_config = {
-        'pull': Pull.UP,  # Use pull-ups if your wires connect to ground when active
-        'connected_state': False,  # If using pull-ups, a connected wire reads as False
-        'debounce': True  # Enable debouncing for stability
+        'pull': Pull.UP,          # Pull-up resistors
+        'connected_state': False, # Connected wires read as False (connected to GND)
+        'debounce': True          # Enable debouncing for stability
     }
     
     wires = Wires(wire_pins, wires_config)
     wires.start()
     
+    print("Game starting - all wires should be connected!")
+    print(f"Initial state: {wires}")
+    
     try:
         while True:
             if wires.has_changed():
-                print(f"Wires state changed: {wires}")
+                print(f"ALERT: Wire state changed: {wires}")
+                # Check if all wires are disconnected
+                if wires._value == "0" * len(wire_pins):
+                    print("All wires have been cut!")
+                # Check for specific patterns that might be required for defusal
+                if wires._value == "10101":  # Example pattern
+                    print("Correct wire pattern detected!")
             sleep(0.2)
     except KeyboardInterrupt:
-        print("Exiting...")
+        print("Game terminated...")
