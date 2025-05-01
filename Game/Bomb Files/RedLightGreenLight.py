@@ -14,10 +14,10 @@ except ImportError:
 pygame.mixer.init()
 greenmus = pygame.mixer.Sound("greenlight.wav")
 redmus = pygame.mixer.Sound("redlight.wav")
-
+song = pygame.mixer.Sound("flyme.mp3")
 
 player = "Name"
-# Real button and RGB LED
+# Real button and RGB LED (lets us run the program on laptop)
 if RPi:
     component_button_state = DigitalInOut(board.D4)
     component_button_state.direction = Direction.INPUT
@@ -35,7 +35,6 @@ else:
 def set_led(color):
     if not RPi:
         return
-
     if color == "green":
         component_button_RGB[0].value = True   # Red OFF
         component_button_RGB[1].value = False  # Green ON
@@ -67,14 +66,15 @@ def red_light_green_light_game_gui():
     light_color = "red"
     set_led(light_color)
 
-    game_time = 30
+    game_time = 120
     start_time = time.time()
 
     player_distance = 0
-    target_distance = 5
+    target_distance = 100
     game_over = False
     result_message = ""
-
+    
+    song.play(-1)
 
     
 
@@ -147,7 +147,7 @@ def red_light_green_light_game_gui():
                     running = False
 
             pygame.display.flip()
-            clock.tick(30)
+            clock.tick(120)
 
     except KeyboardInterrupt:
         print("Interrupted.")
