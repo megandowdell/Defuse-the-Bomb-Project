@@ -32,7 +32,7 @@ class Wires(PhaseThread):
         
         # Print configuration info
         print(f"Wires component initialized with {len(pins)} wires")
-        print("All wires should start CONNECTED")
+        print("All wires should start CONNECTED (11111/31)")
         print("Physical setup: GPIO pins with pull-up resistors -> wires -> GND")
     
     def run(self):
@@ -59,8 +59,8 @@ class Wires(PhaseThread):
         raw_values = [pin.value for pin in self._pins]
         
         # Convert to wire state (1 = connected, 0 = disconnected)
-        # With pull-up resistors: False = connected, True = disconnected
-        new_state = "".join(["1" if not val else "0" for val in raw_values])
+        # With pull-up resistors: False = connected (1), True = disconnected (0)
+        new_state = "".join(["0" if val else "1" for val in raw_values])
         
         # Check if state changed 
         changed = new_state != self._value
