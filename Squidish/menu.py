@@ -710,24 +710,24 @@ class Toggles(PhaseThread):
          self._running = True
          self.update_state()
  
-         while self._running:
-             if self.update_state():
-                 # You could trigger logic here or just print for testing
-                 print(f"Toggles changed: {self._value}/{int(self._value, 2)}")
-             sleep(0.1)
+        while self._running:
+            if self.update_state():
+            # You could trigger logic here or just print for testing
+                print(f"Toggles changed: {self._value}/{int(self._value, 2)}")
+                sleep(0.1)
  
      def update_state(self):
-         """Update toggle state and return True if the state changed."""
-         new_state = "".join([str(int(pin.value)) for pin in self._pins])
+        """Update toggle state and return True if the state changed."""
+        new_state = "".join([str(int(pin.value)) for pin in self._pins])
  
-         changed = new_state != self._value
-         if changed:
+        changed = new_state != self._value
+        if changed:
              self._prev_value = self._value
              self._value = new_state
              self._state_changed = True
-         else:
+        else:
              self._state_changed = False
-
+            
         return changed
 
     def all_down(self):
