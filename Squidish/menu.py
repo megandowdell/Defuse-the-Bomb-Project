@@ -734,8 +734,7 @@ class Toggles(PhaseThread):
              self._prev_value = self._value
              self._value = new_state
              self._state_changed = True
-        else:
-             self._state_changed = False
+        
             
         return changed
         
@@ -1146,9 +1145,8 @@ def show_hopscotch_game_screen(screen):
         
             while True:
                 draw_board(board, current_row, lives)  # Now we also pass lives to draw
-        
                 # Check for a toggle change (user flips one switch)
-                if True:
+                if toggles._state_changed:
                     # Get the index of the flipped toggle (0–3)
                     selected_col = next(i for i, (a, b) in enumerate(zip(toggles._value, toggles._prev_value)) if a != b)
                     print(selected_col)
@@ -1172,7 +1170,7 @@ def show_hopscotch_game_screen(screen):
                         print("Waiting for reset...")
                         while not toggles.all_down():
                             sleep(0.05)
-        
+                    toggles._state_changed = False
                 clock.tick(60)
 
         won = play_game()
