@@ -995,7 +995,7 @@ def show_hopscotch_game_screen(screen):
         VISIBLE_ROWS = 5
 
         # Tile Generator
-        def generate_board(successes_per_row=2):
+        def generate_board(successes_per_row=4):
             board = []
             for _ in range(ROWS):
                 safe = random.sample(range(COLS), successes_per_row)
