@@ -207,36 +207,34 @@ def play_game():
 
     while True:
         draw_board(board, current_row, lives)  # Now we also pass lives to draw
+        
+        # Check for a toggle change (user flips one switch)
+        if toggles.has_changed():
+            # Get the index of the flipped toggle (0–3)
+            selected_col = toggles.get_toggle_index()
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+            if selected_col is not None:
+                # Check if selected toggle is correct for current row
+                if selected_col in board[current_row]:
+                    current_row += 1
+                    if current_row == ROWS:
+                        print("WIN")
+                        return True
+                else:
+                    lives -= 1
+                    current_row = 0
+                    print("WRONG TILE — Strike!")
+                    if lives == 0:
+                        print("BOOM!")
+                        return False
 
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                mouse_pos = pygame.mouse.get_pos()
+                # Wait for toggles to reset (all back to down/off)
+                print("Waiting for reset...")
+                while not toggles.all_down():
+                    sleep(0.05)
 
-                for col in range(COLS):
-                    tile_rect = get_tile_rect(current_row, col, current_row)
-                    if tile_rect.collidepoint(mouse_pos):
-                        if col in board[current_row]:
-                            # Correct tile: advance to next row
-                            current_row += 1
-                            if current_row == ROWS:
-                                return True  # WIN!
-                        else:
-                            # Wrong tile: lose a life
-                            lives -= 1
-                            current_row = 0
-                            # Flash red tile
-                            pygame.draw.rect(screen, FAIL, tile_rect)
-                            pygame.display.flip()
-                            pygame.time.delay(500)
+        clock.tick(60)
 
-                            if lives == 0:
-                                return False  # LOSE after 5 wrong tries
-
-        clock.tick(60)  # Maintain 60
 
 # Run Standalone
 if __name__ == "__main__":

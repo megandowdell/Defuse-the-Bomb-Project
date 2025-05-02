@@ -76,6 +76,7 @@ class Toggles(PhaseThread):
         Returns index (0–3) of the single flipped toggle.
         Only works when exactly one toggle is up (i.e., value is '0100', etc).
         """
+        print("checking toggle index")
         if self._value.count("1") == 1:
             return self._value.find("1")
         return None
@@ -107,6 +108,7 @@ if __name__ == "__main__":
         while True:
             if toggles.has_changed():
                 index = toggles.get_toggle_index()
+                
 
                 if index is not None:
                     print(f"User selected toggle index: {index}")
