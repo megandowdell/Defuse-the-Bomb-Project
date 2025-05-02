@@ -760,6 +760,7 @@ class Toggles():
 # Create and start the toggle monitor
 toggles = Toggles(toggle_pins)
 #toggles.start()
+toggles.run()
 
  
 # Test code for local Pi testing (doesn't affect real game logic)
