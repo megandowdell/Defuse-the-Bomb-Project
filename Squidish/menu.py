@@ -1163,6 +1163,7 @@ def show_hopscotch_game_screen(screen):
                         else:
                             lives -= 1
                             current_row = 0
+                            pygame.draw.rect(screen, FAIL, tile_rect)
                             print("WRONG TILE — Strike!")
                             if lives == 0:
                                 print("BOOM!")
