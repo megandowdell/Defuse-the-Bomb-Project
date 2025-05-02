@@ -8,7 +8,7 @@ import sys
 import random
 from threading import Thread
 from time import sleep
-# import board
+import board
 # from digitalio import DigitalInOut, Direction, Pull
 
 
