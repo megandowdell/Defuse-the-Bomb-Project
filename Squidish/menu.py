@@ -1160,56 +1160,41 @@ def show_hopscotch_game_screen(screen):
                     break
                 time.sleep(0.05)
 
-        # Main Game (for local testing) 
+        # Main Game (for local testing)
         def play_game():
-            board = generate_board(successes_per_row=2)
+            board = generate_board(successes_per_row=2)  # Create board once
             current_row = 0
-            lives = 10
-            rows_cleared = 0
-
+            lives = 5  # Start with 5 lives
+        
             while True:
-                draw_board(board, current_row, lives, rows_cleared)
-
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        sys.exit()
-
-                    elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                        mouse_pos = pygame.mouse.get_pos()
+                draw_board(board, current_row, lives)  # Now we also pass lives to draw
                 
-                        for col in range(COLS):
-                            tile_rect = get_tile_rect(0, col)
-                    
-                            if tile_rect.collidepoint(mouse_pos):
-                                if col in board[current_row]:
-                                    # Correct choice - flash green briefly
-                                    pygame.draw.rect(screen, SAFE, tile_rect)
-                                    label = FONT.render(chr(65 + col), True, TEXT)
-                                    screen.blit(label, (tile_rect.x + TILE_WIDTH//2 - 10, tile_rect.y + 15))
-                                    pygame.display.flip()
-                                    pygame.time.delay(300)
-                            
-                                    rows_cleared += 1
-                                    current_row = animate_row(board, current_row, lives, rows_cleared)
-                            
-                                    if rows_cleared >= ROWS:
-                                        return "win"
-                                else:
-                                    # Wrong choice - show red
-                                    pygame.draw.rect(screen, FAIL, tile_rect)
-                                    label = FONT.render(chr(65 + col), True, TEXT)
-                                    screen.blit(label, (tile_rect.x + TILE_WIDTH//2 - 10, tile_rect.y + 15))
-                                    pygame.display.flip()
-                                    pygame.time.delay(800)
-                            
-                                    lives -= 1
-                                    current_row = 0
-                                    rows_cleared = 0
-                                    if lives == 0:
-                                        show_death_screen(screen)
-                                        return "lose"
-            clock.tick(60)
+                # Check for a toggle change (user flips one switch)
+                if toggles.has_changed():
+                    # Get the index of the flipped toggle (0–3)
+                    selected_col = toggles.get_toggle_index()
+        
+                    if selected_col is not None:
+                        # Check if selected toggle is correct for current row
+                        if selected_col in board[current_row]:
+                            current_row += 1
+                            if current_row == ROWS:
+                                print("WIN")
+                                return True
+                        else:
+                            lives -= 1
+                            current_row = 0
+                            print("WRONG TILE — Strike!")
+                            if lives == 0:
+                                print("BOOM!")
+                                return False
+        
+                        # Wait for toggles to reset (all back to down/off)
+                        print("Waiting for reset...")
+                        while not toggles.all_down():
+                            sleep(0.05)
+        
+                clock.tick(60)
 
         won = play_game()
         return result
