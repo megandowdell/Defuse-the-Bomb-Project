@@ -1146,7 +1146,7 @@ def show_hopscotch_game_screen(screen):
         
             while True:
                 draw_board(board, current_row, lives)  # Now we also pass lives to draw
-                print("Testing")
+        
                 # Check for a toggle change (user flips one switch)
                 if toggles.has_changed():
                     # Get the index of the flipped toggle (0–3)
