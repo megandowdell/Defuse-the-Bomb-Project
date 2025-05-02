@@ -721,7 +721,7 @@ class Toggles(PhaseThread):
         while self._running:
             if self.update_state():
             # You could trigger logic here or just print for testing
-                print(f"Toggles changed: {self._value}/{int(self._value, 2)} - {self._state_changed}")
+                print(f"Toggles changed: {self._value}/{self._prev_value} - {self._state_changed}")
                 sleep(0.1)
                 
     def update_state(self):
@@ -746,9 +746,8 @@ class Toggles(PhaseThread):
         """Returns index (0–3) of the single flipped toggle.
          Only works when exactly one toggle is up (i.e., value is '0100', etc).
          """
-        if self._value.count("1") == 1:
-            return self._value.find("1")
-        return None
+        pass
+        # return None
  
     def has_changed(self):
         """Checks if toggles changed since last time."""
