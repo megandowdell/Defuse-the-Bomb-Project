@@ -701,6 +701,7 @@ toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.
 # Toggle switch handler class
 class Toggles(PhaseThread):
     def __init__(self, pins, name="Toggles"):
+        super().__init__(name)
         self._pins = pins
      # Setup each pin as input with a pull-down resistor (starts as LOW / 0)
         for pin in self._pins:
