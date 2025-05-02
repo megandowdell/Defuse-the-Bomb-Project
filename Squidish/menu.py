@@ -1151,7 +1151,7 @@ def show_hopscotch_game_screen(screen):
                 if True:
                     # Get the index of the flipped toggle (0–3)
                     selected_col = next(i for i, (a, b) in enumerate(zip(toggles._value, toggles._prev_value)) if a != b)
-                    # print(selected_col)
+                    print(selected_col)
         
                     if selected_col is not None:
                         # Check if selected toggle is correct for current row
