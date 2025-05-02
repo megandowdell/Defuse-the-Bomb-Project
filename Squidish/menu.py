@@ -8,6 +8,7 @@ import random
 import time
 from threading import Thread
 from time import sleep
+import bomb
 from bomb_configs import *
 from bomb_phases import *
 import RPi.GPIO as GPIO  # Uncomment if using GPIO on Raspberry Pi
