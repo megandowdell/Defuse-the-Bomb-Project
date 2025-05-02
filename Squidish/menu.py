@@ -759,7 +759,8 @@ class Toggles():
 
 # Create and start the toggle monitor
 toggles = Toggles(toggle_pins)
-toggles.start()
+#toggles.start()
+
  
 # Test code for local Pi testing (doesn't affect real game logic)
     # Set up pins (GPIO 12, 16, 20, 21 for 4 toggles)
