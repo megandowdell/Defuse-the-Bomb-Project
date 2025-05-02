@@ -690,9 +690,8 @@ def show_meet_team(screen):
 # 
 # 
 # Toggle switch handler class
-class Toggles(PhaseThread):
+class Toggles(toggle_pins):
     def __init__(self, pins, name="Toggles"):
-        super().__init__(name)
         self._pins = pins
      # Setup each pin as input with a pull-down resistor (starts as LOW / 0)
         for pin in self._pins:
