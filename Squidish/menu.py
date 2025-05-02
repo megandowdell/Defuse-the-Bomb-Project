@@ -689,6 +689,8 @@ def show_meet_team(screen):
 #         self._value = None
 # 
 # 
+
+toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.D21)]
 # Toggle switch handler class
 class Toggles(toggle_pins):
     def __init__(self, pins, name="Toggles"):
@@ -753,32 +755,23 @@ class Toggles(toggle_pins):
         return f"{self._value}/{int(self._value, 2)}"
  
  
-# # Test code for local Pi testing (doesn't affect real game logic)
-# if __name__ == "__main__":
-#     # Set up pins (GPIO 12, 16, 20, 21 for 4 toggles)
-#     toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.D21)]
-#     
-# 
-#     print("Monitoring toggles... flip exactly ONE toggle to simulate input.")
-# 
-#     try:
-#         while True:
-#             if toggles.has_changed():
-#                 index = toggles.get_toggle_index()
-# 
-#                 if index is not None:
-#                     print(f"User selected toggle index: {index}")
-#                     print("Waiting for toggles to reset (all down)...")
-# 
-#                     # Wait for reset before accepting another input
-#                     while not toggles.all_down():
-#                         sleep(0.1)
-#                     print("Toggles reset! Ready for next input.")
-# 
-#             sleep(0.1)
-# 
-#     except KeyboardInterrupt:
-#         print("\nToggles test interrupted. Exiting...")
+# Test code for local Pi testing (doesn't affect real game logic)
+    # Set up pins (GPIO 12, 16, 20, 21 for 4 toggles)
+toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.D21)]
+print("Monitoring toggles... flip exactly ONE toggle to simulate input.")
+if toggles.has_changed():
+    index = toggles.get_toggle_index()
+    if index is not None:
+        print(f"User selected toggle index: {index}")
+        print("Waiting for toggles to reset (all down)...")
+
+        # Wait for reset before accepting another input
+        while not toggles.all_down():
+            sleep(0.1)
+            print("Toggles reset! Ready for next input.")
+
+        sleep(0.1)
+
 
 
 
