@@ -1139,7 +1139,7 @@ def show_hopscotch_game_screen(screen):
 
         # Main Game (for local testing)
         def play_game():
-            board = generate_board(successes_per_row=4)  # Create board once
+            board = generate_board(successes_per_row=2)  # Create board once
             current_row = 0
             lives = 5  # Start with 5 lives
         
