@@ -722,7 +722,7 @@ class Toggles(PhaseThread):
         while self._running:
             if self.update_state():
             # You could trigger logic here or just print for testing
-                print(f"Toggles changed: {self._value}/{self._prev_value} - {self._state_changed}, {bin(int(self._value,2) & int(self._prev_value, 2))}")
+                print(f"Toggles changed: {self._value}/{self._prev_value} - {self._state_changed}, next(i for i, (a, b) in enumerate(zip(self._value, self._prev_value)) if a != b)")
                 sleep(0.1)
                 
     def update_state(self):
