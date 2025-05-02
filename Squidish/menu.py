@@ -2368,7 +2368,7 @@ def main():
             pygame.mixer.music.play(-1)
             menu_choice = show_menu_screen(screen)
             if menu_choice == "Start":
-                game_state = random.choice(["Hopscotch", "Tic Tac Toe", "Red Light Green Light"])
+                game_state = random.choice(["Hopscotch"])
             elif menu_choice == "About Game":
                 game_state = "About Game"
             elif menu_choice == "Meet Team":
