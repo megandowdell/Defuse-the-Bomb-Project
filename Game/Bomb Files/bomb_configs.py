@@ -6,7 +6,7 @@
 
 # constants
 DEBUG = False        # debug mode? # can set to true
-RPi = False          # is this running on the RPi? # can set to false to test logic 
+RPi = True          # is this running on the RPi? # can set to false to test logic 
 ANIMATE = True       # animate the LCD text? # can set to false
 SHOW_BUTTONS = True  # show the Pause and Quit buttons on the main LCD GUI? # can set to true/false
 COUNTDOWN = 300      # the initial bomb countdown value (seconds) 
@@ -140,6 +140,8 @@ def genSerial():
 
     return serial, toggle_value, jumper_value
 
+
+'''
 # generates the keypad combination from a keyword and rotation key
 def genKeypadCombination():
     # encrypts a keyword using a rotation cipher
@@ -193,7 +195,7 @@ def genKeypadCombination():
     combination = digits(passphrase)
 
     return keyword, cipher_keyword, rot, combination, passphrase
-
+'''
 ###############################
 # generate the bomb's specifics
 ###############################
@@ -230,6 +232,7 @@ if (DEBUG):
     print(f"Button target: {button_target}")
 
 # set the bomb's LCD bootup text
+'''
 boot_text = f"Booting...\n\x00\x00"\
             f"*Kernel v3.1.4-159 loaded.\n"\
             f"Initializing subsystems...\n\x00"\
@@ -240,3 +243,4 @@ boot_text = f"Booting...\n\x00\x00"\
             f"*{' '.join(ascii_uppercase)}\n"\
             f"*{' '.join([str(n % 10) for n in range(26)])}\n"\
             f"Rendering phases...\x00"
+            '''
