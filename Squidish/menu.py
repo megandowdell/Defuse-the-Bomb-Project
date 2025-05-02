@@ -1168,9 +1168,9 @@ def show_hopscotch_game_screen(screen):
                                 return False
         
                         # Wait for toggles to reset (all back to down/off)
-                        print("Waiting for reset...")
-                        while not toggles.all_down():
-                            sleep(0.05)
+                        #print("Waiting for reset...")
+                        #while not toggles.all_down():
+                         #   sleep(0.05)
                     toggles._state_changed = False
                 clock.tick(60)
 
