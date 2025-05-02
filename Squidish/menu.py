@@ -792,7 +792,7 @@ if toggles.has_changed():
 
 
 # Create and start the toggle monitor
-toggles = Toggles(toggle_pins)
+toggles = Toggles()
 toggles.start()
 
 
