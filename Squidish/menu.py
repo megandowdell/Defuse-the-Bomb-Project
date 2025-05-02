@@ -694,7 +694,7 @@ def show_meet_team(screen):
 toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.D21)]
 
 # Toggle switch handler class
-class Toggles(toggle_pins):
+class Toggles():
     def __init__(self, pins, name="Toggles"):
         self._pins = pins
      # Setup each pin as input with a pull-down resistor (starts as LOW / 0)
@@ -792,7 +792,7 @@ if toggles.has_changed():
 
 
 # Create and start the toggle monitor
-toggles = Toggles()
+toggles = Toggles(toggle_pins)
 toggles.start()
 
 
