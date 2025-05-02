@@ -6,7 +6,7 @@
 
 # constants
 DEBUG = False        # debug mode? # can set to true
-RPi = False           # is this running on the RPi? # can set to false to test logic 
+RPi = True           # is this running on the RPi? # can set to false to test logic 
 ANIMATE = True       # animate the LCD text? # can set to false
 SHOW_BUTTONS = False # show the Pause and Quit buttons on the main LCD GUI? # can set to true/false
 COUNTDOWN = 300      # the initial bomb countdown value (seconds) 
