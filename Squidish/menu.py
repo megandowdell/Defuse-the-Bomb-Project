@@ -755,7 +755,10 @@ class Toggles():
     def __str__(self):
         """Show state as binary and its decimal equivalent."""
         return f"{self._value}/{int(self._value, 2)}"
- 
+
+# Create and start the toggle monitor
+toggles = Toggles(toggle_pins)
+toggles.start()
  
 # Test code for local Pi testing (doesn't affect real game logic)
     # Set up pins (GPIO 12, 16, 20, 21 for 4 toggles)
@@ -772,28 +775,6 @@ if toggles.has_changed():
             print("Toggles reset! Ready for next input.")
 
         sleep(0.1)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Create and start the toggle monitor
-toggles = Toggles(toggle_pins)
-toggles.start()
 
 
 
