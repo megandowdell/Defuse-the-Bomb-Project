@@ -800,8 +800,8 @@ def show_meet_team(screen):
 
 
 # Create and start the toggle monitor
-     toggles = Toggles(toggle_pins)
-     toggles.start()
+toggles = Toggles(toggle_pins)
+toggles.start()
 
 
 
