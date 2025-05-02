@@ -1,7 +1,7 @@
 from threading import Thread
 from time import sleep
-#import board
-#from digitalio import DigitalInOut, Direction, Pull
+import board
+from digitalio import DigitalInOut, Direction, Pull
 
 # Base class for bomb components
 class PhaseThread(Thread):
@@ -82,11 +82,7 @@ class Wires(PhaseThread):
             return True
         return False
     
-#     def get_wire(self, index):
-#         """Get the state of a specific wire by index (1 = connected, 0 = disconnected)"""
-#         if 0 <= index < len(self._pins):
-#             return int(self._value[index])
-#         return None
+
     
     def __str__(self):
         """Display wire state as binary and decimal"""
@@ -107,17 +103,3 @@ if __name__ == "__main__":
     print("Wire monitoring started. Press Ctrl+C to exit.")
     print("Initial state:", wires)
     
-#     try:
-#         while True:
-#             if wires.has_changed():
-#                 print(f"Wire state changed: {wires}")
-#                 
-#                 # Example game logic based on wire state
-#                 if wires._value == "00000":
-#                     print("All wires have been cut!")
-#                 elif wires._value == "10101":  # Example specific pattern
-#                     print("Correct wire pattern detected!")
-#                     
-#             sleep(0.1)
-#     except KeyboardInterrupt:
-#         print("\nExiting...")
