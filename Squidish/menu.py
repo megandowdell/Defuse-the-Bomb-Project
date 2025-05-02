@@ -676,13 +676,17 @@ def show_meet_team(screen):
 # 
 # 
 # # Base thread class for phases like toggles/wires/buttons
-# class PhaseThread(Thread):
-#     def __init__(self, name):
-#         super().__init__(name=name, daemon=True)
-#         self._running = False
-#         self._value = None
-#         if RPi:
-#             for pin in self._pins:
+
+class PhaseThread(Thread):
+    def __init__(self, name):
+        super().__init__(name=name, daemon=True)
+        self._running = False
+        self._value = None
+
+
+
+ #       if RPi:
+#for pin in self._pins:
 #                 pin.direction = Direction.INPUT
 #                 pin.pull = Pull.DOWN
 # 
@@ -695,7 +699,7 @@ def show_meet_team(screen):
 toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.D21)]
 
 # Toggle switch handler class
-class Toggles():
+class Toggles(PhaseThread):
     def __init__(self, pins, name="Toggles"):
         self._pins = pins
      # Setup each pin as input with a pull-down resistor (starts as LOW / 0)
