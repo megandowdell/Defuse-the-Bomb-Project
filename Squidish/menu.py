@@ -1150,7 +1150,7 @@ def show_hopscotch_game_screen(screen):
                 # Check for a toggle change (user flips one switch)
                 if True:
                     # Get the index of the flipped toggle (0–3)
-                    selected_col = toggles.get_toggle_index()
+                    selected_col = next(i for i, (a, b) in enumerate(zip(toggles._value, toggles._prev_value)) if a != b)
                     # print(selected_col)
         
                     if selected_col is not None:
