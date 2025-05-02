@@ -759,8 +759,6 @@ class Toggles():
 
 # Create and start the toggle monitor
 toggles = Toggles(toggle_pins)
-#toggles.start()
-toggles.run()
 
  
 # Test code for local Pi testing (doesn't affect real game logic)
@@ -942,6 +940,7 @@ def show_hopscotch_game_screen(screen):
     result = show_hopscotch_instructions_screen(screen)
     
     if result == "Play":
+        toggles.start()
         pygame.mixer.music.stop()
         pygame.mixer.music.load("round_round.mp3")
         pygame.mixer.music.play(-1)
