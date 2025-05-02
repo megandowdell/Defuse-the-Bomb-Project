@@ -9,8 +9,8 @@ import time
 from threading import Thread
 from time import sleep
 from bomb_configs import *
-# from bomb_phases import *
-#import RPi.GPIO as GPIO  # Uncomment if using GPIO on Raspberry Pi
+from bomb_phases import *
+import RPi.GPIO as GPIO  # Uncomment if using GPIO on Raspberry Pi
 ####################################################################################################################
 # MENU AUDIO
 pygame.mixer.init()
