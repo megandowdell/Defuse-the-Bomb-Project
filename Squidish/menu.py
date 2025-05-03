@@ -420,7 +420,7 @@ def show_about_game_screen(screen):
                         if item == "Back":
                             return "Menu"  
                         elif item == "Continue":
-                            return random.choice(["Hopscotch"])  
+                            return random.choice(["Red Light Green Light"])  
         pygame.display.flip()
         clock.tick(60)
 ####################################################################################################################
@@ -2211,7 +2211,7 @@ def main():
     
     game_running = True
     game_state = "Menu"
-    mini_games = ["Hopscotch", "Tic Tac Toe","Red Light Green Light"]
+    mini_games = ["Red Light Green Light"]
     completed_games = set()
 
     while game_running:
