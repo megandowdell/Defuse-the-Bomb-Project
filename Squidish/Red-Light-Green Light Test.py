@@ -496,7 +496,7 @@ def main():
     
     # Show game screen
     try:
-        result = show_redlightgreenlight_game_screen(screen, button)
+        result = show_redlightgreenlight_game_screen(screen)
         print(f"Game ended with result: {result}")
     except Exception as e:
         print(f"Error during gameplay: {e}")
