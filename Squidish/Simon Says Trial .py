@@ -192,7 +192,25 @@ for i, command in enumerate(commands):
             wire_states[color] = True
 
     expected_state = ''.join(['1' if wire_states[c] else '0' for c in colors])
-    actual_state = wires._value
+    #actual_state = wires._value
+    
+    start_time = time.time()
+    result_ok = False
+
+    while time.time() - start_time < 20:
+        if wires.has_changed():
+            actual_state = wires._value
+            if is_simon:
+                result_ok = (actual_state == expected_state)
+            else:
+                result_ok = (actual_state == prev_state)
+            break  # Exit early after response
+        sleep(0.1)
+
+    else:
+        # Timeout happened
+        actual_state = wires._value
+        #print("⏰ Time's up!")
 
     # Placeholder: result = {"command": command, "expected": expected_state, "actual": actual_state, "status": "correct/incorrect"}
     # You can use this dictionary to pass to the GUI layer later
