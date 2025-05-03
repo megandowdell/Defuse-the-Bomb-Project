@@ -1142,6 +1142,11 @@ def show_hopscotch_game_screen(screen):
             board = generate_board(successes_per_row=2)  # Create board once
             current_row = 0
             lives = 5  # Start with 5 lives
+
+        def flash_screen(color, delay=0.3):
+            screen.fill(color)
+            pygame.display.update()
+            time.sleep(delay)  # Pause to show the color flash
         
             while True:
                 draw_board(board, current_row, lives)  # Now we also pass lives to draw
@@ -1156,11 +1161,13 @@ def show_hopscotch_game_screen(screen):
                     if selected_col is not None:
                         # Check if selected toggle is correct for current row
                         if selected_col in board[current_row]:
+                            flash_screen((0, 255, 0)) # Green flash
                             current_row += 1
                             if current_row == ROWS:
                                 print("WIN")
                                 return True
                         else:
+                            flash_screen((255, 0, 0))  # Red flash
                             lives -= 1
                             current_row = 0
                             tile_rect = get_tile_rect(current_row, selected_col)
