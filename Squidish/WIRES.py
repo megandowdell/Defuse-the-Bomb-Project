@@ -273,10 +273,8 @@ while running:
                 won = False
                 status_message = ""
     
-    # Render game elements, update screen...
-                pygame.display.flip()
-            
-                clock.tick(60)  # Frame rate
+   
+                
 
 
                 
