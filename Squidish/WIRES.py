@@ -273,7 +273,7 @@ def main():
                     won = False
                     status_message = ""
         
-                   pygame.display.flip()
+                    pygame.display.flip()
             
                     # Cap the frame rate
                     clock.tick(60)
