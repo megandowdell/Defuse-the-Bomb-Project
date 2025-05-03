@@ -280,34 +280,34 @@ while running:
 
 
                 
-                elif event.key == pygame.K_r and game_over:
-                    # Restart game
-                    print("Restarting game...")
-                    
-                    # Reset wire states
-                    wire_states = {color: True for color in colors}
-                    current_command_index = 0
-                    current_command = commands[current_command_index]
-                    game_over = False
-                    won = False
-                    status_message = ""
-                    
-                    # Reset physical wires to connected if in simulation
-                    if not RPi:
-                        for pin in wire_pins:
-                            if pin.value:  # If disconnected
-                                pin.toggle()  # Connect it
-                        wires.update_state()
+            elif event.key == pygame.K_r and game_over:
+                # Restart game
+                print("Restarting game...")
                 
-                # Simulation mode: toggle wires with number keys
-                elif not RPi and event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5]:
-                    index = event.key - pygame.K_1
-                    if index < len(wire_pins):
-                        wire_pins[index].toggle()
-                        wires.update_state()
-                        print(f"Toggled wire {index+1} ({colors[index]})")
-                        print(f"New wire state: {wires._value}")
-        
+                # Reset wire states
+                wire_states = {color: True for color in colors}
+                current_command_index = 0
+                current_command = commands[current_command_index]
+                game_over = False
+                won = False
+                status_message = ""
+                
+                # Reset physical wires to connected if in simulation
+                if not RPi:
+                    for pin in wire_pins:
+                        if pin.value:  # If disconnected
+                            pin.toggle()  # Connect it
+                    wires.update_state()
+            
+            # Simulation mode: toggle wires with number keys
+            elif not RPi and event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5]:
+                index = event.key - pygame.K_1
+                if index < len(wire_pins):
+                    wire_pins[index].toggle()
+                    wires.update_state()
+                    print(f"Toggled wire {index+1} ({colors[index]})")
+                    print(f"New wire state: {wires._value}")
+            
         # Draw text elements
         # Title
         title = font.render("Simon Says Wire Game", True, WHITE)
