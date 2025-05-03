@@ -211,16 +211,10 @@ def main():
    # Main game loop
     clock = pygame.time.Clock()
     running = True
-    start_time = time.time()  # Initialize the timer
     
     while running:
         # Fill screen with black background
         screen.fill(BLACK)
-        
-        # Timer check: if the player hasn't made a move in 20 seconds, game ends
-        if time.time() - start_time > 20:
-            game_over = True
-            won = False
         
         # Process events
         for event in pygame.event.get():
@@ -229,14 +223,17 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and not game_over:
                     # Check current command
+                    print(f"Checking command: {current_command}")
+                    
                     is_simon = current_command.startswith("Simon says")
                     is_disconnect = "disconnect" in current_command
                     color = next(c for c in colors if c in current_command)
                     color_index = colors.index(color)
-    
+                    
                     # Check if wire state matches command
                     is_disconnected = wires._value[color_index] == "0"
-    
+                    print(f"Color: {color}, Is disconnected: {is_disconnected}")
+                    
                     if is_simon:
                         # Simon commands must be followed
                         if is_disconnect:
@@ -249,20 +246,27 @@ def main():
                             result = not is_disconnected
                         else:  # reconnect
                             result = is_disconnected
-    
+                    
                     if result:
+                        print("CORRECT!")
+                        status_message = "CORRECT!"
+                        
                         # Move to next command
                         current_command_index += 1
                         if current_command_index < len(commands):
                             current_command = commands[current_command_index]
+                            print(f"Next command: {current_command}")
                         else:
+                            print("All commands completed!")
                             current_command = "All commands completed!"
                             game_over = True
                             won = True
                     else:
-                        # Player fails the game
+                        print("INCORRECT!")
+                        status_message = "INCORRECT!"
                         game_over = True
                         won = False
+
     
                 elif event.key == pygame.K_r and game_over:
                     # Restart game
