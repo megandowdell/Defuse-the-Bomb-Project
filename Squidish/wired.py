@@ -59,7 +59,7 @@ class Wires(PhaseThread):
         
         # Convert to wire state (1 = connected, 0 = disconnected)
         # With pull-up resistors: False = connected (1), True = disconnected (0)
-        new_state = "".join(["1" if not val else "0" for val in raw_values])
+        new_state = "".join(["0" if not val else "1" for val in raw_values])
         
         # Check if state changed 
         changed = new_state != self._value
