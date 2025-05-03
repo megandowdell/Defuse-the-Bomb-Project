@@ -274,9 +274,9 @@ while running:
                 status_message = ""
     
     # Render game elements, update screen...
-    pygame.display.flip()
-
-    clock.tick(60)  # Frame rate
+                pygame.display.flip()
+            
+                clock.tick(60)  # Frame rate
 
 
                 
