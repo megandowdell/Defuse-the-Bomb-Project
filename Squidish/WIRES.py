@@ -361,7 +361,7 @@ def main():
             clock.tick(60)
         
         # Clean up
-        pygame.quit()
+    pygame.quit()
     sys.exit()
 
 # Run the game
