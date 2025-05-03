@@ -490,9 +490,11 @@ def main():
     button = Button(button_input, button_RGB)
     button.start()
     
-    # Create GUI and bind button
-    gui = GUI(screen)
-    gui.setButton(button)
+    # Set up global variables for the game functions to access
+    global component_button_state
+    global component_button_RGB
+    component_button_state = button_input
+    component_button_RGB = button_RGB
     
     # Show game screen
     try:
@@ -508,3 +510,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
