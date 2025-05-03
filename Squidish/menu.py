@@ -1879,8 +1879,8 @@ def show_redlightgreenlight_game_screen(screen):
             doll_height = int(doll_width * 1.8)  # aspect ratio of 1.8
             
             
-            doll_red_img = pygame.image.load("redlightdollZ.png")  # Doll facing player (red light)
-            doll_green_img = pygame.image.load("greenlightdollZ.png")  # Doll facing away (green light)
+            doll_red_img = pygame.image.load("redlightdoll.jpg")  # Doll facing player (red light)
+            doll_green_img = pygame.image.load("greenlightdoll.jpg")  # Doll facing away (green light)
                 
                 # Scale images to the desired size
             doll_red_img = pygame.transform.scale(doll_red_img, (doll_width, doll_height))
@@ -1956,7 +1956,7 @@ def show_redlightgreenlight_game_screen(screen):
                     print("Button Pressed!")
                     if light_color == "green":
                         message = "Good move!"
-                        print("Good move!")
+                        #print("Good move!")
                     else:
                         message = "You pressed during RED! You lose!"
                         pygame.display.flip()
