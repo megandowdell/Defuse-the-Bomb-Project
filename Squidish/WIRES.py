@@ -209,156 +209,159 @@ def main():
     
     # Main game loop
    # Main game loop
-clock = pygame.time.Clock()
-running = True
-start_time = time.time()  # Initialize the timer
-
-while running:
-    # Fill screen with black background
-    screen.fill(BLACK)
+    clock = pygame.time.Clock()
+    running = True
+    start_time = time.time()  # Initialize the timer
     
-    # Timer check: if the player hasn't made a move in 20 seconds, game ends
-    if time.time() - start_time > 20:
-        game_over = True
-        won = False
+    while running:
+        # Fill screen with black background
+        screen.fill(BLACK)
+        
+        # Timer check: if the player hasn't made a move in 20 seconds, game ends
+        if time.time() - start_time > 20:
+            game_over = True
+            won = False
+        
+        # Process events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and not game_over:
+                    # Check current command
+                    is_simon = current_command.startswith("Simon says")
+                    is_disconnect = "disconnect" in current_command
+                    color = next(c for c in colors if c in current_command)
+                    color_index = colors.index(color)
     
-    # Process events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and not game_over:
-                # Check current command
-                is_simon = current_command.startswith("Simon says")
-                is_disconnect = "disconnect" in current_command
-                color = next(c for c in colors if c in current_command)
-                color_index = colors.index(color)
-
-                # Check if wire state matches command
-                is_disconnected = wires._value[color_index] == "0"
-
-                if is_simon:
-                    # Simon commands must be followed
-                    if is_disconnect:
-                        result = is_disconnected
-                    else:  # reconnect
-                        result = not is_disconnected
-                else:
-                    # Non-Simon commands must be ignored
-                    if is_disconnect:
-                        result = not is_disconnected
-                    else:  # reconnect
-                        result = is_disconnected
-
-                if result:
-                    # Move to next command
-                    current_command_index += 1
-                    if current_command_index < len(commands):
-                        current_command = commands[current_command_index]
+                    # Check if wire state matches command
+                    is_disconnected = wires._value[color_index] == "0"
+    
+                    if is_simon:
+                        # Simon commands must be followed
+                        if is_disconnect:
+                            result = is_disconnected
+                        else:  # reconnect
+                            result = not is_disconnected
                     else:
-                        current_command = "All commands completed!"
+                        # Non-Simon commands must be ignored
+                        if is_disconnect:
+                            result = not is_disconnected
+                        else:  # reconnect
+                            result = is_disconnected
+    
+                    if result:
+                        # Move to next command
+                        current_command_index += 1
+                        if current_command_index < len(commands):
+                            current_command = commands[current_command_index]
+                        else:
+                            current_command = "All commands completed!"
+                            game_over = True
+                            won = True
+                    else:
+                        # Player fails the game
                         game_over = True
-                        won = True
-                else:
-                    # Player fails the game
-                    game_over = True
+                        won = False
+    
+                elif event.key == pygame.K_r and game_over:
+                    # Restart game
+                    wire_states = {color: True for color in colors}
+                    current_command_index = 0
+                    current_command = commands[current_command_index]
+                    game_over = False
                     won = False
-
-            elif event.key == pygame.K_r and game_over:
-                # Restart game
-                wire_states = {color: True for color in colors}
-                current_command_index = 0
-                current_command = commands[current_command_index]
-                game_over = False
-                won = False
-                status_message = ""
-    
-   
-                
-
-
-                
-            elif event.key == pygame.K_r and game_over:
-                # Restart game
-                print("Restarting game...")
-                
-                # Reset wire states
-                wire_states = {color: True for color in colors}
-                current_command_index = 0
-                current_command = commands[current_command_index]
-                game_over = False
-                won = False
-                status_message = ""
-                
-                # Reset physical wires to connected if in simulation
-                if not RPi:
-                    for pin in wire_pins:
-                        if pin.value:  # If disconnected
-                            pin.toggle()  # Connect it
-                    wires.update_state()
+                    status_message = ""
+        
+                   pygame.display.flip()
             
-            # Simulation mode: toggle wires with number keys
-            elif not RPi and event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5]:
-                index = event.key - pygame.K_1
-                if index < len(wire_pins):
-                    wire_pins[index].toggle()
-                    wires.update_state()
-                    print(f"Toggled wire {index+1} ({colors[index]})")
-                    print(f"New wire state: {wires._value}")
-            
-        # Draw text elements
-        # Title
-        title = font.render("Simon Says Wire Game", True, WHITE)
-        screen.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, 30))
-        
-        # Wire states
-        wire_state_text = font.render(f"Wire states: {wires._value}", True, WHITE)
-        screen.blit(wire_state_text, (30, 80))
-        
-        # Individual wire labels and states
-        for i, color in enumerate(colors):
-            wire_text = font.render(f"{color}: {'Connected' if wires._value[i] == '1' else 'Disconnected'}", True, WHITE)
-            screen.blit(wire_text, (30, 120 + i * 30))
-        
-        # Current command
-        cmd_text = font.render(f"Command: {current_command}", True, WHITE)
-        screen.blit(cmd_text, (30, 280))
-        
-        # Progress
-        progress = font.render(f"Progress: {current_command_index + 1}/{len(commands)}", True, WHITE)
-        screen.blit(progress, (30, 320))
-        
-        # Status message
-        if status_message:
-            status_text = font.render(f"Status: {status_message}", True, WHITE)
-            screen.blit(status_text, (30, 360))
-        
-        # Game over message
-        if game_over:
-            result_text = font.render(f"Game Over - {'You Win!' if won else 'You Lose!'}", True, WHITE)
-            screen.blit(result_text, (30, 400))
-            restart_text = font.render("Press R to restart", True, WHITE)
-            screen.blit(restart_text, (30, 440))
-        
-        # Instructions
-        if RPi:
-            instructions = font.render("Connect/disconnect physical wires. Press SPACE to check command.", True, WHITE)
-        else:
-            instructions = font.render("Press 1-5 to toggle wires. Press SPACE to check command.", True, WHITE)
-        screen.blit(instructions, (30, SCREEN_HEIGHT - 60))
-        
-        # Debug info
-        debug = font.render("See console for detailed debug info", True, WHITE)
-        screen.blit(debug, (30, SCREEN_HEIGHT - 30))
-        
-        # Update display
-        pygame.display.flip()
-        
-        # Cap the frame rate
-        clock.tick(60)
+                    # Cap the frame rate
+                    clock.tick(60)
+                    
     
-    # Clean up
-    pygame.quit()
+    
+                    
+                elif event.key == pygame.K_r and game_over:
+                    # Restart game
+                    print("Restarting game...")
+                    
+                    # Reset wire states
+                    wire_states = {color: True for color in colors}
+                    current_command_index = 0
+                    current_command = commands[current_command_index]
+                    game_over = False
+                    won = False
+                    status_message = ""
+                    
+                    # Reset physical wires to connected if in simulation
+                    if not RPi:
+                        for pin in wire_pins:
+                            if pin.value:  # If disconnected
+                                pin.toggle()  # Connect it
+                        wires.update_state()
+                
+                # Simulation mode: toggle wires with number keys
+                elif not RPi and event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5]:
+                    index = event.key - pygame.K_1
+                    if index < len(wire_pins):
+                        wire_pins[index].toggle()
+                        wires.update_state()
+                        print(f"Toggled wire {index+1} ({colors[index]})")
+                        print(f"New wire state: {wires._value}")
+                
+            # Draw text elements
+            # Title
+            title = font.render("Simon Says Wire Game", True, WHITE)
+            screen.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, 30))
+            
+            # Wire states
+            wire_state_text = font.render(f"Wire states: {wires._value}", True, WHITE)
+            screen.blit(wire_state_text, (30, 80))
+            
+            # Individual wire labels and states
+            for i, color in enumerate(colors):
+                wire_text = font.render(f"{color}: {'Connected' if wires._value[i] == '1' else 'Disconnected'}", True, WHITE)
+                screen.blit(wire_text, (30, 120 + i * 30))
+            
+            # Current command
+            cmd_text = font.render(f"Command: {current_command}", True, WHITE)
+            screen.blit(cmd_text, (30, 280))
+            
+            # Progress
+            progress = font.render(f"Progress: {current_command_index + 1}/{len(commands)}", True, WHITE)
+            screen.blit(progress, (30, 320))
+            
+            # Status message
+            if status_message:
+                status_text = font.render(f"Status: {status_message}", True, WHITE)
+                screen.blit(status_text, (30, 360))
+            
+            # Game over message
+            if game_over:
+                result_text = font.render(f"Game Over - {'You Win!' if won else 'You Lose!'}", True, WHITE)
+                screen.blit(result_text, (30, 400))
+                restart_text = font.render("Press R to restart", True, WHITE)
+                screen.blit(restart_text, (30, 440))
+            
+            # Instructions
+            if RPi:
+                instructions = font.render("Connect/disconnect physical wires. Press SPACE to check command.", True, WHITE)
+            else:
+                instructions = font.render("Press 1-5 to toggle wires. Press SPACE to check command.", True, WHITE)
+            screen.blit(instructions, (30, SCREEN_HEIGHT - 60))
+            
+            # Debug info
+            debug = font.render("See console for detailed debug info", True, WHITE)
+            screen.blit(debug, (30, SCREEN_HEIGHT - 30))
+            
+            # Update display
+            pygame.display.flip()
+            
+            # Cap the frame rate
+            clock.tick(60)
+        
+        # Clean up
+        pygame.quit()
     sys.exit()
 
 # Run the game
