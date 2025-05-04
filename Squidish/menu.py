@@ -1421,7 +1421,7 @@ def show_tictactoe_game_screen(screen):
         pygame.mixer.music.play(-1)
         
         # Window setup
-        WIDTH, HEIGHT = 288, 512  # Dimensions of game window for tall screens
+        WIDTH, HEIGHT = screen.get_size()  # Dimensions of game window for tall screens
         screen = pygame.display.set_mode((WIDTH, HEIGHT))  # Create window
         pygame.display.set_caption('Tic Tac Toe')  # Window title
 
@@ -1471,8 +1471,6 @@ def show_tictactoe_game_screen(screen):
             2: (2, 1),  # bottom middle
             3: (2, 2)   # bottom right
         }
-        
-        
         
 
         # Draws the grid lines for the board
