@@ -686,7 +686,7 @@ class PhaseThread(Thread):
 
 
 if RPi:
-for pin in self._pins:
+    for pin in self._pins:
                 pin.direction = Direction.INPUT
                 pin.pull = Pull.DOWN
 
