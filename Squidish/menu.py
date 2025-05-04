@@ -1115,8 +1115,14 @@ def show_hopscotch_game_screen(screen):
                         # Check if selected toggle is correct for current row
                         # right answer
                         if selected_col in board[current_row]:
+                            # flash green safe tile
                             tile_rect = get_tile_rect(0, selected_col)
                             pygame.draw.rect(screen, SAFE, tile_rect)
+                            label = FONT.render(chr(65 + selected_col), True, TEXT)
+                            screen.blit(label, (tile_rect.x + TILE_WIDTH//2 - 10, tile_rect.y + 15))
+        
+                            pygame.display.flip()
+                            pygame.time.delay(800)
                             
                             # move onto next row
                             rows_cleared += 1
