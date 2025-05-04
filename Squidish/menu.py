@@ -696,221 +696,221 @@ class PhaseThread(Thread):
 
 
 def show_hopscotch_instructions_screen(screen):
-# Toggle switch handler class
-class Toggles(PhaseThread):
-    def __init__(self, pins, name="Toggles"):
-        super().__init__(name)
-        self._pins = pins
-     # Setup each pin as input with a pull-down resistor (starts as LOW / 0)
-        for pin in self._pins:
-            pin.direction = Direction.INPUT
-            pin.pull = Pull.DOWN
-            
-        # Start with all toggles down
-        self._value = "0000"
-        self._prev_value = self._value
-        self._state_changed = False
-
-    def run(self): 
-        pass
-        
-    def run(self):
-        """Thread continuously checks for toggle changes."""
-        self._running = True
-        self.update_state()
- 
-        while self._running:
-            if self.update_state():
-            # You could trigger logic here or just print for testing
-                print(f"Toggles changed: {self._value}/{self._prev_value} - {self._state_changed}, {next(i for i, (a, b) in enumerate(zip(self._value, self._prev_value)) if a != b)}")
-                sleep(0.1)
+    # Toggle switch handler class
+    class Toggles(PhaseThread):
+        def __init__(self, pins, name="Toggles"):
+            super().__init__(name)
+            self._pins = pins
+         # Setup each pin as input with a pull-down resistor (starts as LOW / 0)
+            for pin in self._pins:
+                pin.direction = Direction.INPUT
+                pin.pull = Pull.DOWN
                 
-    def update_state(self):
-        """Update toggle state and return True if the state changed."""
-        new_state = "".join([str(int(pin.value)) for pin in self._pins])
- 
-        changed = new_state != self._value
-        if changed:
-             self._prev_value = self._value
-             self._value = new_state
-             self._state_changed = True
-        
-        return changed
-    
- 
-    def has_changed(self):
-        """Checks if toggles changed since last time."""
-        if self._state_changed:
+            # Start with all toggles down
+            self._value = "0000"
+            self._prev_value = self._value
             self._state_changed = False
-            return True
+
+        def run(self): 
+            pass
             
-        return False
- 
-    def __str__(self):
-        """Show state as binary and its decimal equivalent."""
-        return f"{self._value}/{int(self._value, 2)}"
-
-# toggle pins defined from RPi
-toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.D21)]
-
-# Create and start the toggle monitor
-toggles = Toggles(toggle_pins)
-
-
-
-# INSTRUCTIONS 
-# def show_hopscotch_instructions_screen(screen):
-    WIDTH, HEIGHT = screen.get_size()
-    pygame.display.set_caption("Hopscotch Instructions")
-    
-    # Base font sizes for reference design
-    base_title_size = 40
-    base_button_size = 20
-    base_text_size = 20
-    
-    # Scale font sizes
-    title_size = scale_font_size(base_title_size, (WIDTH, HEIGHT))
-    button_size = scale_font_size(base_button_size, (WIDTH, HEIGHT))
-    text_size = scale_font_size(base_text_size, (WIDTH, HEIGHT))
-    
-    # Fonts
-    title_font = pygame.font.Font("font2.otf", title_size)
-    button_font = pygame.font.Font("font2.otf", button_size)
-    text_font = pygame.font.Font("font5.otf", text_size)
-    
-    # Background Image
-    bg_image = pygame.image.load("how_to_play.jpg")
-    bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
-    
-    # Hopscotch instructions
-    introduction_text = [
-        "In this challenge, you'll move forward by selecting the correct tile in each row using the toggles. Each row has more than one safe tile but choose carefully. If you step on the wrong tile, you will lose a life. You have ten lives to complete a total of 10 levels. After each mistake, the path stays the same so remember where you went wrong and try again.",
-        "Good luck and most importantly, don't fall!"
-    ]
-    
-    # Hint
-    hint_text = [
-        "HINT:",
-        "The path repeats, though lives do not.",
-        "Track each fall, or lose the plot."
-    ]
-
-    ag_items = ["Play"]  
-    selected_index = 0
-    clock = pygame.time.Clock()
-    
-    while True:
-        # Draw the background
-        screen.blit(bg_image, (0, 0))
+        def run(self):
+            """Thread continuously checks for toggle changes."""
+            self._running = True
+            self.update_state()
+     
+            while self._running:
+                if self.update_state():
+                # You could trigger logic here or just print for testing
+                    print(f"Toggles changed: {self._value}/{self._prev_value} - {self._state_changed}, {next(i for i, (a, b) in enumerate(zip(self._value, self._prev_value)) if a != b)}")
+                    sleep(0.1)
+                    
+        def update_state(self):
+            """Update toggle state and return True if the state changed."""
+            new_state = "".join([str(int(pin.value)) for pin in self._pins])
+     
+            changed = new_state != self._value
+            if changed:
+                 self._prev_value = self._value
+                 self._value = new_state
+                 self._state_changed = True
+            
+            return changed
         
-        # Overlay for the how-to-play screen
-        overlay = pygame.Surface((WIDTH, HEIGHT))
-        overlay.set_alpha(150)  # More opaque for readability
-        overlay.fill((20, 20, 30))
-        screen.blit(overlay, (0, 0))
-        
-        # Draw title - scale from reference position
-        title_text = title_font.render("Instructions", True, BEIGE)
-        base_title_pos = (dev_width // 2, 30)
-        title_x, title_y = scale_position(base_title_pos[0], base_title_pos[1], (WIDTH, HEIGHT))
-        screen.blit(title_text, (title_x - title_text.get_width() // 2, title_y))
-        
-        # Reference info box dimensions and position
-        base_info_box = pygame.Rect(50, 80, dev_width-100, 300)
-        info_box_rect = scale_rect(base_info_box, (WIDTH, HEIGHT))
-        
-        # Draw info box
-        info_box = pygame.Surface((info_box_rect.width, info_box_rect.height), pygame.SRCALPHA)
-        info_box.fill((30, 30, 30, 180))  # Semi-transparent
-        screen.blit(info_box, (info_box_rect.x, info_box_rect.y))
-        pygame.draw.rect(screen, (100, 100, 150), info_box_rect, 2)
-        
-        # Draw intro text
-        y_pos = info_box_rect.y + 10
-        max_text_width = info_box_rect.width - 40
-        
-        for line in introduction_text:
-            wrapped_lines = wrap_text(line, text_font, max_text_width)
-            for wrapped_line in wrapped_lines:
-                text_surf = text_font.render(wrapped_line, True, BEIGE)
-                screen.blit(text_surf, (info_box_rect.x + 20, y_pos))
-                y_pos += text_surf.get_height() + 5
+     
+        def has_changed(self):
+            """Checks if toggles changed since last time."""
+            if self._state_changed:
+                self._state_changed = False
+                return True
                 
-                # Stop if we reach the bottom of the box
+            return False
+     
+        def __str__(self):
+            """Show state as binary and its decimal equivalent."""
+            return f"{self._value}/{int(self._value, 2)}"
+
+    # toggle pins defined from RPi
+    toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.D21)]
+
+    # Create and start the toggle monitor
+    toggles = Toggles(toggle_pins)
+
+
+
+    # INSTRUCTIONS 
+    # def show_hopscotch_instructions_screen(screen):
+        WIDTH, HEIGHT = screen.get_size()
+        pygame.display.set_caption("Hopscotch Instructions")
+        
+        # Base font sizes for reference design
+        base_title_size = 40
+        base_button_size = 20
+        base_text_size = 20
+        
+        # Scale font sizes
+        title_size = scale_font_size(base_title_size, (WIDTH, HEIGHT))
+        button_size = scale_font_size(base_button_size, (WIDTH, HEIGHT))
+        text_size = scale_font_size(base_text_size, (WIDTH, HEIGHT))
+        
+        # Fonts
+        title_font = pygame.font.Font("font2.otf", title_size)
+        button_font = pygame.font.Font("font2.otf", button_size)
+        text_font = pygame.font.Font("font5.otf", text_size)
+        
+        # Background Image
+        bg_image = pygame.image.load("how_to_play.jpg")
+        bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
+        
+        # Hopscotch instructions
+        introduction_text = [
+            "In this challenge, you'll move forward by selecting the correct tile in each row using the toggles. Each row has more than one safe tile but choose carefully. If you step on the wrong tile, you will lose a life. You have ten lives to complete a total of 10 levels. After each mistake, the path stays the same so remember where you went wrong and try again.",
+            "Good luck and most importantly, don't fall!"
+        ]
+        
+        # Hint
+        hint_text = [
+            "HINT:",
+            "The path repeats, though lives do not.",
+            "Track each fall, or lose the plot."
+        ]
+
+        ag_items = ["Play"]  
+        selected_index = 0
+        clock = pygame.time.Clock()
+        
+        while True:
+            # Draw the background
+            screen.blit(bg_image, (0, 0))
+            
+            # Overlay for the how-to-play screen
+            overlay = pygame.Surface((WIDTH, HEIGHT))
+            overlay.set_alpha(150)  # More opaque for readability
+            overlay.fill((20, 20, 30))
+            screen.blit(overlay, (0, 0))
+            
+            # Draw title - scale from reference position
+            title_text = title_font.render("Instructions", True, BEIGE)
+            base_title_pos = (dev_width // 2, 30)
+            title_x, title_y = scale_position(base_title_pos[0], base_title_pos[1], (WIDTH, HEIGHT))
+            screen.blit(title_text, (title_x - title_text.get_width() // 2, title_y))
+            
+            # Reference info box dimensions and position
+            base_info_box = pygame.Rect(50, 80, dev_width-100, 300)
+            info_box_rect = scale_rect(base_info_box, (WIDTH, HEIGHT))
+            
+            # Draw info box
+            info_box = pygame.Surface((info_box_rect.width, info_box_rect.height), pygame.SRCALPHA)
+            info_box.fill((30, 30, 30, 180))  # Semi-transparent
+            screen.blit(info_box, (info_box_rect.x, info_box_rect.y))
+            pygame.draw.rect(screen, (100, 100, 150), info_box_rect, 2)
+            
+            # Draw intro text
+            y_pos = info_box_rect.y + 10
+            max_text_width = info_box_rect.width - 40
+            
+            for line in introduction_text:
+                wrapped_lines = wrap_text(line, text_font, max_text_width)
+                for wrapped_line in wrapped_lines:
+                    text_surf = text_font.render(wrapped_line, True, BEIGE)
+                    screen.blit(text_surf, (info_box_rect.x + 20, y_pos))
+                    y_pos += text_surf.get_height() + 5
+                    
+                    # Stop if we reach the bottom of the box
+                    if y_pos > info_box_rect.y + info_box_rect.height - text_surf.get_height():
+                        break
                 if y_pos > info_box_rect.y + info_box_rect.height - text_surf.get_height():
                     break
-            if y_pos > info_box_rect.y + info_box_rect.height - text_surf.get_height():
-                break
-        
-        # Reference instructions box dimensions and position
-        base_instructions_box = pygame.Rect(50, 400, dev_width-100, 180)
-        instructions_box_rect = scale_rect(base_instructions_box, (WIDTH, HEIGHT))
-        
-        # Draw instructions box
-        instructions_box = pygame.Surface((instructions_box_rect.width, instructions_box_rect.height), pygame.SRCALPHA)
-        instructions_box.fill((30, 30, 30, 180))  
-        screen.blit(instructions_box, (instructions_box_rect.x, instructions_box_rect.y))
-        pygame.draw.rect(screen, (100, 100, 150), instructions_box_rect, 2)
-        
-        # Draw gameplay instructions
-        y_pos = instructions_box_rect.y + 10
-        
-        for line in hint_text:
-            wrapped_lines = wrap_text(line, text_font, max_text_width)
-            for wrapped_line in wrapped_lines:
-                text_surf = text_font.render(wrapped_line, True, YELLOW)
-                screen.blit(text_surf, (instructions_box_rect.x + 20, y_pos))
-                y_pos += text_surf.get_height() + 5
-                
+            
+            # Reference instructions box dimensions and position
+            base_instructions_box = pygame.Rect(50, 400, dev_width-100, 180)
+            instructions_box_rect = scale_rect(base_instructions_box, (WIDTH, HEIGHT))
+            
+            # Draw instructions box
+            instructions_box = pygame.Surface((instructions_box_rect.width, instructions_box_rect.height), pygame.SRCALPHA)
+            instructions_box.fill((30, 30, 30, 180))  
+            screen.blit(instructions_box, (instructions_box_rect.x, instructions_box_rect.y))
+            pygame.draw.rect(screen, (100, 100, 150), instructions_box_rect, 2)
+            
+            # Draw gameplay instructions
+            y_pos = instructions_box_rect.y + 10
+            
+            for line in hint_text:
+                wrapped_lines = wrap_text(line, text_font, max_text_width)
+                for wrapped_line in wrapped_lines:
+                    text_surf = text_font.render(wrapped_line, True, YELLOW)
+                    screen.blit(text_surf, (instructions_box_rect.x + 20, y_pos))
+                    y_pos += text_surf.get_height() + 5
+                    
+                    if y_pos > instructions_box_rect.y + instructions_box_rect.height - text_surf.get_height():
+                        break
                 if y_pos > instructions_box_rect.y + instructions_box_rect.height - text_surf.get_height():
                     break
-            if y_pos > instructions_box_rect.y + instructions_box_rect.height - text_surf.get_height():
-                break
-        
-        # 'Play' button - centered at bottom
-        base_button_height = 40
-        base_button_width = 200
-        base_button_y = dev_height - 90
-        
-        # Scale button dimensions
-        button_height = int(base_button_height * HEIGHT / dev_height)
-        button_width = int(base_button_width * WIDTH / dev_width)
-        
-        # Center button
-        button_x = (WIDTH - button_width) // 2
-        button_y = int(base_button_y * HEIGHT / dev_height)
-        
-        button_rects = []
-        name = ag_items[0]  # "Play"
-        color = YELLOW
-        bg_color = PURPLE
-        
-        box_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-        pygame.draw.rect(screen, bg_color, box_rect, border_radius=10)
-        
-        # Center text in button
-        text_surface = button_font.render(name, True, color)
-        text_x = box_rect.centerx - text_surface.get_width() // 2
-        text_y = box_rect.centery - text_surface.get_height() // 2
-        
-        screen.blit(text_surface, (text_x, text_y))
-        button_rects.append((box_rect, name))
-        
-        # Event Handling (key or mouse input)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    return "Play"  # Return "Play" to start the game
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                mouse_pos = pygame.mouse.get_pos()
-                for rect, item in button_rects:
-                    if rect.collidepoint(mouse_pos):
+            
+            # 'Play' button - centered at bottom
+            base_button_height = 40
+            base_button_width = 200
+            base_button_y = dev_height - 90
+            
+            # Scale button dimensions
+            button_height = int(base_button_height * HEIGHT / dev_height)
+            button_width = int(base_button_width * WIDTH / dev_width)
+            
+            # Center button
+            button_x = (WIDTH - button_width) // 2
+            button_y = int(base_button_y * HEIGHT / dev_height)
+            
+            button_rects = []
+            name = ag_items[0]  # "Play"
+            color = YELLOW
+            bg_color = PURPLE
+            
+            box_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+            pygame.draw.rect(screen, bg_color, box_rect, border_radius=10)
+            
+            # Center text in button
+            text_surface = button_font.render(name, True, color)
+            text_x = box_rect.centerx - text_surface.get_width() // 2
+            text_y = box_rect.centery - text_surface.get_height() // 2
+            
+            screen.blit(text_surface, (text_x, text_y))
+            button_rects.append((box_rect, name))
+            
+            # Event Handling (key or mouse input)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
                         return "Play"  # Return "Play" to start the game
-        pygame.display.flip()
-        clock.tick(60)
+                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    mouse_pos = pygame.mouse.get_pos()
+                    for rect, item in button_rects:
+                        if rect.collidepoint(mouse_pos):
+                            return "Play"  # Return "Play" to start the game
+            pygame.display.flip()
+            clock.tick(60)
 
 # GAME LOGIC 
 def show_hopscotch_game_screen(screen):
