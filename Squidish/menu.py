@@ -759,7 +759,7 @@ toggles = Toggles(toggle_pins)
 
 
 # INSTRUCTIONS 
-# def show_hopscotch_instructions_screen(screen):
+def show_hopscotch_instructions_screen(screen):
     WIDTH, HEIGHT = screen.get_size()
     pygame.display.set_caption("Hopscotch Instructions")
     
