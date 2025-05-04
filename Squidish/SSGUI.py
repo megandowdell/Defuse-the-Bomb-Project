@@ -4,8 +4,8 @@ import sys
 import random 
 from threading import Thread
 from time import sleep
-# import board
-# from digitalio import DigitalInOut, Direction, Pull
+import board
+from digitalio import DigitalInOut, Direction, Pull
 
 # Base class for bomb components
 class PhaseThread(Thread):
