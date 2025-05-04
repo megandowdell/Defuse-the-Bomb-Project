@@ -2263,7 +2263,7 @@ def main():
 
     # Screen setup
     if os.environ.get('RPI_MODE', 'False').lower() == 'true':
-        WIDTH, HEIGHT = 288, 512
+        WIDTH, HEIGHT = 576, 1024
     else:
         WIDTH, HEIGHT = 800, 700
 
