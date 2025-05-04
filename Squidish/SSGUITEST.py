@@ -123,15 +123,6 @@ def main():
         except Exception as e:
             print(f"Failed to initialize mixer: {e}")
     
-    # Create and play a test sound to verify audio is working
-    if create_test_beep():
-        try:
-            test_sound = pygame.mixer.Sound("test_beep.wav")
-            test_sound.play()
-            print("Playing test sound - if you don't hear it, check your system volume")
-        except Exception as e:
-            print(f"Failed to play test sound: {e}")
-    
     # Load background image with error handling
     try:
         bg_image = pygame.image.load("how_to_play.jpg")
