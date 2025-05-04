@@ -1115,6 +1115,8 @@ def show_hopscotch_game_screen(screen):
                         # Check if selected toggle is correct for current row
                         # right answer
                         if selected_col in board[current_row]:
+                            tile_rect = get_tile_rect(0, selected_col)
+                            pygame.draw.rect(screen, SAFE, tile_rect)
                             
                             # move onto next row
                             rows_cleared += 1
