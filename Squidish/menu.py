@@ -411,7 +411,7 @@ def show_about_game_screen(screen):
                     if ag_items[selected_index] == "Back": # Back button returns to menu
                         return "Menu"  
                     elif ag_items[selected_index] == "Continue": # Continue button proceeds to game just as Start button would on the menu page
-                        #random.choice(["Hopscotch"])
+                        random.choice(["Hopscotch"])
                         return random.choice(["Hopscotch"]) 
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = pygame.mouse.get_pos()
