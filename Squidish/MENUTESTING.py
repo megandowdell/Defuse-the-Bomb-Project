@@ -768,6 +768,8 @@ else:
 
 
 # INSTRUCTIONS 
+# Fix for the hopscotch_instructions_screen function
+# Add keyboard controls for the Play button
 def show_hopscotch_instructions_screen(screen):
     WIDTH, HEIGHT = screen.get_size()
     pygame.display.set_caption("Hopscotch Instructions")
@@ -911,25 +913,30 @@ def show_hopscotch_instructions_screen(screen):
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
+                # Added keyboard controls for "Play" button
+                if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE or event.key == pygame.K_p:
+                    print("Play button activated via keyboard")
                     return "Play"  # Return "Play" to start the game
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = pygame.mouse.get_pos()
                 for rect, item in button_rects:
                     if rect.collidepoint(mouse_pos):
+                        print("Play button clicked")
                         return "Play"  # Return "Play" to start the game
+        
         pygame.display.flip()
         clock.tick(60)
 
-# GAME LOGIC 
+# Fix for the main hopscotch game screen
 def show_hopscotch_game_screen(screen):
     # First show the instructions screen
     result = show_hopscotch_instructions_screen(screen)
+    print(f"Instructions returned: {result}")
     
     if result == "Play":
+        print("Starting Hopscotch game...")
        
         toggles.start()
-        #toggles.start()
         pygame.mixer.music.stop()
         pygame.mixer.music.load("round_round.mp3")
         pygame.mixer.music.play(-1)
@@ -1090,81 +1097,118 @@ def show_hopscotch_game_screen(screen):
              screen.fill(color)
              pygame.display.update()
              time.sleep(delay)  # Pause to show the color flash
-                
         
         # Main Game (for local testing)
-        # Inside the show_hopscotch_game_screen function, replace the play_game function with this properly indented version:
-
-def play_game():
-    board = generate_board(successes_per_row=2)  # Create board once
-    rows_cleared = 0
-    current_row = 0
-    lives = 5  # Start with 5 lives
-    
-    while True:
-        draw_board(board, current_row, lives)  # Now we also pass lives to draw
-        
-        # Process events (needed to handle window closing)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-        
-        # Check for a toggle change (user flips one switch)
-        if toggles._state_changed:
-            try:
-                # Get the index of the flipped toggle (0–3)
-                selected_col = next(i for i, (a, b) in enumerate(zip(toggles._value, toggles._prev_value)) if a != b)
-                print(f"Selected Col {selected_col}")
-                print(f"Board State:  {board[current_row]}")
-                print(f"Current Row:  {current_row}")
-        
-                # Check if selected toggle is correct for current row
-                if selected_col in board[current_row]:
-                    #draw board again
-                    draw_board(board, current_row, lives, rows_cleared, 0, None, True)
-                    pygame.display.flip()
-                    pygame.time.delay(300)  
-        
-                    rows_cleared += 1
-                    current_row = animate_row(board, current_row, lives, rows_cleared)
-        
-                    result = None if rows_cleared < ROWS else "win"
-                    
-                    if current_row == ROWS:
-                        print("WIN")
-                        return True
-                else:
-                    tile_rect = get_tile_rect(current_row, selected_col)
-                    pygame.draw.rect(screen, FAIL, tile_rect)
-                    
-                    # Redraw the letter label
-                    label = FONT.render(chr(65 + selected_col), True, TEXT)
-                    screen.blit(label, (tile_rect.x + TILE_WIDTH//2 - 10, tile_rect.y + 15))
-        
-                    pygame.display.flip()
-                    pygame.time.delay(800)
-        
-                    lives -= 1
-                    current_row = 0
-                    rows_cleared = 0
-                    
-                    print("WRONG TILE — Strike!")
-                    if lives == 0:
-                        print("BOOM!")
-                        return False
-            except StopIteration:
-                # This should rarely happen, but just in case
-                print("Toggle state changed but couldn't determine which toggle")
-        
-            draw_board(board, current_row, lives, rows_cleared)
-            toggles._state_changed = False
+        def play_game():
+            print("Play game function started")
+            board = generate_board(successes_per_row=2)  # Create board once
+            rows_cleared = 0
+            current_row = 0
+            lives = 5  # Start with 5 lives
             
-        clock.tick(60)
+            while True:
+                draw_board(board, current_row, lives)  # Now we also pass lives to draw
+                
+                # Process events (needed to handle window closing)
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        sys.exit()
+                    # Add keyboard controls for testing (A, B, C, D keys)
+                    elif event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_a:
+                            selected_col = 0
+                            print(f"Selected column A (0) via keyboard")
+                            handle_selection(selected_col, board, current_row, lives, rows_cleared)
+                        elif event.key == pygame.K_b:
+                            selected_col = 1
+                            print(f"Selected column B (1) via keyboard")
+                            handle_selection(selected_col, board, current_row, lives, rows_cleared)
+                        elif event.key == pygame.K_c:
+                            selected_col = 2
+                            print(f"Selected column C (2) via keyboard")
+                            handle_selection(selected_col, board, current_row, lives, rows_cleared)
+                        elif event.key == pygame.K_d:
+                            selected_col = 3
+                            print(f"Selected column D (3) via keyboard")
+                            handle_selection(selected_col, board, current_row, lives, rows_cleared)
+                
+                # Helper function to process a selection (either from keyboard or toggles)
+                def handle_selection(selected_col, board, current_row, lives, rows_cleared):
+                    # Check if selected toggle is correct for current row
+                    if selected_col in board[current_row]:
+                        # Draw board again
+                        draw_board(board, current_row, lives, rows_cleared, 0, None, True)
+                        pygame.display.flip()
+                        pygame.time.delay(300)  
+                        
+                        nonlocal rows_cleared, current_row
+                        rows_cleared += 1
+                        current_row = animate_row(board, current_row, lives, rows_cleared)
+                        
+                        if current_row == ROWS:
+                            print("WIN")
+                            return True
+                    else:
+                        tile_rect = get_tile_rect(0, selected_col)  # First visible row
+                        pygame.draw.rect(screen, FAIL, tile_rect)
+                        
+                        # Redraw the letter label
+                        label = FONT.render(chr(65 + selected_col), True, TEXT)
+                        screen.blit(label, (tile_rect.x + TILE_WIDTH//2 - 10, tile_rect.y + 15))
+                        
+                        pygame.display.flip()
+                        pygame.time.delay(800)
+                        
+                        nonlocal lives
+                        lives -= 1
+                        current_row = 0
+                        rows_cleared = 0
+                        
+                        print("WRONG TILE — Strike!")
+                        if lives == 0:
+                            print("BOOM!")
+                            return False
+                    
+                    return None
+                
+                # Check for a toggle change (user flips one switch)
+                if hasattr(toggles, '_state_changed') and toggles._state_changed:
+                    try:
+                        # Get the index of the flipped toggle (0–3)
+                        selected_col = next(i for i, (a, b) in enumerate(zip(toggles._value, toggles._prev_value)) if a != b)
+                        print(f"Selected Col {selected_col}")
+                        print(f"Board State:  {board[current_row]}")
+                        print(f"Current Row:  {current_row}")
+                
+                        result = handle_selection(selected_col, board, current_row, lives, rows_cleared)
+                        if result is not None:
+                            return result
+                    except StopIteration:
+                        # This should rarely happen, but just in case
+                        print("Toggle state changed but couldn't determine which toggle")
+                
+                    draw_board(board, current_row, lives, rows_cleared)
+                    toggles._state_changed = False
+                    
+                # Check win/lose conditions
+                if current_row >= ROWS:
+                    print("WIN - all rows cleared")
+                    return True
+                if lives <= 0:
+                    print("LOSE - out of lives")
+                    return False
+                    
+                clock.tick(60)
 
-
-    won = play_game()
-    return won #true if won, false if lost
+        # Start the game and return the result
+        won = play_game()
+        print(f"Game finished with result: {won}")
+        return won  # true if won, false if lost
+    
+    else:
+        print(f"Unexpected result from instructions: {result}")
+        return "Menu"
     
     screen.fill(BG)
     pygame.display.flip()
