@@ -684,15 +684,19 @@ class PhaseThread(Thread):
         self._running = False
         self._value = None
 
+# toggle pins defined from RPi
+toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.D21)]
 
+# Create and start the toggle monitor
+toggles = Toggles(toggle_pins)
 
-       if RPi:
-for pin in self._pins:
-                pin.direction = Direction.INPUT
-                pin.pull = Pull.DOWN
+# if RPi:
+# for pin in self._pins:
+#                 pin.direction = Direction.INPUT
+#                 pin.pull = Pull.DOWN
 
-    def reset(self):
-        self._value = None
+#     def reset(self):
+#         self._value = None
 
 
 
@@ -748,11 +752,11 @@ class Toggles(PhaseThread):
         """Show state as binary and its decimal equivalent."""
         return f"{self._value}/{int(self._value, 2)}"
 
-# toggle pins defined from RPi
-toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.D21)]
+# # toggle pins defined from RPi
+# toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.D21)]
 
-# Create and start the toggle monitor
-toggles = Toggles(toggle_pins)
+# # Create and start the toggle monitor
+# toggles = Toggles(toggle_pins)
 
 
 
