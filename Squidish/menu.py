@@ -966,7 +966,7 @@ def show_hopscotch_game_screen(screen):
         TILE_HEIGHT = int(base_tile_height * HEIGHT / dev_height)
         TILE_GAP = int(base_tile_gap * WIDTH / dev_width)
         
-        ROWS = 10           # Total levels
+        ROWS = 5           # Total levels
         COLS = 4           # Columns (A–D)
         VISIBLE_ROWS = 5
 
@@ -1091,7 +1091,7 @@ def show_hopscotch_game_screen(screen):
             lives = 5  # Start with 5 lives
  
             while True:
-                draw_board(board, current_row, lives)  # Now we also pass lives to draw
+                draw_board(board, current_row, lives, rows_cleared)  # Now we also pass lives to draw
                 
                 # Check for a toggle change (user flips one switch)
                 if toggles._state_changed:
@@ -1100,26 +1100,33 @@ def show_hopscotch_game_screen(screen):
                     print(f"Selected Col {selected_col}")
                     print(f"Board State:  {board[current_row]}")
                     print(f"Current Row:  {current_row}")
- 
+                    
+                    #debug statement
+                    print(f"Current level: {rows_cleared + 1}, Current row index: {current_row}")
+
+                    # if a tile has been selected
                     if selected_col is not None:
                         
                         # Check if selected toggle is correct for current row
+                        # right answer
                         if selected_col in board[current_row]:
-                            #draw board again
-                            draw_board(board, current_row, lives, rows_cleared, 0, None, True)
-                            pygame.display.flip()
-                            pygame.time.delay(300)  
-            
+                            
+                            # move onto next row
                             rows_cleared += 1
                             current_row = animate_row(board, current_row, lives, rows_cleared)
         
-                            result = None if rows_cleared < ROWS else "win"
                             
-                            if current_row == ROWS:
-                                print("WIN")
+                            draw_board(board, current_row, lives, rows_cleared)
+                            pygame.display.flip()
+                            pygame.time.delay(300)
+                            
+                            if rows_cleared == ROWS:
+                                print("User won the game!")
+                                # won game
                                 return True
+                        # wrong answer
                         else:
-                            tile_rect = get_tile_rect(current_row, selected_col)
+                            tile_rect = get_tile_rect(0, selected_col)
                             pygame.draw.rect(screen, FAIL, tile_rect)
                             
                             # Redraw the letter label
@@ -1130,9 +1137,17 @@ def show_hopscotch_game_screen(screen):
                             pygame.time.delay(800)
         
                             lives -= 1
-                            current_row = 0
-                            rows_cleared = 0
-                            
+                                
+                            if lives == 0:    
+                                print("BOOM!")
+                                # lost game
+                                return False
+                            else:
+                                current_row = 0
+                                rows_cleared = 0
+                                draw_board(board, current_row, lives, rows_cleared) #redraws board after fail
+                                pygame.display.update()  # update display
+
                             
                             print("WRONG TILE — Strike!")
                             if lives == 0:
