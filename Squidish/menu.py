@@ -213,7 +213,7 @@ def show_menu_screen(screen):
                     selected_index = (selected_index + 1) % len(menu_items)
                 elif event.key == pygame.K_RETURN:
                     if menu_items[selected_index] == "Start":
-                        return "Meet Team"
+                        return "Start"
                     elif menu_items[selected_index] == "About Game":
                         return "About Game"
                     elif menu_items[selected_index] == "Meet Team":
