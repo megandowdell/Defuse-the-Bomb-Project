@@ -11,6 +11,7 @@ from time import sleep
 import bomb
 from bomb_configs import *
 from bomb_phases import *
+from adafruit_matrixkeypad import Matrix_Keypad
 import RPi.GPIO as GPIO  # Uncomment if using GPIO on Raspberry Pi
 ####################################################################################################################
 # MENU AUDIO
@@ -694,7 +695,7 @@ class PhaseThread(Thread):
 
 
 
-
+def show_hopscotch_instructions_screen(screen):
 # Toggle switch handler class
 class Toggles(PhaseThread):
     def __init__(self, pins, name="Toggles"):
@@ -758,7 +759,7 @@ toggles = Toggles(toggle_pins)
 
 
 # INSTRUCTIONS 
-def show_hopscotch_instructions_screen(screen):
+# def show_hopscotch_instructions_screen(screen):
     WIDTH, HEIGHT = screen.get_size()
     pygame.display.set_caption("Hopscotch Instructions")
     
