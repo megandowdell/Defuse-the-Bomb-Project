@@ -420,7 +420,7 @@ def show_about_game_screen(screen):
                         if item == "Back":
                             return "Menu"  
                         elif item == "Continue":
-                            return random.choice(["Red Light Green Light"])  
+                            return random.choice(["Hopscotch"])  
         pygame.display.flip()
         clock.tick(60)
 ####################################################################################################################
