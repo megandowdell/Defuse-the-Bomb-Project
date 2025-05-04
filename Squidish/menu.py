@@ -1398,9 +1398,9 @@ def show_tictactoe_instructions_screen(screen):
         clock.tick(60)
 
 # # GAME LOGIC
-# def show_tictactoe_game_screen(screen):
-#     # First show the instructions screen
-#     result = show_tictactoe_instructions_screen(screen)
+def show_tictactoe_game_screen(screen):
+    # First show the instructions screen
+    result = show_tictactoe_instructions_screen(screen)
 
 
 
