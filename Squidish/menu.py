@@ -755,8 +755,6 @@ class Toggles(PhaseThread):
 # toggle pins defined from RPi
 toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.D21)]
 
-# Create and start the toggle monitor
-toggles = Toggles(toggle_pins)
 
 
 
@@ -921,8 +919,13 @@ def show_hopscotch_game_screen(screen):
     
     if result == "Play":
         if RPi:  # Only start the real thread on a Pi
+            
+            #create new Toggles object every time
+            toggles = Toggles(toggle_pins)
+            
+            #start toggles
             toggles.start()
-        #toggles.start()
+        
         pygame.mixer.music.stop()
         pygame.mixer.music.load("round_round.mp3")
         pygame.mixer.music.play(-1)
