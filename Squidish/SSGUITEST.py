@@ -86,38 +86,6 @@ class SimulatedPin:
     def toggle(self):
         self.value = not self.value
 
-# Function to create a test beep sound for audio debugging
-def create_test_beep():
-    """Create a test beep sound file"""
-    try:
-        import numpy as np
-        import wave
-        import struct
-        
-        sample_rate = 44100
-        duration = 0.5  # seconds
-        frequency = 440  # Hz (A4 note)
-        
-        # Generate sine wave
-        t = np.linspace(0, duration, int(sample_rate * duration), False)
-        tone = np.sin(frequency * 2 * np.pi * t) * 32767
-        
-        # Convert to integer data
-        data = struct.pack('<' + 'h' * len(tone), *[int(x) for x in tone])
-        
-        # Write to WAV file
-        with wave.open('test_beep.wav', 'wb') as wav_file:
-            wav_file.setnchannels(1)
-            wav_file.setsampwidth(2)
-            wav_file.setframerate(sample_rate)
-            wav_file.writeframes(data)
-        
-        print("Created test_beep.wav")
-        return True
-    except Exception as e:
-        print(f"Failed to create test sound: {e}")
-        return False
-
 # Initialize pygame
 pygame.init()
 
