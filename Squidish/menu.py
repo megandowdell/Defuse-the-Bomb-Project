@@ -1422,7 +1422,7 @@ def show_tictactoe_game_screen(screen):
         
         # Window setup
         WIDTH, HEIGHT = screen.get_size()  # Dimensions of game window for tall screens
-        screen = pygame.display.set_mode((WIDTH, HEIGHT))  # Create window
+        #screen = pygame.display.set_mode((WIDTH, HEIGHT))  # Create window
         pygame.display.set_caption('Tic Tac Toe')  # Window title
 
         # Game board setup
