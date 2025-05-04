@@ -1650,8 +1650,6 @@ def show_tictactoe_game_screen(screen):
                     # Draw shapes and update display
                     draw_lines()
                     draw_figures(board)
-                    if player == 1 and not game_over:
-                        draw_key_hints(board)  # Show the keypad number hints
                     show_score(round_number, player_score, cpu_score)
 
                     # Draw winning line if needed
