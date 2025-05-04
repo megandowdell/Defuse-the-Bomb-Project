@@ -1605,7 +1605,7 @@ def show_tictactoe_instructions_screen(screen):
                 game_over = False
 
                 # Main game loop
-                                while running:
+                while running:
                     # Process events
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
