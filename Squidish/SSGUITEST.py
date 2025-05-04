@@ -4,8 +4,8 @@ import sys
 import random 
 from threading import Thread
 from time import sleep
-import board
-from digitalio import DigitalInOut, Direction, Pull
+# import board
+# from digitalio import DigitalInOut, Direction, Pull
 
 # Base class for bomb components
 class PhaseThread(Thread):
@@ -86,6 +86,38 @@ class SimulatedPin:
     def toggle(self):
         self.value = not self.value
 
+# Function to create a test beep sound for audio debugging
+def create_test_beep():
+    """Create a test beep sound file"""
+    try:
+        import numpy as np
+        import wave
+        import struct
+        
+        sample_rate = 44100
+        duration = 0.5  # seconds
+        frequency = 440  # Hz (A4 note)
+        
+        # Generate sine wave
+        t = np.linspace(0, duration, int(sample_rate * duration), False)
+        tone = np.sin(frequency * 2 * np.pi * t) * 32767
+        
+        # Convert to integer data
+        data = struct.pack('<' + 'h' * len(tone), *[int(x) for x in tone])
+        
+        # Write to WAV file
+        with wave.open('test_beep.wav', 'wb') as wav_file:
+            wav_file.setnchannels(1)
+            wav_file.setsampwidth(2)
+            wav_file.setframerate(sample_rate)
+            wav_file.writeframes(data)
+        
+        print("Created test_beep.wav")
+        return True
+    except Exception as e:
+        print(f"Failed to create test sound: {e}")
+        return False
+
 # Initialize pygame
 pygame.init()
 
@@ -115,49 +147,61 @@ wire_font = pygame.font.SysFont('Arial', 22)
 
 # Main game function
 def main():
-    # Initialize pygame mixer if not already done
+    # Initialize pygame mixer with explicit parameters for better compatibility
     if not pygame.mixer.get_init():
-        pygame.mixer.init()
+        try:
+            pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=1024)
+            print("Mixer initialized successfully")
+        except Exception as e:
+            print(f"Failed to initialize mixer: {e}")
     
-    # Load background image
-    bg_image = pygame.image.load("how_to_play.jpg")  # Replace with your image path
-    bg_image = pygame.transform.scale(bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    # Create and play a test sound to verify audio is working
+    if create_test_beep():
+        try:
+            test_sound = pygame.mixer.Sound("test_beep.wav")
+            test_sound.play()
+            print("Playing test sound - if you don't hear it, check your system volume")
+        except Exception as e:
+            print(f"Failed to play test sound: {e}")
+    
+    # Load background image with error handling
+    try:
+        bg_image = pygame.image.load("how_to_play.jpg")
+        bg_image = pygame.transform.scale(bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    except Exception as e:
+        print(f"Failed to load background image: {e}")
+        # Create fallback background
+        bg_image = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        bg_image.fill((50, 50, 80))  # Dark blue fallback
     
     # Create a semi-transparent overlay for better text readability
     overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
     overlay.fill((0, 0, 0, 150)) 
 
+    # Sound file mappings - unchanged
     command_sound_files = {
         "Simon says disconnect the brown wire": "ssdisbrw.mp3",
-#         "Simon says reconnect the brown wire": "ssrebrw.mp3",
-#         "Disconnect the brown wire": "disbrw.mp3",
         "Reconnect the brown wire": "rebrw.mp3",
-#         "Simon says disconnect the red wire": "ssdisrw.mp3",
-#         "Simon says reconnect the red wire": "ssrerw.mp3",
-#         "Disconnect the red wire": "disrw.mp3",
-#         "Reconnect the red wire": "rerw.mp3",
         "Simon says disconnect the orange wire": "ssdisow.mp3",
-#         "Simon says reconnect the orange wire": "ssreow.mp3",
-#         "Disconnect the orange wire": "disow.mp3",
         "Reconnect the orange wire": "reow.mp3",
-#         "Simon says disconnect the yellow wire": "ssdisyw.mp3",
-#         "Simon says reconnect the yellow wire": "ssreyw.mp3",
-#         "Disconnect the yellow wire": "disyw.mp3",
-#         "Reconnect the yellow wire": "reyw.mp3",
-#         "Simon says disconnect the green wire": "ssdisgw.mp3",
-#         "Simon says reconnect the green wire": "ssregw.mp3",
-#         "Disconnect the green wire": "disgw.mp3",
-#         "Reconnect the green wire": "regw.mp3"
     }
     
-    # Load audio files - only load the ones that exist
+    # Load audio files with improved error handling
     command_sounds = {}
     for command, filename in command_sound_files.items():
         try:
             command_sounds[command] = pygame.mixer.Sound(filename)
-        except:
-            pass  # Skip if file doesn't exist
-        
+            print(f"Successfully loaded sound: {filename}")
+        except Exception as e:
+            print(f"Failed to load sound {filename}: {e}")
+    
+    # Test the first loaded sound if any were loaded
+    if command_sounds:
+        first_sound = list(command_sounds.values())[0]
+        first_sound.play()
+        print(f"Playing test sound from command file")
+    else:
+        print("No sound files loaded successfully! Check your sound files.")
 
     # Determine if running on Raspberry Pi with real hardware
     RPi = False
@@ -189,6 +233,7 @@ def main():
     simon_discommands = [f"Simon says disconnect the {color} wire" for color in colors]
     simon_recommands = [f"Simon says reconnect the {color} wire" for color in colors]
     
+    # Generate game commands - unchanged
     wire_states = {color: True for color in colors}
     simon_disconnected = set()
     simon_reconnected = set()
@@ -200,7 +245,7 @@ def main():
     simon_disconnected.add(first_color)
     commands.append(simon_discommands[colors.index(first_color)])
     
-    # Generate 9 more commands
+    # Generate 9 more commands - unchanged
     while len(commands) < 10:
         valid_actions = []
         
@@ -253,6 +298,9 @@ def main():
     action_result = None  # None = not checked, True = success, False = failure
     action_time = 0
     
+    # New variable: waiting for spacebar confirmation
+    waiting_for_confirmation = False
+    
     # Main game loop
     clock = pygame.time.Clock()
     running = True
@@ -277,14 +325,14 @@ def main():
         remaining_time = max(0, timer_duration - elapsed_time)
         
         # Play command audio if not played yet
-        if not command_played and not game_over:
+        if not command_played and not game_over and not waiting_for_confirmation:
             if current_command in command_sounds:
                 pygame.mixer.stop()  # Stop any currently playing sounds
                 command_sounds[current_command].play()
             command_played = True
         
         # Timer check: if the player hasn't made a move in 20 seconds, game ends
-        if remaining_time <= 0 and not game_over:
+        if remaining_time <= 0 and not game_over and not waiting_for_confirmation:
             game_over = True
             won = False
             status_message = "Time's up! You took too long."
@@ -294,34 +342,55 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_r and game_over:
-                    # Restart game
+                # REMOVED RESTART KEY FUNCTIONALITY
+                
+                # ADDED: Space to check command when waiting for confirmation
+                if event.key == pygame.K_SPACE and waiting_for_confirmation:
+                    waiting_for_confirmation = False
                     
-                    # Reset wire states
-                    wire_states = {color: True for color in colors}
-                    current_command_index = 0
-                    current_command = commands[current_command_index]
-                    game_over = False
-                    won = False
-                    status_message = ""
-                    action_result = None
-                    command_played = False
+                    # Verify the action
+                    # Check if command starts with "Simon says"
+                    is_simon = current_command.startswith("Simon says")
+                    is_disconnect = "disconnect" in current_command
+                    color = next(c for c in colors if c in current_command)
+                    color_index = colors.index(color)
+
+                    # Check if wire state matches command
+                    is_disconnected = wires._value[color_index] == "0"
                     
-                    # Reset timer
-                    command_start_time = time.time()
+                    # If not a Simon says command, should not follow
+                    if not is_simon:
+                        # Success if they did NOT follow the command
+                        if is_disconnect:
+                            action_result = not is_disconnected
+                        else:  # reconnect
+                            action_result = is_disconnected
+                    else:
+                        # Simon commands must be followed
+                        if is_disconnect:
+                            action_result = is_disconnected
+                        else:  # reconnect
+                            action_result = not is_disconnected
                     
-                    # Reset physical wires to connected if in simulation
-                    if not RPi:
-                        for pin in wire_pins:
-                            if pin.value:  # If disconnected
-                                pin.toggle()  # Connect it
-                        wires.update_state()
-                    
-                    # Play the first command again
-                    if current_command in command_sounds:
-                        pygame.mixer.stop()
-                        command_sounds[current_command].play()
-                        command_played = True
+                    # Success or failure action
+                    if action_result:
+                        status_message = "SUCCESS!"
+                        # Move to next command after success
+                        current_command_index += 1
+                        if current_command_index < len(commands):
+                            current_command = commands[current_command_index]
+                            # Reset timer for the new command
+                            command_start_time = time.time()
+                            action_result = None
+                            command_played = False
+                        else:
+                            current_command = "All commands completed!"
+                            game_over = True
+                            won = True
+                    else:
+                        status_message = "FAILURE!"
+                        game_over = True
+                        won = False
                 
                 # Simulation mode: toggle wires with number keys
                 elif not RPi and event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5]:
@@ -330,59 +399,12 @@ def main():
                         wire_pins[index].toggle()
                         wires.update_state()
         
-        # Automatic checking for wire changes
-        if not game_over and wires._value != last_wire_state and action_result is None:
+        # Modified: Check for wire changes to set waiting_for_confirmation
+        if not game_over and not waiting_for_confirmation and wires._value != last_wire_state:
             last_wire_state = wires._value
-            action_time = current_time
-            
-            # Check if command starts with "Simon says"
-            is_simon = current_command.startswith("Simon says")
-            is_disconnect = "disconnect" in current_command
-            color = next(c for c in colors if c in current_command)
-            color_index = colors.index(color)
-
-            # Check if wire state matches command
-            is_disconnected = wires._value[color_index] == "0"
-            
-            # If not a Simon says command, it should return false
-            if not is_simon:
-                action_result = False
-                status_message = "FAILURE! Command did not start with 'Simon says'!"
-            else:
-                # Simon commands must be followed
-                if is_disconnect:
-                    action_result = is_disconnected
-                else:  # reconnect
-                    action_result = not is_disconnected
-            
-            # Success or failure action
-            if action_result:
-                status_message = "SUCCESS!"
-            else:
-                status_message = "FAILURE!"
-                game_over = True
-                won = False
-        
-        # Move to next command after a delay
-        if action_result is True and current_time - action_time >= check_delay:
-            current_command_index += 1
-            if current_command_index < len(commands):
-                current_command = commands[current_command_index]
-                # Reset timer for the new command
-                command_start_time = time.time()
-                action_result = None
-                command_played = False
-                
-                # Play the next command
-                if current_command in command_sounds:
-                    pygame.mixer.stop()
-                    command_sounds[current_command].play()
-                    command_played = True
-            else:
-                current_command = "All commands completed!"
-                game_over = True
-                won = True
-                action_result = None
+            # A wire state has changed, now wait for spacebar confirmation
+            waiting_for_confirmation = True
+            status_message = "Press SPACE to check your action"
         
         # Draw elements
         screen.blit(bg_image, (0, 0))  # Draw background image
@@ -410,23 +432,30 @@ def main():
         progress = small_font.render(f"Progress: {current_command_index + 1}/{len(commands)}", True, WHITE)
         screen.blit(progress, (30, 30))
         
-        # Timer display
-        timer_color = WHITE if remaining_time > 5 else RED  # Red when less than 5 seconds left
-        timer_text = small_font.render(f"Time: {int(remaining_time)}s", True, timer_color)
-        screen.blit(timer_text, (SCREEN_WIDTH - timer_text.get_width() - 30, 30))
+        # Timer display - no timer during confirmation
+        if not waiting_for_confirmation:
+            timer_color = WHITE if remaining_time > 5 else RED  # Red when less than 5 seconds left
+            timer_text = small_font.render(f"Time: {int(remaining_time)}s", True, timer_color)
+            screen.blit(timer_text, (SCREEN_WIDTH - timer_text.get_width() - 30, 30))
+        else:
+            # Show "Press SPACE" message instead of timer
+            space_text = small_font.render("PRESS SPACE TO CONFIRM", True, GREEN)
+            screen.blit(space_text, (SCREEN_WIDTH - space_text.get_width() - 30, 30))
         
         # Status message (success/failure) - always show if it exists
-        if action_result is not None:
-            status_color = GREEN if action_result else RED
+        if status_message:
+            if action_result is not None:
+                status_color = GREEN if action_result else RED
+            else:
+                status_color = WHITE  # For the "Press SPACE" message
             status_text = font.render(status_message, True, status_color)
             screen.blit(status_text, (SCREEN_WIDTH // 2 - status_text.get_width() // 2, 350))
         
-        # Game over message
+        # Game over message - no restart option
         if game_over:
             result_text = font.render(f"Game Over - {'You Win!' if won else 'You Lose!'}", True, WHITE)
             screen.blit(result_text, (SCREEN_WIDTH // 2 - result_text.get_width() // 2, 400))
-            restart_text = small_font.render("Press R to restart", True, WHITE)
-            screen.blit(restart_text, (SCREEN_WIDTH // 2 - restart_text.get_width() // 2, 450))
+            # Removed restart text
         
         # Update display
         pygame.display.flip()
