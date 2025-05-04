@@ -667,21 +667,13 @@ def show_meet_team(screen):
 # TOGGLES
 
 # Only import GPIO stuff if on a Pi
-try:
-    import board
-    from digitalio import DigitalInOut, Direction, Pull
-    RPi = True
-except ImportError:
-    RPi = False
-    print("GPIO not available. Running in simulation mode.")
-
-if RPi:
-    # Only create real toggles on a Pi
-    toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.D21)]
-    for pin in toggle_pins:
-        pin.direction = Direction.INPUT
-        pin.pull = Pull.DOWN
-    toggles = Toggles(toggle_pins)
+# try:
+#     import board
+#     from digitalio import DigitalInOut, Direction, Pull
+#     RPi = True
+# except ImportError:
+#     RPi = False
+#     print("GPIO not available. Running in simulation mode.")
 
 # Base thread class for phases like toggles/wires/buttons
 
@@ -721,16 +713,16 @@ class Toggles(PhaseThread):
     def run(self): 
         pass
         
-    # def run(self):
-    #     """Thread continuously checks for toggle changes."""
-    #     self._running = True
-    #     self.update_state()
+    def run(self):
+        """Thread continuously checks for toggle changes."""
+        self._running = True
+        self.update_state()
  
-    #     while self._running:
-    #         if self.update_state():
-    #         # You could trigger logic here or just print for testing
-    #             print(f"Toggles changed: {self._value}/{self._prev_value} - {self._state_changed}, {next(i for i, (a, b) in enumerate(zip(self._value, self._prev_value)) if a != b)}")
-    #             sleep(0.1)
+        while self._running:
+            if self.update_state():
+            # You could trigger logic here or just print for testing
+                print(f"Toggles changed: {self._value}/{self._prev_value} - {self._state_changed}, {next(i for i, (a, b) in enumerate(zip(self._value, self._prev_value)) if a != b)}")
+                sleep(0.1)
                 
     def update_state(self):
         """Update toggle state and return True if the state changed."""
@@ -757,11 +749,11 @@ class Toggles(PhaseThread):
         """Show state as binary and its decimal equivalent."""
         return f"{self._value}/{int(self._value, 2)}"
 
-# # toggle pins defined from RPi
-# toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.D21)]
+# toggle pins defined from RPi
+toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.D21)]
 
-# # Create and start the toggle monitor
-# toggles = Toggles(toggle_pins)
+# Create and start the toggle monitor
+toggles = Toggles(toggle_pins)
 
 
 
