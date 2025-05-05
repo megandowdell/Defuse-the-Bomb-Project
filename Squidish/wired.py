@@ -143,7 +143,7 @@ def main():
 
     # For each command in dictionary, play the assigned sound to match
     command_sounds = {}
-    for command, command_sound in command_sound_files:
+    for command, command_sound in command_sound_files.items():
         command_sounds[command] = pygame.mixer.music.Sound(command_sound)
 
     # Setup for RPI environment
