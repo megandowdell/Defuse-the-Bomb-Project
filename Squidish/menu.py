@@ -428,18 +428,21 @@ def show_meet_team(screen):
     # Base font sizes
     base_title_size = 50
     base_char_size = 30
+    base_stat_size = 18
     base_desc_size = 12
     base_button_size = 20
     
     # Scale font sizes
     title_size = scale_font_size(base_title_size, (WIDTH, HEIGHT))
     char_size = scale_font_size(base_char_size, (WIDTH, HEIGHT))
+    stat_size = scale_font_size(base_char_size, (WIDTH, HEIGHT))
     desc_size = scale_font_size(base_desc_size, (WIDTH, HEIGHT))
     button_size = scale_font_size(base_button_size, (WIDTH, HEIGHT))
     
     # Fonts
     title_font = pygame.font.Font("font1.otf", title_size)
     char_font = pygame.font.Font("font5.otf", char_size)
+    stat_font = pygame.font.Font("font5.otf", stat_size)
     desc_font = pygame.font.Font("font5.otf", desc_size)
     button_font = pygame.font.Font("font2.otf", button_size)
     
@@ -531,7 +534,7 @@ def show_meet_team(screen):
                 name_y = card_y + int(card_height * 0.6)
                 screen.blit(name_text, (card_x + card_width//2 - name_text.get_width()//2, name_y))
                 
-                status_text = desc_font.render(teammate['status'], True, BEIGE)
+                status_text = stat_font.render(teammate['status'], True, BEIGE)
                 status_y = name_y + name_text.get_height() + 5
                 screen.blit(status_text, (card_x + card_width//2 - status_text.get_width()//2, status_y))
                 
