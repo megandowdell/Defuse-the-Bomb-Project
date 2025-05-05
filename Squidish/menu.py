@@ -341,7 +341,7 @@ def show_about_game_screen(screen):
         # Draw gameplay instructions
         y_pos = instructions_box_rect.y + 10
         
-        for line in hint_text:
+        for line in gameplay_text:
             wrapped_lines = wrap_text(line, text_font, max_text_width)
             for wrapped_line in wrapped_lines:
                 text_surf = text_font.render(wrapped_line, True, YELLOW)
