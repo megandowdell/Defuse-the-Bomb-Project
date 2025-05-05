@@ -270,7 +270,7 @@ def show_about_game_screen(screen):
     # Game intro text -TO DO
     introduction_text = [
         "WELCOME TO SQUID-ISH GAMES",
-        "Squid-ish Games is an interactive Python-based game created in Pygame for our CSC102 final project. The game simulates a high-stakes situation where the player must progress through four mini-games (called “phases”) to safely defuse a cartoon-style bomb. Each phase represents a different childhood game with a twist—designed to test logic, memory, timing, and luck. If the player fails a phase, the bomb “explodes” and the game ends with a sound effect and visual cue. If all four phases are cleared, the bomb is defused and the player wins." 
+        "Squid-ish Games is an interactive Python-based game created in Pygame for our CSC102 final project. The game simulates a high-stakes situation where the player must progress through four mini-games (called “phases”) to safely defuse a cartoon-style bomb. Each phase represents a different childhood game with a twist, each designed to test logic, memory, timing, and luck. If the player fails a phase, the bomb “explodes” and the game ends with a sound effect and visual cue. If all four phases are cleared, the bomb is defused and the player wins." 
     ]
     
     # Additional gameplay instructions - TO DO 
