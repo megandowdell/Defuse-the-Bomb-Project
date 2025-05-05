@@ -270,21 +270,13 @@ def show_about_game_screen(screen):
     # Game intro text -TO DO
     introduction_text = [
         "WELCOME TO SQUID-ISH GAMES",
-        "AHFGIYGSLU;HSJF",
-        "SBGJSNDGONSKSDHSO;",
+        "Defuse the Bomb is an interactive Python-based game created in Pygame for our CSC102 final project. The game simulates a high-stakes situation where the player must progress through four mini-games (called “phases”) to safely defuse a cartoon-style bomb. Each phase represents a different childhood game with a twist—designed to test logic, memory, timing, and luck. If the player fails a phase, the bomb “explodes” and the game ends with a sound effect and visual cue. If all four phases are cleared, the bomb is defused and the player wins." 
     ]
     
     # Additional gameplay instructions - TO DO 
     gameplay_text = [
-        "HOW TO PLAY:",
-        "1. Choose your character wisely - each has different description levels.",
-        "2. Navigate through the territories by selecting directional buttons.",
-        "3. Collect weapons to increase your description level.",
-        "4. When encountering a Titan:",
-        "   - If your description exceeds the Titan's: Attack to win (but you'll lose description equal to the Titan's strength)",
-        "   - If the Titan's description exceeds yours: Retreat to gain description (attacking will result in game over)",
-        "5. Reach The Flying Ship to win the game.",
-        "",
+        "GAME ARCHITECTURE",
+        "This game emphasizes event handling, Pygame GUI design, randomized outcomes, and modular code architecture. We also practiced working in a team using GitHub, merging branches, and writing clean, readable code with comments.",
         "Remember: Choose your battles wisely. Sometimes retreat is the best strategy!"
     ]
     
