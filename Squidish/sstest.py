@@ -179,19 +179,16 @@ def main():
         print("No sound files loaded successfully! Check your sound files.")
 
     # Determine if running on Raspberry Pi with real hardware
-    RPi = False
+    RPi = True  # Assuming this is running on Raspberry Pi with imports at the top
     try:
-        import board
-        from digitalio import DigitalInOut, Direction, Pull
-        RPi = True
-        
         # Set up physical pins
         wire_pins = [DigitalInOut(i) for i in (board.D14, board.D15, board.D18, board.D23, board.D24)]
         for pin in wire_pins:
             pin.direction = Direction.INPUT
             pin.pull = Pull.DOWN
             
-    except (ImportError, NotImplementedError):
+    except (ImportError, NotImplementedError, Exception) as e:
+        print(f"Hardware setup error: {e}")
         RPi = False
         wire_pins = [SimulatedPin() for _ in range(5)]
     
@@ -273,8 +270,12 @@ def main():
     action_result = None  # None = not checked, True = success, False = failure
     action_time = 0
     
-    # New variable: waiting for spacebar confirmation
+    # Variables for tracking player actions
     waiting_for_confirmation = False
+    wire_changed = False  # Track if player took an action
+    
+    # For tracking the initial wire states at the start of each command
+    initial_wire_state = wires._value
     
     # Main game loop
     clock = pygame.time.Clock()
@@ -317,55 +318,60 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
-                # REMOVED RESTART KEY FUNCTIONALITY
-                
-                # ADDED: Space to check command when waiting for confirmation
-                if event.key == pygame.K_SPACE and waiting_for_confirmation:
-                    waiting_for_confirmation = False
-                    
-                    # Verify the action
-                    # Check if command starts with "Simon says"
-                    is_simon = current_command.startswith("Simon says")
-                    is_disconnect = "disconnect" in current_command
-                    color = next(c for c in colors if c in current_command)
-                    color_index = colors.index(color)
-
-                    # Check if wire state matches command
-                    is_disconnected = wires._value[color_index] == "0"
-                    
-                    # If not a Simon says command, should not follow
-                    if not is_simon:
-                        # Success if they did NOT follow the command
-                        if is_disconnect:
-                            action_result = not is_disconnected
-                        else:  # reconnect
-                            action_result = is_disconnected
-                    else:
-                        # Simon commands must be followed
-                        if is_disconnect:
-                            action_result = is_disconnected
-                        else:  # reconnect
-                            action_result = not is_disconnected
-                    
-                    # Success or failure action
-                    if action_result:
-                        status_message = "SUCCESS!"
-                        # Move to next command after success
-                        current_command_index += 1
-                        if current_command_index < len(commands):
-                            current_command = commands[current_command_index]
-                            # Reset timer for the new command
-                            command_start_time = time.time()
-                            action_result = None
-                            command_played = False
+                # Space to check command when waiting for confirmation
+                if event.key == pygame.K_SPACE:
+                    # Always allow checking with space, even if no wire changes detected
+                    if not game_over:
+                        # Store current wire state for evaluation
+                        current_wire_state = wires._value
+                        
+                        # Check if command starts with "Simon says"
+                        is_simon = current_command.startswith("Simon says")
+                        is_disconnect = "disconnect" in current_command
+                        color = next(c for c in colors if c in current_command)
+                        color_index = colors.index(color)
+                        
+                        # Get wire state for the specific color
+                        is_disconnected = current_wire_state[color_index] == "0"
+                        initial_was_disconnected = initial_wire_state[color_index] == "0"
+                        
+                        # Check if the player actually changed the wire state
+                        wire_was_changed = is_disconnected != initial_was_disconnected
+                        
+                        # First, determine the correct action based on command
+                        if is_simon:
+                            # Simon says: must follow command
+                            correct_action = is_disconnect == is_disconnected
                         else:
-                            current_command = "All commands completed!"
+                            # Not Simon says: must ignore command
+                            # Success if the wire state hasn't changed
+                            correct_action = not wire_was_changed
+                        
+                        # Set result
+                        action_result = correct_action
+                        
+                        # Success or failure action
+                        if action_result:
+                            status_message = "SUCCESS!"
+                            # Move to next command after success
+                            current_command_index += 1
+                            if current_command_index < len(commands):
+                                current_command = commands[current_command_index]
+                                # Reset timer for the new command
+                                command_start_time = time.time()
+                                action_result = None
+                                command_played = False
+                                waiting_for_confirmation = False
+                                # Store new initial wire state for the new command
+                                initial_wire_state = wires._value
+                            else:
+                                current_command = "All commands completed!"
+                                game_over = True
+                                won = True
+                        else:
+                            status_message = "FAILURE!"
                             game_over = True
-                            won = True
-                    else:
-                        status_message = "FAILURE!"
-                        game_over = True
-                        won = False
+                            won = False
                 
                 # Simulation mode: toggle wires with number keys
                 elif not RPi and event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5]:
@@ -374,12 +380,13 @@ def main():
                         wire_pins[index].toggle()
                         wires.update_state()
         
-        # Modified: Check for wire changes to set waiting_for_confirmation
-        if not game_over and not waiting_for_confirmation and wires._value != last_wire_state:
+        # Check for wire state changes (always update last_wire_state)
+        if wires._value != last_wire_state:
             last_wire_state = wires._value
-            # A wire state has changed, now wait for spacebar confirmation
-            waiting_for_confirmation = True
-            status_message = "Press SPACE to check your action"
+            # Set waiting for confirmation only if the game is still active
+            if not game_over and not waiting_for_confirmation:
+                waiting_for_confirmation = True
+                status_message = "Press SPACE to check your action"
         
         # Draw elements
         screen.blit(bg_image, (0, 0))  # Draw background image
@@ -407,14 +414,14 @@ def main():
         progress = small_font.render(f"Progress: {current_command_index + 1}/{len(commands)}", True, WHITE)
         screen.blit(progress, (30, 30))
         
-        # Timer display - no timer during confirmation
-        if not waiting_for_confirmation:
+        # Timer display or instruction
+        if not waiting_for_confirmation and not game_over:
             timer_color = WHITE if remaining_time > 5 else RED  # Red when less than 5 seconds left
             timer_text = small_font.render(f"Time: {int(remaining_time)}s", True, timer_color)
             screen.blit(timer_text, (SCREEN_WIDTH - timer_text.get_width() - 30, 30))
         else:
-            # Show "Press SPACE" message instead of timer
-            space_text = small_font.render("PRESS SPACE TO CONFIRM", True, GREEN)
+            # Show "Press SPACE" message
+            space_text = small_font.render("PRESS SPACE TO CHECK", True, GREEN)
             screen.blit(space_text, (SCREEN_WIDTH - space_text.get_width() - 30, 30))
         
         # Status message (success/failure) - always show if it exists
@@ -430,7 +437,6 @@ def main():
         if game_over:
             result_text = font.render(f"Game Over - {'You Win!' if won else 'You Lose!'}", True, WHITE)
             screen.blit(result_text, (SCREEN_WIDTH // 2 - result_text.get_width() // 2, 400))
-            # Removed restart text
         
         # Update display
         pygame.display.flip()
