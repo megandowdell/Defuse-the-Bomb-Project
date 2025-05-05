@@ -448,7 +448,7 @@ def show_meet_team(screen):
         {"name": "Christa", "status": "Sophomore", "role": "Interface Architect", 
          "description": "I am a Computer Science major, with minors in Physics and Mathematics, from Trinidad and Tobago. My side quests include raising stray cats and emotionally adopting anime side characters."},
         {"name": "Khalil", "status": "Senior", "role": "Sequence Strategist", 
-         "description": "I am a Computer Science and Chemistry double major with a minor in mathematics and sociology from Chicago, IL. My favorite basketball team is the Golden State Warriors. "},
+         "description": "I am a Computer Science and Chemistry double major with minors in Mathematics and Sociology from Chicago, IL. My favorite basketball team is the Golden State Warriors."},
         {"name": "Matt", "status": "Junior",  "role": "Motion Engineer", 
          "description": "I am a Mathematics from... Some fun facts about me are.."},
         {"name": "Megan", "status": "Junior", "role": "Grid Tactician", 
@@ -676,8 +676,7 @@ class PhaseThread(Thread):
         super().__init__(name=name, daemon=True)
         self._running = False
         self._value = None
-
-
+        
 # if RPi:
 #     for pin in self._pins:
 #                 pin.direction = Direction.INPUT
@@ -685,9 +684,6 @@ class PhaseThread(Thread):
 
 #     def reset(self):
 #         self._value = None
-
-
-
 
 # Toggle switch handler class
 class Toggles(PhaseThread):
@@ -1787,15 +1783,6 @@ class Wires(PhaseThread):
         #Showing the binary values of the pins 
         return f"{self._value}/{int(self._value, 2)}"
 
-#Simulation pin class for testing without hardware
-class SimulatedPin:
-    def __init__(self, initial_value=False):
-        #False = connected (1), True = disconnected (0) with pin values 
-        self.value = initial_value
-        
-    def toggle(self):
-        self.value = not self.value
-
 #Initialize pygame
 pygame.init()
 
@@ -1868,14 +1855,14 @@ def main():
         except Exception as e:
             print(f"Failed to load sound {filename}: {e}")
     
-    #Test the first loaded sound if any were loaded
-    if command_sounds:
-        #Play test sounds 
-        first_sound = list(command_sounds.values())[0]
-        first_sound.play()
-        print(f"Playing test sound from command file")
-    else:
-        print("No sound files loaded successfully! Check your sound files.")
+    # #Test the first loaded sound if any were loaded
+    # if command_sounds:
+    #     #Play test sounds 
+    #     first_sound = list(command_sounds.values())[0]
+    #     first_sound.play()
+    #     print(f"Playing test sound from command file")
+    # else:
+    #     print("No sound files loaded successfully! Check your sound files.")
 
    
     wire_pins = [DigitalInOut(i) for i in (board.D14, board.D15, board.D18, board.D23, board.D24)]
@@ -1890,7 +1877,7 @@ def main():
     
     #Define colors and commands
     colors = ["brown", "red", "orange", "yellow", "green"]
-    color_values = [BROWN_WIRE, RED_WIRE, ORANGE_WIRE, YELLOW_WIRE, GREEN_WIRE]  # Actual RGB values for display
+    color_values = [BROWN_WIRE, RED_WIRE, ORANGE_WIRE, YELLOW_WIRE, GREEN_WIRE]  
 
     #Creatinng a random set of commands with some commands having Simon says and some not having Simon says 
     non_simon_discommands = [f"Disconnect the {color} wire" for color in colors]
@@ -2168,168 +2155,159 @@ def main():
     sys.exit()
 
 # INSTRUCTIONS
-# def show_redlightgreenlight_instructions_screen(screen):
-#     WIDTH, HEIGHT = screen.get_size()
-#     pygame.display.set_caption("Red Light Green Light Instructions")
+def show_simonsays_instructions_screen(screen):
+    WIDTH, HEIGHT = screen.get_size()
+    pygame.display.set_caption("Red Light Green Light Instructions")
     
-#     # Base font sizes for reference design
-#     base_title_size = 40
-#     base_button_size = 20
-#     base_text_size = 20
+    # Base font sizes for reference design
+    base_title_size = 40
+    base_button_size = 20
+    base_text_size = 20
     
-#     # Scale font sizes
-#     title_size = scale_font_size(base_title_size, (WIDTH, HEIGHT))
-#     button_size = scale_font_size(base_button_size, (WIDTH, HEIGHT))
-#     text_size = scale_font_size(base_text_size, (WIDTH, HEIGHT))
+    # Scale font sizes
+    title_size = scale_font_size(base_title_size, (WIDTH, HEIGHT))
+    button_size = scale_font_size(base_button_size, (WIDTH, HEIGHT))
+    text_size = scale_font_size(base_text_size, (WIDTH, HEIGHT))
     
-#     # Fonts
-#     title_font = pygame.font.Font("font2.otf", title_size)
-#     button_font = pygame.font.Font("font2.otf", button_size)
-#     text_font = pygame.font.Font("font5.otf", text_size)
+    # Fonts
+    title_font = pygame.font.Font("font2.otf", title_size)
+    button_font = pygame.font.Font("font2.otf", button_size)
+    text_font = pygame.font.Font("font5.otf", text_size)
     
-#     # Background Image
-#     bg_image = pygame.image.load("how_to_play.jpg")
-#     bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
+    # Background Image
+    bg_image = pygame.image.load("how_to_play.jpg")
+    bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
     
-#     # Hopscotch-specific instructions
-#     welcome_text = [
-#         " In this challenge, ",
-#     ]
+    # Hopscotch-specific instructions
+    welcome_text = [
+        " In this challenge, your memory and focus will be put to the test. Listen carefully as Simon calls out a sequence of commands for you to execute using the wires. For each executed command, use the space bar to confirm whether or not you made the right decision. Remember,  don’t act unless Simon says! One wrong move, and it's game over. Stay sharp, follow only when told, and survive the mind games ahead. Good luck!",
+    ]
     
-#     # Hint
-#     hint_text = [
-#         "HINT:",
-#          " Don’t trust the flash, it tells a lie",
-#          " Her turning head decides who’ll die.",
-#     ]
+    # Hint
+    hint_text = [
+        "HINT:",
+        "Act by ear, not only sight.
+        "Misfortune nears when wrong is right.",
+    ]
     
-#     # Character options (buttons for 'Play')
-#     ag_items = ["Play"]  
-#     selected_index = 0
-#     clock = pygame.time.Clock()
+    # Character options (buttons for 'Play')
+    ag_items = ["Play"]  
+    selected_index = 0
+    clock = pygame.time.Clock()
     
-#     while True:
-#         # Draw the background
-#         screen.blit(bg_image, (0, 0))
+    while True:
+        # Draw the background
+        screen.blit(bg_image, (0, 0))
         
-#         # Overlay for the how-to-play screen
-#         overlay = pygame.Surface((WIDTH, HEIGHT))
-#         overlay.set_alpha(150)  # More opaque for readability
-#         overlay.fill((20, 20, 30))
-#         screen.blit(overlay, (0, 0))
+        # Overlay for the how-to-play screen
+        overlay = pygame.Surface((WIDTH, HEIGHT))
+        overlay.set_alpha(150)  # More opaque for readability
+        overlay.fill((20, 20, 30))
+        screen.blit(overlay, (0, 0))
         
-#         # Draw title - scale from reference position
-#         title_text = title_font.render("Instructions", True, BEIGE)
-#         base_title_pos = (dev_width // 2, 30)
-#         title_x, title_y = scale_position(base_title_pos[0], base_title_pos[1], (WIDTH, HEIGHT))
-#         screen.blit(title_text, (title_x - title_text.get_width() // 2, title_y))
+        # Draw title - scale from reference position
+        title_text = title_font.render("Instructions", True, BEIGE)
+        base_title_pos = (dev_width // 2, 30)
+        title_x, title_y = scale_position(base_title_pos[0], base_title_pos[1], (WIDTH, HEIGHT))
+        screen.blit(title_text, (title_x - title_text.get_width() // 2, title_y))
         
-#         # Reference info box dimensions and position
-#         base_info_box = pygame.Rect(50, 80, dev_width-100, 300)
-#         info_box_rect = scale_rect(base_info_box, (WIDTH, HEIGHT))
+        # Reference info box dimensions and position
+        base_info_box = pygame.Rect(50, 80, dev_width-100, 300)
+        info_box_rect = scale_rect(base_info_box, (WIDTH, HEIGHT))
         
-#         # Draw info box
-#         info_box = pygame.Surface((info_box_rect.width, info_box_rect.height), pygame.SRCALPHA)
-#         info_box.fill((30, 30, 30, 180))  # Semi-transparent
-#         screen.blit(info_box, (info_box_rect.x, info_box_rect.y))
-#         pygame.draw.rect(screen, (100, 100, 150), info_box_rect, 2)
+        # Draw info box
+        info_box = pygame.Surface((info_box_rect.width, info_box_rect.height), pygame.SRCALPHA)
+        info_box.fill((30, 30, 30, 180))  # Semi-transparent
+        screen.blit(info_box, (info_box_rect.x, info_box_rect.y))
+        pygame.draw.rect(screen, (100, 100, 150), info_box_rect, 2)
         
-#         # Draw intro text
-#         y_pos = info_box_rect.y + 10
-#         max_text_width = info_box_rect.width - 40
+        # Draw intro text
+        y_pos = info_box_rect.y + 10
+        max_text_width = info_box_rect.width - 40
         
-#         for line in welcome_text:
-#             wrapped_lines = wrap_text(line, text_font, max_text_width)
-#             for wrapped_line in wrapped_lines:
-#                 text_surf = text_font.render(wrapped_line, True, BEIGE)
-#                 screen.blit(text_surf, (info_box_rect.x + 20, y_pos))
-#                 y_pos += text_surf.get_height() + 5
+        for line in welcome_text:
+            wrapped_lines = wrap_text(line, text_font, max_text_width)
+            for wrapped_line in wrapped_lines:
+                text_surf = text_font.render(wrapped_line, True, BEIGE)
+                screen.blit(text_surf, (info_box_rect.x + 20, y_pos))
+                y_pos += text_surf.get_height() + 5
                 
-#                 # Stop if we reach the bottom of the box
-#                 if y_pos > info_box_rect.y + info_box_rect.height - text_surf.get_height():
-#                     break
-#             if y_pos > info_box_rect.y + info_box_rect.height - text_surf.get_height():
-#                 break
+                # Stop if we reach the bottom of the box
+                if y_pos > info_box_rect.y + info_box_rect.height - text_surf.get_height():
+                    break
+            if y_pos > info_box_rect.y + info_box_rect.height - text_surf.get_height():
+                break
         
-#         # Reference instructions box dimensions and position
-#         base_instructions_box = pygame.Rect(50, 400, dev_width-100, 180)
-#         instructions_box_rect = scale_rect(base_instructions_box, (WIDTH, HEIGHT))
+        # Reference instructions box dimensions and position
+        base_instructions_box = pygame.Rect(50, 400, dev_width-100, 180)
+        instructions_box_rect = scale_rect(base_instructions_box, (WIDTH, HEIGHT))
         
-#         # Draw instructions box
-#         instructions_box = pygame.Surface((instructions_box_rect.width, instructions_box_rect.height), pygame.SRCALPHA)
-#         instructions_box.fill((30, 30, 30, 180))  
-#         screen.blit(instructions_box, (instructions_box_rect.x, instructions_box_rect.y))
-#         pygame.draw.rect(screen, (100, 100, 150), instructions_box_rect, 2)
+        # Draw instructions box
+        instructions_box = pygame.Surface((instructions_box_rect.width, instructions_box_rect.height), pygame.SRCALPHA)
+        instructions_box.fill((30, 30, 30, 180))  
+        screen.blit(instructions_box, (instructions_box_rect.x, instructions_box_rect.y))
+        pygame.draw.rect(screen, (100, 100, 150), instructions_box_rect, 2)
         
-#         # Draw gameplay instructions
-#         y_pos = instructions_box_rect.y + 10
+        # Draw gameplay instructions
+        y_pos = instructions_box_rect.y + 10
         
-#         for line in hint_text:
-#             wrapped_lines = wrap_text(line, text_font, max_text_width)
-#             for wrapped_line in wrapped_lines:
-#                 text_surf = text_font.render(wrapped_line, True, YELLOW)
-#                 screen.blit(text_surf, (instructions_box_rect.x + 20, y_pos))
-#                 y_pos += text_surf.get_height() + 5
+        for line in hint_text:
+            wrapped_lines = wrap_text(line, text_font, max_text_width)
+            for wrapped_line in wrapped_lines:
+                text_surf = text_font.render(wrapped_line, True, YELLOW)
+                screen.blit(text_surf, (instructions_box_rect.x + 20, y_pos))
+                y_pos += text_surf.get_height() + 5
                 
-#                 if y_pos > instructions_box_rect.y + instructions_box_rect.height - text_surf.get_height():
-#                     break
-#             if y_pos > instructions_box_rect.y + instructions_box_rect.height - text_surf.get_height():
-#                 break
+                if y_pos > instructions_box_rect.y + instructions_box_rect.height - text_surf.get_height():
+                    break
+            if y_pos > instructions_box_rect.y + instructions_box_rect.height - text_surf.get_height():
+                break
         
-#         # 'Play' button - centered at bottom
-#         base_button_height = 40
-#         base_button_width = 200
-#         base_button_y = dev_height - 90
+        # 'Play' button - centered at bottom
+        base_button_height = 40
+        base_button_width = 200
+        base_button_y = dev_height - 90
         
-#         # Scale button dimensions
-#         button_height = int(base_button_height * HEIGHT / dev_height)
-#         button_width = int(base_button_width * WIDTH / dev_width)
+        # Scale button dimensions
+        button_height = int(base_button_height * HEIGHT / dev_height)
+        button_width = int(base_button_width * WIDTH / dev_width)
         
-#         # Center button
-#         button_x = (WIDTH - button_width) // 2
-#         button_y = int(base_button_y * HEIGHT / dev_height)
+        # Center button
+        button_x = (WIDTH - button_width) // 2
+        button_y = int(base_button_y * HEIGHT / dev_height)
         
-#         button_rects = []
-#         name = ag_items[0]  # "Play"
-#         color = YELLOW
-#         bg_color = PURPLE
+        button_rects = []
+        name = ag_items[0]  # "Play"
+        color = YELLOW
+        bg_color = PURPLE
         
-#         box_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-#         pygame.draw.rect(screen, bg_color, box_rect, border_radius=10)
+        box_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+        pygame.draw.rect(screen, bg_color, box_rect, border_radius=10)
         
-#         # Center text in button
-#         text_surface = button_font.render(name, True, color)
-#         text_x = box_rect.centerx - text_surface.get_width() // 2
-#         text_y = box_rect.centery - text_surface.get_height() // 2
+        # Center text in button
+        text_surface = button_font.render(name, True, color)
+        text_x = box_rect.centerx - text_surface.get_width() // 2
+        text_y = box_rect.centery - text_surface.get_height() // 2
         
-#         screen.blit(text_surface, (text_x, text_y))
-#         button_rects.append((box_rect, name))
+        screen.blit(text_surface, (text_x, text_y))
+        button_rects.append((box_rect, name))
         
-#         # Event Handling (key or mouse input)
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 pygame.quit()
-#                 sys.exit()
-#             elif event.type == pygame.KEYDOWN:
-#                 if event.key == pygame.K_RETURN:
-#                     return "Play"  # Return "Play" to start the game
-#             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-#                 mouse_pos = pygame.mouse.get_pos()
-#                 for rect, item in button_rects:
-#                     if rect.collidepoint(mouse_pos):
-#                         return "Play"  # Return "Play" to start the game
+        # Event Handling (key or mouse input)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    return "Play"  # Return "Play" to start the game
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_pos = pygame.mouse.get_pos()
+                for rect, item in button_rects:
+                    if rect.collidepoint(mouse_pos):
+                        return "Play"  # Return "Play" to start the game
         
-#         pygame.display.flip()
-#         clock.tick(60)
-
-
-
-
-
-
-
-
-
+        pygame.display.flip()
+        clock.tick(60)
 ####################################################################################################################
 # # RED LIGHT GREEN LIGHT
 # # BUTTON
@@ -2380,7 +2358,7 @@ def main():
     
 #     # Hopscotch-specific instructions
 #     welcome_text = [
-#         " In this challenge, ",
+#         " In this challenge,In this challenge, you'll be playing a game of pattern recognition and response. Listen closely to the doll’s voice, she’ll tell you when to move and when to stop using the button. But beware, she’s watching for cheaters. Follow her instructions exactly or face the consequences. Good luck, and don’t move a muscle or you'll be eliminated." 
 #     ]
     
 #     # Hint
