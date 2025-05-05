@@ -8,9 +8,17 @@ import random
 import time
 from threading import Thread
 from time import sleep
+import bomb
 from bomb_configs import *
 from bomb_phases import *
+<<<<<<< HEAD
 #import RPi.GPIO as GPIO  # Uncomment if using GPIO on Raspberry Pi
+=======
+from adafruit_matrixkeypad import Matrix_Keypad
+import RPi.GPIO as GPIO  # Uncomment if using GPIO on Raspberry Pi
+import board
+from digitalio import DigitalInOut, Direction, Pull
+>>>>>>> 0463ef64734483f0c77fbea7a57d01cb9ce89ccd
 ####################################################################################################################
 # MENU AUDIO
 pygame.mixer.init()
@@ -212,7 +220,7 @@ def show_menu_screen(screen):
                     selected_index = (selected_index + 1) % len(menu_items)
                 elif event.key == pygame.K_RETURN:
                     if menu_items[selected_index] == "Start":
-                        return "Meet Team"
+                        return "Start"
                     elif menu_items[selected_index] == "About Game":
                         return "About Game"
                     elif menu_items[selected_index] == "Meet Team":
@@ -247,7 +255,7 @@ def show_about_game_screen(screen):
     # Base font sizes for reference design
     base_title_size = 40
     base_button_size = 20
-    base_text_size = 20
+    base_text_size = 16
     
     # Scale font sizes
     title_size = scale_font_size(base_title_size, (WIDTH, HEIGHT))
@@ -266,21 +274,13 @@ def show_about_game_screen(screen):
     # Game intro text -TO DO
     introduction_text = [
         "WELCOME TO SQUID-ISH GAMES",
-        "AHFGIYGSLU;HSJF",
-        "SBGJSNDGONSKSDHSO;",
+        "Squid-ish Games is an interactive Python-based game created in Pygame for our CSC102 final project. The game simulates a high-stakes situation where the player must progress through four mini-games (called “phases”) to safely defuse a cartoon-style bomb. Each phase represents a different childhood game with a twist, each designed to test logic, memory, timing, and luck. If the player fails a phase, the bomb “explodes” and the game ends with a sound effect and visual cue. If all four phases are cleared, the bomb is defused and the player wins." 
     ]
     
     # Additional gameplay instructions - TO DO 
     gameplay_text = [
-        "HOW TO PLAY:",
-        "1. Choose your character wisely - each has different description levels.",
-        "2. Navigate through the territories by selecting directional buttons.",
-        "3. Collect weapons to increase your description level.",
-        "4. When encountering a Titan:",
-        "   - If your description exceeds the Titan's: Attack to win (but you'll lose description equal to the Titan's strength)",
-        "   - If the Titan's description exceeds yours: Retreat to gain description (attacking will result in game over)",
-        "5. Reach The Flying Ship to win the game.",
-        "",
+        "GAME ARCHITECTURE",
+        "This game emphasizes event handling, Pygame GUI design, randomized outcomes, and modular code architecture. We also practiced working in a team using GitHub, merging branches, and writing clean, readable code with comments.",
         "Remember: Choose your battles wisely. Sometimes retreat is the best strategy!"
     ]
     
@@ -345,7 +345,7 @@ def show_about_game_screen(screen):
         # Draw gameplay instructions
         y_pos = instructions_box_rect.y + 10
         
-        for line in hint_text:
+        for line in gameplay_text:
             wrapped_lines = wrap_text(line, text_font, max_text_width)
             for wrapped_line in wrapped_lines:
                 text_surf = text_font.render(wrapped_line, True, YELLOW)
@@ -410,7 +410,8 @@ def show_about_game_screen(screen):
                     if ag_items[selected_index] == "Back": # Back button returns to menu
                         return "Menu"  
                     elif ag_items[selected_index] == "Continue": # Continue button proceeds to game just as Start button would on the menu page
-                        return random.choice(["Hopscotch","Tic Tac Toe", "Red Light Green Light"]) 
+                        random.choice(["Hopscotch", "Tic Tac Toe"])
+                        return random.choice(["Hopscotch", "Tic Tac Toe"]) 
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = pygame.mouse.get_pos()
                 for rect, item in button_rects:
@@ -418,7 +419,7 @@ def show_about_game_screen(screen):
                         if item == "Back":
                             return "Menu"  
                         elif item == "Continue":
-                            return random.choice(["Hopscotch","Tic Tac Toe", "Red Light Green Light"])  
+                            return random.choice(["Hopscotch", "Tic Tac Toe"])  
         pygame.display.flip()
         clock.tick(60)
 ####################################################################################################################
@@ -430,8 +431,8 @@ def show_meet_team(screen):
     
     # Base font sizes
     base_title_size = 50
-    base_char_size = 30
-    base_desc_size = 18
+    base_char_size = 25
+    base_desc_size = 14
     base_button_size = 20
     
     # Scale font sizes
@@ -449,13 +450,13 @@ def show_meet_team(screen):
     # teammate options with descriptions
     teammates = [
         {"name": "Christa", "status": "Sophomore", "role": "Interface Architect", 
-         "description": "Majors in Computer Science and minors in Physics and Mathematics. Responsible for our the game's..."},
-        {"name": "Khalil", "status": "Junior", "role": "Sequence Strategist", 
-         "description": "Majors in Computer Science and Chemistry. Responsible for our the game's..."},
+         "description": "I am a Computer Science major, with minors in Physics and Mathematics, from Trinidad and Tobago. My side quests include raising stray cats and emotionally adopting anime side characters."},
+        {"name": "Khalil", "status": "Senior", "role": "Sequence Strategist", 
+         "description": "I am a Computer Science and Chemistry double major with a minor in mathematics and sociology from Chicago, IL. My favorite basketball team is the Golden State Warriors. "},
         {"name": "Matt", "status": "Junior",  "role": "Motion Engineer", 
-         "description": "Majors in Mathematics. Responsible for our the game's..."},
+         "description": "I am a Mathematics from... Some fun facts about me are.."},
         {"name": "Megan", "status": "Junior", "role": "Grid Tactician", 
-         "description": "Majors in Mathematics with Computer Science. Responsible for our the game's..."}
+         "description": "I am a Mathematics with Computer Science major from ....Some fun facts about me are.."}
     ]
     
     # Reference image size
@@ -613,7 +614,7 @@ def show_meet_team(screen):
         desc_lines = wrap_text(teammate_desc, desc_font, max_desc_width)
         
         for i, line in enumerate(desc_lines):
-            if i >= 2:  # Limit to 2 lines for consistent display
+            if i >= 4:  # Limit to 2 lines for consistent display
                 break
             desc_text = desc_font.render(line, True, BEIGE)
             text_x = WIDTH//2 - desc_text.get_width()//2
@@ -664,7 +665,7 @@ def show_meet_team(screen):
 # HOPSCOTCH GAME
 # TOGGLES
 
-# # Only import GPIO stuff if on a Pi
+# Only import GPIO stuff if on a Pi
 # try:
 #     import board
 #     from digitalio import DigitalInOut, Direction, Pull
@@ -672,21 +673,24 @@ def show_meet_team(screen):
 # except ImportError:
 #     RPi = False
 #     print("GPIO not available. Running in simulation mode.")
-# 
-# 
-# # Base thread class for phases like toggles/wires/buttons
-# class PhaseThread(Thread):
-#     def __init__(self, name):
-#         super().__init__(name=name, daemon=True)
-#         self._running = False
-#         self._value = None
-#         if RPi:
-#             for pin in self._pins:
+
+# Base thread class for phases like toggles/wires/buttons
+
+class PhaseThread(Thread):
+    def __init__(self, name):
+        super().__init__(name=name, daemon=True)
+        self._running = False
+        self._value = None
+
+
+# if RPi:
+#     for pin in self._pins:
 #                 pin.direction = Direction.INPUT
 #                 pin.pull = Pull.DOWN
-# 
+
 #     def reset(self):
 #         self._value = None
+<<<<<<< HEAD
 # 
 # 
 # # Toggle switch handler class
@@ -806,12 +810,68 @@ timer.start()
 
 
 
+=======
+>>>>>>> 0463ef64734483f0c77fbea7a57d01cb9ce89ccd
 
 
 
 
+# Toggle switch handler class
+class Toggles(PhaseThread):
+    def __init__(self, pins, name="Toggles"):
+        super().__init__(name)
+        self._pins = pins
+     # Setup each pin as input with a pull-down resistor (starts as LOW / 0)
+        for pin in self._pins:
+            pin.direction = Direction.INPUT
+            pin.pull = Pull.DOWN
+            
+        # Start with all toggles down
+        self._value = "0000"
+        self._prev_value = self._value
+        self._state_changed = False
 
+    def run(self): 
+        pass
+        
+    def run(self):
+        """Thread continuously checks for toggle changes."""
+        self._running = True
+        self.update_state()
+ 
+        while self._running:
+            if self.update_state():
+            # You could trigger logic here or just print for testing
+                print(f"Toggles changed: {self._value}/{self._prev_value} - {self._state_changed}, {next(i for i, (a, b) in enumerate(zip(self._value, self._prev_value)) if a != b)}")
+                sleep(0.1)
+                
+    def update_state(self):
+        """Update toggle state and return True if the state changed."""
+        new_state = "".join([str(int(pin.value)) for pin in self._pins])
+ 
+        changed = new_state != self._value
+        if changed:
+             self._prev_value = self._value
+             self._value = new_state
+             self._state_changed = True
+        
+        return changed
+    
+ 
+    def has_changed(self):
+        """Checks if toggles changed since last time."""
+        if self._state_changed:
+            self._state_changed = False
+            return True
+            
+        return False
+ 
+    def __str__(self):
+        """Show state as binary and its decimal equivalent."""
+        return f"{self._value}/{int(self._value, 2)}"
 
+# toggle pins defined from RPi
+toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.D21)]
 
 
 
@@ -842,7 +902,7 @@ def show_hopscotch_instructions_screen(screen):
     
     # Hopscotch instructions
     introduction_text = [
-        "In this challenge, you'll move forward by selecting the correct tile in each row using the toggles. Each row has more than one safe tile but choose carefully. If you step on the wrong tile, you will lose a life. You have ten lives to complete a total of 10 levels. After each mistake, the path stays the same so remember where you went wrong and try again.",
+        "In this challenge, you'll move forward by selecting the correct tile in each row using the toggles. Each row has more than one safe tile but choose carefully. If you step on the wrong tile, you will lose a life. You have ten lives to complete a total of 10 . After each mistake, the path stays the same so remember where you went wrong and try again.",
         "Good luck and most importantly, don't fall!"
     ]
     
@@ -976,6 +1036,14 @@ def show_hopscotch_game_screen(screen):
     result = show_hopscotch_instructions_screen(screen)
     
     if result == "Play":
+        if RPi:  # Only start the real thread on a Pi
+            
+            #create new Toggles object every time
+            toggles = Toggles(toggle_pins)
+            
+            #start toggles
+            toggles.start()
+        
         pygame.mixer.music.stop()
         pygame.mixer.music.load("round_round.mp3")
         pygame.mixer.music.play(-1)
@@ -1117,42 +1185,6 @@ def show_hopscotch_game_screen(screen):
             draw_board(board, current_row, lives, rows_cleared)
             return current_row
 
-        # Play a Turn (for GPIO or internal use)
-        def play_turn(board, current_row, selected_col, lives, rows_cleared):
-            """
-            Processes a move based on selected column (0-3).
-            Used by Raspberry Pi GPIO toggles.
-            Returns: updated row index, and "win"/"lose"/None
-            """
-            if selected_col in board[current_row]:
-                # Show correct tile briefly
-                draw_board(board, current_row, lives, rows_cleared, 0, None, True)
-                pygame.display.flip()
-                pygame.time.delay(300)  
-            
-                rows_cleared += 1
-                current_row = animate_row(board, current_row, lives, rows_cleared)
-        
-                result = None if rows_cleared < ROWS else "win"
-            else:
-                # Show failed tile
-                tile_rect = get_tile_rect(0, selected_col)
-                pygame.draw.rect(screen, FAIL, tile_rect)
-        
-                # Redraw the letter label
-                label = FONT.render(chr(65 + selected_col), True, TEXT)
-                screen.blit(label, (tile_rect.x + TILE_WIDTH//2 - 10, tile_rect.y + 15))
-        
-                pygame.display.flip()
-                pygame.time.delay(800)
-        
-                lives -= 1
-                current_row = 0
-                rows_cleared = 0
-                result = "lose" if lives == 0 else None
-
-            draw_board(board, current_row, lives, rows_cleared)
-            return current_row, lives, rows_cleared, result
 
         # Optional GPIO Reset (not needed in GUI testing)
         def wait_for_toggle_reset(toggle_pins):
@@ -1167,65 +1199,169 @@ def show_hopscotch_game_screen(screen):
                 if all_down:
                     break
                 time.sleep(0.05)
-
-        # Main Game (for local testing) 
-        def play_game():
-            board = generate_board(successes_per_row=2)
-            current_row = 0
-            lives = 10
-            rows_cleared = 0
-
-            while True:
-                draw_board(board, current_row, lives, rows_cleared)
-
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        sys.exit()
-
-                    elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                        mouse_pos = pygame.mouse.get_pos()
                 
-                        for col in range(COLS):
-                            tile_rect = get_tile_rect(0, col)
+        def flash_screen(color, delay=0.3):
+             screen.fill(color)
+             pygame.display.update()
+             time.sleep(delay)  # Pause to show the color flash
+                
+        
+        # Main Game (for local testing)
+        def play_game():
+            board = generate_board(successes_per_row=2)  # Create board once
+            rows_cleared = 0
+            current_row = 0
+            lives = 10  # Start with 5 lives
+ 
+            while True:
+                draw_board(board, current_row, lives, rows_cleared)  # Now we also pass lives to draw
+                
+                # Check for a toggle change (user flips one switch)
+                if toggles._state_changed:
+                    # Get the index of the flipped toggle (0–3)
+                    selected_col = next(i for i, (a, b) in enumerate(zip(toggles._value, toggles._prev_value)) if a != b)
+                    print(f"Selected Col {selected_col}")
+                    print(f"Board State:  {board[current_row]}")
+                    print(f"Current Row:  {current_row}")
                     
-                            if tile_rect.collidepoint(mouse_pos):
-                                if col in board[current_row]:
-                                    # Correct choice - flash green briefly
-                                    pygame.draw.rect(screen, SAFE, tile_rect)
-                                    label = FONT.render(chr(65 + col), True, TEXT)
-                                    screen.blit(label, (tile_rect.x + TILE_WIDTH//2 - 10, tile_rect.y + 15))
-                                    pygame.display.flip()
-                                    pygame.time.delay(300)
+                    #debug statement
+                    print(f"Current level: {rows_cleared + 1}, Current row index: {current_row}")
+
+                    # if a tile has been selected
+                    if selected_col is not None:
+                        
+                        # Check if selected toggle is correct for current row
+                        # right answer
+                        if selected_col in board[current_row]:
+                            # flash green safe tile
+                            tile_rect = get_tile_rect(0, selected_col)
+                            pygame.draw.rect(screen, SAFE, tile_rect)
+                            label = FONT.render(chr(65 + selected_col), True, TEXT)
+                            screen.blit(label, (tile_rect.x + TILE_WIDTH//2 - 10, tile_rect.y + 15))
+        
+                            pygame.display.flip()
+                            pygame.time.delay(800)
                             
-                                    rows_cleared += 1
-                                    current_row = animate_row(board, current_row, lives, rows_cleared)
+                            # move onto next row
+                            rows_cleared += 1
+                            current_row = animate_row(board, current_row, lives, rows_cleared)
+        
                             
-                                    if rows_cleared >= ROWS:
-                                        return "win"
-                                else:
-                                    # Wrong choice - show red
-                                    pygame.draw.rect(screen, FAIL, tile_rect)
-                                    label = FONT.render(chr(65 + col), True, TEXT)
-                                    screen.blit(label, (tile_rect.x + TILE_WIDTH//2 - 10, tile_rect.y + 15))
-                                    pygame.display.flip()
-                                    pygame.time.delay(800)
+                            draw_board(board, current_row, lives, rows_cleared)
+                            pygame.display.flip()
+                            pygame.time.delay(300)
                             
-                                    lives -= 1
-                                    current_row = 0
-                                    rows_cleared = 0
-                                    if lives == 0:
-                                        show_death_screen(screen)
-                                        return "lose"
-            clock.tick(60)
+                            if rows_cleared == ROWS:
+                                print("User won the game!")
+                                # won game
+                                return True
+                        # wrong answer
+                        else:
+                            tile_rect = get_tile_rect(0, selected_col)
+                            pygame.draw.rect(screen, FAIL, tile_rect)
+                            
+                            # Redraw the letter label
+                            label = FONT.render(chr(65 + selected_col), True, TEXT)
+                            screen.blit(label, (tile_rect.x + TILE_WIDTH//2 - 10, tile_rect.y + 15))
+        
+                            pygame.display.flip()
+                            pygame.time.delay(800)
+        
+                            lives -= 1
+                                
+                            if lives == 0:    
+                                print("BOOM!")
+                                # lost game
+                                return False
+                            else:
+                                current_row = 0
+                                rows_cleared = 0
+                                draw_board(board, current_row, lives, rows_cleared) #redraws board after fail
+                                pygame.display.update()  # update display
+
+                            
+                            print("WRONG TILE — Strike!")
+                            if lives == 0:
+                                print("BOOM!")
+                                return False
+ 
+                    draw_board(board, current_row, lives, rows_cleared)
+                    toggles._state_changed = False
+                    
+                clock.tick(60)
+
 
         won = play_game()
-        return result
+        return won #true if won, false if lost
+    
         screen.fill(BG)
         pygame.display.flip()
+
 ####################################################################################################################
-# TIC TAC TOE
-# KEYPAD
+# # TIC TAC TOE
+# # KEYPAD
+MAX_PASS_LEN = 10
+STAR_CLEARS_PASS = True
+
+class PhaseThread(Thread):
+    def __init__(self, name):
+        super().__init__(name=name, daemon=True)
+        self._running = False
+        self._value = None
+
+    def reset(self):
+        self._value = None
+
+
+class Keypad(PhaseThread):
+    def __init__(self, keypad, name="Keypad"):
+        super().__init__(name)
+        self._value = ""
+        # the keypad pins
+        self._keypad = keypad
+        # Track the last pressed key for the game
+        self.last_key = None
+        self.key_pressed = False
+
+    # runs the thread
+    def run(self):
+        self._running = True
+        while True:
+            # process keys when keypad key(s) are pressed
+            if self._keypad.pressed_keys:
+                # debounce
+                while self._keypad.pressed_keys:
+                    try:
+                        key = self._keypad.pressed_keys[0]
+                    except:
+                        key = ""
+                    sleep(0.1)
+                
+                # Save the last key press for the game to use
+                if key in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
+                    self.last_key = key
+                    self.key_pressed = True
+                
+                # do we have an asterisk (*) (and it resets the passphrase)?
+                if key == "*" and STAR_CLEARS_PASS:
+                    self._value = ""
+                # we haven't yet reached the max pass length (otherwise, we just ignore the keypress)
+                elif len(self._value) < MAX_PASS_LEN:
+                    # log the key
+                    self._value += str(key)
+            sleep(0.1)
+        self._running = False
+
+    def get_key_press(self):
+        """Get the last key press and reset the flag"""
+        if self.key_pressed:
+            key = self.last_key
+            self.key_pressed = False
+            return key
+        return None
+
+    def __str__(self):
+        return self._value
 
 
 
@@ -1286,7 +1422,7 @@ def show_tictactoe_instructions_screen(screen):
     hint_text = [
         "HINT:",
         "It guards the line, not claims it.",
-        "Win by force, not patience."
+        "Win by force and direction, not patience."
     ]
     
     ag_items = ["Play"]  
@@ -1407,10 +1543,22 @@ def show_tictactoe_instructions_screen(screen):
         pygame.display.flip()
         clock.tick(60)
 
-# GAME LOGIC
+# # GAME LOGIC
 def show_tictactoe_game_screen(screen):
     # First show the instructions screen
     result = show_tictactoe_instructions_screen(screen)
+
+
+
+    keypad_cols = [DigitalInOut(i) for i in (board.D10, board.D9, board.D11)]
+    keypad_rows = [DigitalInOut(i) for i in (board.D5, board.D6, board.D13, board.D19)]
+    keypad_keys = ((1, 2, 3), (4, 5, 6), (7, 8, 9), ("*", 0, "#"))
+    matrix_keypad = Matrix_Keypad(keypad_rows, keypad_cols, keypad_keys)
+    keypad = Keypad(matrix_keypad)
+    keypad.start()
+    
+    # Run the game
+    #show_tictactoe_game_screen(screen, keypad)
     
     # Only proceed to the game if the player clicked "Play"
     if result == "Play":
@@ -1419,8 +1567,8 @@ def show_tictactoe_game_screen(screen):
         pygame.mixer.music.play(-1)
         
         # Window setup
-        WIDTH, HEIGHT = 288, 512  # Dimensions of game window for tall screens
-        screen = pygame.display.set_mode((WIDTH, HEIGHT))  # Create window
+        WIDTH, HEIGHT = screen.get_size()  # Dimensions of game window for tall screens
+        #screen = pygame.display.set_mode((WIDTH, HEIGHT))  # Create window
         pygame.display.set_caption('Tic Tac Toe')  # Window title
 
         # Game board setup
@@ -1440,9 +1588,6 @@ def show_tictactoe_game_screen(screen):
         # Colors
         BG_COLOR = (170, 132, 210)
         LINE_COLOR = (206, 183, 231) 
-        #BG_COLOR = (28, 170, 156)       # Background
-        #LINE_COLOR = (23, 145, 135)     # Grid lines
-        # CIRCLE_COLOR = (239, 231, 200)  # CPU's move
         CIRCLE_COLOR = (255, 255, 255)
         CROSS_COLOR = (66, 66, 66)      # Player's move
         WIN_LINE_COLOR = (255, 50, 50)  # Winning line
@@ -1451,6 +1596,28 @@ def show_tictactoe_game_screen(screen):
         SCORE_FONT = pygame.font.Font("font1.otf", 26)
         ROUND_FONT = pygame.font.Font("font1.otf", 38)
         MESSAGE_FONT = pygame.font.Font("font1.otf", 30)
+        
+        # Key mapping for the board positions
+        # The keys 1-9 on the keypad correspond to positions on the board:
+        # 7 8 9
+        # 4 5 6
+        # 1 2 3
+        # But on a Tic Tac Toe board, positions are typically:
+        # 0,0 0,1 0,2
+        # 1,0 1,1 1,2
+        # 2,0 2,1 2,2
+        KEY_TO_POSITION = {
+            7: (0, 0),  # top left
+            8: (0, 1),  # top middle
+            9: (0, 2),  # top right
+            4: (1, 0),  # middle left
+            5: (1, 1),  # middle
+            6: (1, 2),  # middle right
+            1: (2, 0),  # bottom left
+            2: (2, 1),  # bottom middle
+            3: (2, 2)   # bottom right
+        }
+        
 
         # Draws the grid lines for the board
         def draw_lines():
@@ -1583,33 +1750,33 @@ def show_tictactoe_game_screen(screen):
 
                 # Main game loop
                 while running:
+                    # Process events
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
                             pygame.quit()
                             sys.exit()
-                        # Player's turn (left click)
-                        if player == 1 and event.type == pygame.MOUSEBUTTONDOWN and not game_over:
-                            mouseX = event.pos[0]
-                            mouseY = event.pos[1]
-                            clicked_row = (mouseY - BOARD_TOP) // SQUARE_SIZE
-                            clicked_col = mouseX // SQUARE_SIZE
-                            if 0 <= clicked_row < BOARD_ROWS and 0 <= clicked_col < BOARD_COLS:  # Valid click
-                                if available_square(board, clicked_row, clicked_col):
-                                    mark_square(board, clicked_row, clicked_col, 1)
-                                    win, win_line = check_win(board, 1)
-                                    if win:
-                                        player_score += 1
-                                        winner = "player"
-                                        game_over = True
-                                    elif is_board_full(board):
-                                        winner = "tie"
-                                        game_over = True
-                                    else:
-                                        player = 2  # Switch to CPU turn
+                            
+                    # Check for keypad input during player's turn
+                    if player == 1 and not game_over:
+                        key = keypad.get_key_press()
+                        if key in KEY_TO_POSITION:
+                            row, col = KEY_TO_POSITION[key]
+                            if available_square(board, row, col):
+                                mark_square(board, row, col, 1)
+                                win, win_line = check_win(board, 1)
+                                if win:
+                                    player_score += 1
+                                    winner = "player"
+                                    game_over = True
+                                elif is_board_full(board):
+                                    winner = "tie"
+                                    game_over = True
+                                else:
+                                    player = 2  # Switch to CPU turn
 
                     # CPU turn
                     if player == 2 and not game_over:
-                        pygame.time.delay(75)
+                        pygame.time.delay(750)  # Add delay for better user experience
                         row, col = computer_move(board)
                         if row is not None and col is not None:
                             mark_square(board, row, col, 2)
@@ -1624,7 +1791,7 @@ def show_tictactoe_game_screen(screen):
                             else:
                                 player = 1  # Switch to player turn
 
-                    # Draw shapes and update score
+                    # Draw shapes and update display
                     draw_lines()
                     draw_figures(board)
                     show_score(round_number, player_score, cpu_score)
@@ -1651,14 +1818,19 @@ def show_tictactoe_game_screen(screen):
                 # Prepare for next round
                 round_number += 1
                 show_next_round(round_number)
-           
 
-    result = play_tic_tac_toe()
-    return result
+        result = play_tic_tac_toe()
+        return result
+
+#     return None
+#     result = play_tic_tac_toe()
+#     return result
     pygame.display.flip()
-####################################################################################################################
-# RED LIGHT GREEN LIGHT
-# BUTTON
+    return None
+# ####################################################################################################################
+# # RED LIGHT GREEN LIGHT
+# # BUTTON
+
 
 
 
@@ -1680,6 +1852,16 @@ def show_tictactoe_game_screen(screen):
 def show_redlightgreenlight_instructions_screen(screen):
     WIDTH, HEIGHT = screen.get_size()
     pygame.display.set_caption("Red Light Green Light Instructions")
+
+
+
+
+
+# INSTRUCTIONS
+def show_redlightgreenlight_instructions_screen(screen):
+    WIDTH, HEIGHT = screen.get_size()
+    pygame.display.set_caption("Red Light Green Light Instructions")
+
     
     # Base font sizes for reference design
     base_title_size = 40
@@ -1917,14 +2099,14 @@ def show_redlightgreenlight_game_screen(screen):
             doll_height = int(doll_width * 1.8)  # aspect ratio of 1.8
             
             
-            doll_red_img = pygame.image.load("redlightdollZ.png")  # Doll facing player (red light)
-            doll_green_img = pygame.image.load("greenlightdollZ.png")  # Doll facing away (green light)
+            doll_red_img = pygame.image.load("redlightdoll.jpg")  # Doll facing player (red light)
+            doll_green_img = pygame.image.load("greenlightdoll.jpg")  # Doll facing away (green light)
                 
                 # Scale images to the desired size
             doll_red_img = pygame.transform.scale(doll_red_img, (doll_width, doll_height))
             doll_green_img = pygame.transform.scale(doll_green_img, (doll_width, doll_height))
             
-            
+
             # Game variables
             light_color = "red"
             game_time = 120  # seconds to win
@@ -1933,6 +2115,14 @@ def show_redlightgreenlight_game_screen(screen):
             start_time = time.time()
             next_change_time = start_time  # Initialize for immediate first change
             #message = "Press the button ONLY when the light is GREEN"
+
+            # Game variables
+            light_color = "red"
+            game_time = 20  # seconds to win
+            start_time = time.time()
+            next_change_time = start_time  # Initialize for immediate first change
+            #message = "Press the button ONLY when the light is GREEN"
+
             
             # Game state variables
             running = True
@@ -1991,6 +2181,7 @@ def show_redlightgreenlight_game_screen(screen):
                     message = f"THE LIGHT IS NOW {light_color.upper()}!"
                     print(f"THE LIGHT IS NOW {light_color.upper()}!")
                 
+
                 # Check button press
                 if button_pressed or check_button_press() and not game_over:
                     print("Button Pressed!")
@@ -2010,6 +2201,23 @@ def show_redlightgreenlight_game_screen(screen):
 
                         
             
+
+                # Check button press
+                if button_pressed and not game_over:
+                    print("Button Pressed!")
+                    if light_color == "green":
+                        message = "Good move!"
+                        #print("Good move!")
+                    else:
+                        message = "You pressed during RED! You lose!"
+                        pygame.display.flip()
+                        #pygame.time.delay(1000)
+                        show_death_screen(screen)
+                        return "lose"
+                        #print("You pressed during RED! You lose!")
+#                         game_over = True
+#                         won = False
+
                 
                 # Draw doll image based on light color
                 # Select the appropriate image
@@ -2035,6 +2243,7 @@ def show_redlightgreenlight_game_screen(screen):
                 time_text = FONT.render(f"Time: {time_left:.1f}s", True, TEXT)
                 screen.blit(time_text, (margin, margin + font_size + 10))  # Position under state text
                 
+
                 distance_text = FONT.render(f"Distance: {distance :.0f} / {target_distance :.0f}", True, TEXT)
                 screen.blit(distance_text, (margin, margin + font_size + font_size + 20))  # Position under state text
                 
@@ -2044,6 +2253,14 @@ def show_redlightgreenlight_game_screen(screen):
                 # Position message near the bottom of the screen
                 message_y = HEIGHT - int(120 * HEIGHT / dev_height)
                 screen.blit(message_text, (message_x, message_y))
+
+                # Draw message
+                message_text = FONT.render(message, True, TEXT)
+                message_x = WIDTH // 2 - message_text.get_width() // 2
+                # Position message near the bottom of the screen
+                message_y = HEIGHT - int(120 * HEIGHT / dev_height)
+                screen.blit(message_text, (message_x, message_y))
+
                 
                 # Draw instructions
                 if not game_over:
@@ -2096,167 +2313,11 @@ def show_redlightgreenlight_game_screen(screen):
 
 ####################################################################################################################
 # SIMON SAYS
+
+
+
 # WIRES
-
-
-
-
-
 # INSTRUCTIONS
-# def show_redlightgreenlight_instructions_screen(screen):
-#     WIDTH, HEIGHT = screen.get_size()
-#     pygame.display.set_caption("Simon Says Instructions")
-#     
-#     # Base font sizes for reference design
-#     base_title_size = 40
-#     base_button_size = 20
-#     base_text_size = 20
-#     
-#     # Scale font sizes
-#     title_size = scale_font_size(base_title_size, (WIDTH, HEIGHT))
-#     button_size = scale_font_size(base_button_size, (WIDTH, HEIGHT))
-#     text_size = scale_font_size(base_text_size, (WIDTH, HEIGHT))
-#     
-#     # Fonts
-#     title_font = pygame.font.Font("font2.otf", title_size)
-#     button_font = pygame.font.Font("font2.otf", button_size)
-#     text_font = pygame.font.Font("font5.otf", text_size)
-#     
-#     # Background Image
-#     bg_image = pygame.image.load("how_to_play.jpg")
-#     bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
-#     
-#     # Hopscotch-specific instructions
-#     welcome_text = [
-#         "In this challenge, "
-#     ]
-#     
-#     # Additional gameplay instructions
-#     hint_text = [
-#         "HINT:",
-#         "The colors come, but not in haste."
-#         "Rush the wires, your turn’s a waste."
-#     ]
-#     
-#     # Character options (buttons for 'Play')
-#     ag_items = ["Play"] 
-#     selected_index = 0
-#     clock = pygame.time.Clock()
-#     
-#     while True:
-#         # Draw the background
-#         screen.blit(bg_image, (0, 0))
-#         
-#         # Overlay for the how-to-play screen
-#         overlay = pygame.Surface((WIDTH, HEIGHT))
-#         overlay.set_alpha(150)  # More opaque for readability
-#         overlay.fill((20, 20, 30))
-#         screen.blit(overlay, (0, 0))
-#         
-#         # Draw title - scale from reference position
-#         title_text = title_font.render("Instructions", True, BEIGE)
-#         base_title_pos = (dev_width // 2, 30)
-#         title_x, title_y = scale_position(base_title_pos[0], base_title_pos[1], (WIDTH, HEIGHT))
-#         screen.blit(title_text, (title_x - title_text.get_width() // 2, title_y))
-#         
-#         # Reference info box dimensions and position
-#         base_info_box = pygame.Rect(50, 80, dev_width-100, 300)
-#         info_box_rect = scale_rect(base_info_box, (WIDTH, HEIGHT))
-#         
-#         # Draw info box
-#         info_box = pygame.Surface((info_box_rect.width, info_box_rect.height), pygame.SRCALPHA)
-#         info_box.fill((30, 30, 30, 180))  # Semi-transparent
-#         screen.blit(info_box, (info_box_rect.x, info_box_rect.y))
-#         pygame.draw.rect(screen, (100, 100, 150), info_box_rect, 2)
-#         
-#         # Draw intro text
-#         y_pos = info_box_rect.y + 10
-#         max_text_width = info_box_rect.width - 40
-#         
-#         for line in welcome_text:
-#             wrapped_lines = wrap_text(line, text_font, max_text_width)
-#             for wrapped_line in wrapped_lines:
-#                 text_surf = text_font.render(wrapped_line, True, BEIGE)
-#                 screen.blit(text_surf, (info_box_rect.x + 20, y_pos))
-#                 y_pos += text_surf.get_height() + 5
-#                 
-#                 # Stop if we reach the bottom of the box
-#                 if y_pos > info_box_rect.y + info_box_rect.height - text_surf.get_height():
-#                     break
-#             if y_pos > info_box_rect.y + info_box_rect.height - text_surf.get_height():
-#                 break
-#         
-#         # Reference instructions box dimensions and position
-#         base_instructions_box = pygame.Rect(50, 400, dev_width-100, 180)
-#         instructions_box_rect = scale_rect(base_instructions_box, (WIDTH, HEIGHT))
-#         
-#         # Draw instructions box
-#         instructions_box = pygame.Surface((instructions_box_rect.width, instructions_box_rect.height), pygame.SRCALPHA)
-#         instructions_box.fill((30, 30, 30, 180))  
-#         screen.blit(instructions_box, (instructions_box_rect.x, instructions_box_rect.y))
-#         pygame.draw.rect(screen, (100, 100, 150), instructions_box_rect, 2)
-#         
-#         # Draw gameplay instructions
-#         y_pos = instructions_box_rect.y + 10
-#         
-#         for line in hint_text:
-#             wrapped_lines = wrap_text(line, text_font, max_text_width)
-#             for wrapped_line in wrapped_lines:
-#                 text_surf = text_font.render(wrapped_line, True, YELLOW)
-#                 screen.blit(text_surf, (instructions_box_rect.x + 20, y_pos))
-#                 y_pos += text_surf.get_height() + 5
-#                 
-#                 if y_pos > instructions_box_rect.y + instructions_box_rect.height - text_surf.get_height():
-#                     break
-#             if y_pos > instructions_box_rect.y + instructions_box_rect.height - text_surf.get_height():
-#                 break
-#         
-#         # 'Play' button - centered at bottom
-#         base_button_height = 40
-#         base_button_width = 200
-#         base_button_y = dev_height - 90
-#         
-#         # Scale button dimensions
-#         button_height = int(base_button_height * HEIGHT / dev_height)
-#         button_width = int(base_button_width * WIDTH / dev_width)
-#         
-#         # Center button
-#         button_x = (WIDTH - button_width) // 2
-#         button_y = int(base_button_y * HEIGHT / dev_height)
-#         
-#         button_rects = []
-#         name = ag_items[0]  # "Play"
-#         color = YELLOW
-#         bg_color = PURPLE
-#         
-#         box_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-#         pygame.draw.rect(screen, bg_color, box_rect, border_radius=10)
-#         
-#         # Center text in button
-#         text_surface = button_font.render(name, True, color)
-#         text_x = box_rect.centerx - text_surface.get_width() // 2
-#         text_y = box_rect.centery - text_surface.get_height() // 2
-#         
-#         screen.blit(text_surface, (text_x, text_y))
-#         button_rects.append((box_rect, name))
-#         
-#         # Event Handling (key or mouse input)
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 pygame.quit()
-#                 sys.exit()
-#             elif event.type == pygame.KEYDOWN:
-#                 if event.key == pygame.K_RETURN:
-#                     return "Play"  # Return "Play" to start the game
-#             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-#                 mouse_pos = pygame.mouse.get_pos()
-#                 for rect, item in button_rects:
-#                     if rect.collidepoint(mouse_pos):
-#                         return "Play"  # Return "Play" to start the game
-#         
-#         pygame.display.flip()
-#         clock.tick(60)
-
 
 # GAME LOGIC
 
@@ -2399,7 +2460,7 @@ def main():
 
     # Screen setup
     if os.environ.get('RPI_MODE', 'False').lower() == 'true':
-        WIDTH, HEIGHT = 288, 512
+        WIDTH, HEIGHT = 576, 1024
     else:
         WIDTH, HEIGHT = 800, 700
 
@@ -2407,7 +2468,7 @@ def main():
     
     game_running = True
     game_state = "Menu"
-    mini_games = ["Hopscotch", "Tic Tac Toe","Red Light Green Light"]
+    mini_games = ["Hopscotch", "Tic Tac Toe"]
     completed_games = set()
 
     while game_running:
@@ -2417,7 +2478,7 @@ def main():
             pygame.mixer.music.play(-1)
             menu_choice = show_menu_screen(screen)
             if menu_choice == "Start":
-                game_state = random.choice(["Hopscotch", "Tic Tac Toe", "Red Light Green Light"])
+                game_state = random.choice(["Hopscotch", "Tic Tac Toe"])
             elif menu_choice == "About Game":
                 game_state = "About Game"
             elif menu_choice == "Meet Team":
