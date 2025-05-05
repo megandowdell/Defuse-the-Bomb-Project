@@ -263,7 +263,7 @@ def main():
 
     while running:
         # Fill screen with black background
-        screen.fill(BLACK)
+        # screen.fill(BLACK)
         
         # Calculate remaining time for current command
         elapsed_time = time.time() - command_start_time
