@@ -383,8 +383,8 @@ def main():
         
         # Draw text elements
         # Title
-        title = font.render("Simon Says", True, WHITE)
-        screen.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, 30))
+        #title = font.render("Simon Says", True, WHITE)
+        #screen.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, 30))
         
         #Draw background image
         screen.blit(bg_image, (0, 0))  
