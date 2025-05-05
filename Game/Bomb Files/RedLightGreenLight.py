@@ -76,8 +76,6 @@ def red_light_green_light_game_gui():
     
     song.play(-1)
 
-    
-
 
     def draw_text(text, y, color=(255, 255, 255)):
         rendered = font.render(text, True, color)

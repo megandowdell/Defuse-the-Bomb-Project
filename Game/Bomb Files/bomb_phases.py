@@ -315,7 +315,9 @@ class Timer(PhaseThread):
 
     # returns the timer as a string (mm:ss)
     def __str__(self):
-        return f"{self._min}:{self._sec}"
+        minutes = self._value // 60
+        seconds = self._value % 60
+        return f"{minutes:02}:{seconds:02}"
 
 # the keypad phase
 class Keypad(PhaseThread):

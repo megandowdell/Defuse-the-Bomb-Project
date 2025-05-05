@@ -9,7 +9,7 @@ import time
 from threading import Thread
 from time import sleep
 from bomb_configs import *
-# from bomb_phases import *
+from bomb_phases import *
 #import RPi.GPIO as GPIO  # Uncomment if using GPIO on Raspberry Pi
 ####################################################################################################################
 # MENU AUDIO
@@ -787,9 +787,17 @@ def show_meet_team(screen):
 
 
 
+if (RPi):
+    i2c = board.I2C()
+    component_7seg = Seg7x4(i2c)
+    # set the 7-segment display brightness (0 -> dimmest; 1 -> brightest)
+    component_7seg.brightness = 0.5
+else:
+    # For Pygame, component is None
+    component_7seg = None
 
-
-
+timer = Timer(component_7seg, 600)
+timer.start()
 
 
 
