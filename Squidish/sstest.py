@@ -102,7 +102,8 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 
 # Define wire colors
-BROWN = (139, 69, 19)
+BROWN = (0, 255, 0)
+#BROWN = (139, 69, 19)
 RED_WIRE = (255, 0, 0)  # Named RED_WIRE to avoid conflict with RED
 ORANGE = (255, 165, 0)
 YELLOW = (255, 255, 0)
