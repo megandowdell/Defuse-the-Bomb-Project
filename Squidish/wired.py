@@ -117,7 +117,8 @@ YELLOW_WIRE = (255, 255, 0)
 GREEN_WIRE = (0, 190, 104)
 
 # Font
-font = pygame.font.SysFont('Arial', 24)
+font = pygame.font.Font('font1.otf', 30)
+wire_font = pygame.font.Font('font1.otf', 24)
 
 # Main game function
 def main():
