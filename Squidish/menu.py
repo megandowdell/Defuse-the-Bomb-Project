@@ -776,7 +776,7 @@ def show_hopscotch_instructions_screen(screen):
     
     # Hopscotch instructions
     introduction_text = [
-        "In this challenge, you'll move forward by selecting the correct tile in each row using the toggles. Each row has more than one safe tile but choose carefully. If you step on the wrong tile, you will lose a life. You have ten lives to complete a total of 10 levels. After each mistake, the path stays the same so remember where you went wrong and try again.",
+        "In this challenge, you'll move forward by selecting the correct tile in each row using the toggles. Each row has more than one safe tile but choose carefully. If you step on the wrong tile, you will lose a life. You have ten lives to complete a total of 10 . After each mistake, the path stays the same so remember where you went wrong and try again.",
         "Good luck and most importantly, don't fall!"
     ]
     
@@ -963,7 +963,7 @@ def show_hopscotch_game_screen(screen):
         TILE_HEIGHT = int(base_tile_height * HEIGHT / dev_height)
         TILE_GAP = int(base_tile_gap * WIDTH / dev_width)
         
-        ROWS = 5           # Total levels
+        ROWS = 10           # Total levels
         COLS = 4           # Columns (A–D)
         VISIBLE_ROWS = 5
 
@@ -1085,7 +1085,7 @@ def show_hopscotch_game_screen(screen):
             board = generate_board(successes_per_row=2)  # Create board once
             rows_cleared = 0
             current_row = 0
-            lives = 5  # Start with 5 lives
+            lives = 10  # Start with 5 lives
  
             while True:
                 draw_board(board, current_row, lives, rows_cleared)  # Now we also pass lives to draw
