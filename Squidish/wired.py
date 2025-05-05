@@ -166,13 +166,8 @@ wire_font = pygame.font.SysFont('Arial', 22)
 #Main game function
 def main():
     #Initialize pygame mixer with explicit parameters for better compatibility
-    if not pygame.mixer.get_init():
-        try:
-            #Sound system setup 
-            pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=1024)
-            print("Mixer initialized successfully")
-        except Exception as e:
-            print(f"Failed to initialize mixer: {e}")
+   
+    
     
     #Load background image with error handling
     try:
