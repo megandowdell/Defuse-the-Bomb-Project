@@ -446,7 +446,7 @@ def show_meet_team(screen):
     # teammate options with descriptions
     teammates = [
         {"name": "Christa", "status": "Sophomore", "role": "Interface Architect", 
-         "description": "I am a Computer Science major with minors in Physics and Mathematics from Trinidad and Tobago. My side quests include raising stray cats—and emotionally adopting anime side characters"},
+         "description": "I am a Computer Science major, with minors in Physics and Mathematics, from Trinidad and Tobago. My side quests include raising stray cats and emotionally adopting anime side characters."},
         {"name": "Khalil", "status": "Junior", "role": "Sequence Strategist", 
          "description": "I am a Computer Science and Chemistry double major from .... Some fun facts about me are..."},
         {"name": "Matt", "status": "Junior",  "role": "Motion Engineer", 
