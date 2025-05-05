@@ -1,61 +1,179 @@
-from threading import Thread
-from time import sleep
-import board
-from digitalio import DigitalInOut, Direction, Pull
+import pygame
+import sys
+import random
+import time
+
+# Initialize pygame
+pygame.init()
+
+def show_tictactoe_instructions_screen(screen):
+    WIDTH, HEIGHT = screen.get_size()
+    pygame.display.set_caption("Tic Tac Toe Instructions")
+    
+    # Base font sizes for reference design
+    base_title_size = 40
+    base_button_size = 20
+    base_text_size = 20
+    
+    # Scale font sizes
+    title_size = scale_font_size(base_title_size, (WIDTH, HEIGHT))
+    button_size = scale_font_size(base_button_size, (WIDTH, HEIGHT))
+    text_size = scale_font_size(base_text_size, (WIDTH, HEIGHT))
+    
+    # Fonts
+    title_font = pygame.font.Font("font2.otf", title_size)
+    button_font = pygame.font.Font("font2.otf", button_size)
+    text_font = pygame.font.Font("font5.otf", text_size)
+    
+    # Background Image
+    bg_image = pygame.image.load("how_to_play.jpg")
+    bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
+    
+    # Hopscotch-specific instructions
+    welcome_text = [
+        "WELCOME TO HOPSCOTCH",
+        "A game of skill and chance",
+        "Your reflexes will be tested!"
+    ]
+    
+    # Additional gameplay instructions
+    gameplay_text = [
+        "HOW TO PLAY:",
+        "1. Each row has ONE safe tile",
+        "2. Choose the correct tile to advance",
+        "3. Safe tiles will flash green",
+        "4. Wrong tiles will flash red",
+        "5. Complete all 5 levels to win!",
+        "",
+        "Remember: Choose wisely. One wrong move and it's game over!"
+    ]
+    
+    # Character options (buttons for 'Play')
+    ag_items = ["Play"]  # Changed from ["Back", "Continue"] to just ["Play"]
+    selected_index = 0
+    clock = pygame.time.Clock()
+    
+    while True:
+        # Draw the background
+        screen.blit(bg_image, (0, 0))
+        
+        # Overlay for the how-to-play screen
+        overlay = pygame.Surface((WIDTH, HEIGHT))
+        overlay.set_alpha(150)  # More opaque for readability
+        overlay.fill((20, 20, 30))
+        screen.blit(overlay, (0, 0))
+        
+        # Draw title - scale from reference position
+        title_text = title_font.render("Instructions", True, BEIGE)
+        base_title_pos = (dev_width // 2, 30)
+        title_x, title_y = scale_position(base_title_pos[0], base_title_pos[1], (WIDTH, HEIGHT))
+        screen.blit(title_text, (title_x - title_text.get_width() // 2, title_y))
+        
+        # Reference info box dimensions and position
+        base_info_box = pygame.Rect(50, 80, dev_width-100, 300)
+        info_box_rect = scale_rect(base_info_box, (WIDTH, HEIGHT))
+        
+        # Draw info box
+        info_box = pygame.Surface((info_box_rect.width, info_box_rect.height), pygame.SRCALPHA)
+        info_box.fill((30, 30, 30, 180))  # Semi-transparent
+        screen.blit(info_box, (info_box_rect.x, info_box_rect.y))
+        pygame.draw.rect(screen, (100, 100, 150), info_box_rect, 2)
+        
+        # Draw intro text
+        y_pos = info_box_rect.y + 10
+        max_text_width = info_box_rect.width - 40
+        
+        for line in welcome_text:
+            wrapped_lines = wrap_text(line, text_font, max_text_width)
+            for wrapped_line in wrapped_lines:
+                text_surf = text_font.render(wrapped_line, True, BEIGE)
+                screen.blit(text_surf, (info_box_rect.x + 20, y_pos))
+                y_pos += text_surf.get_height() + 5
+                
+                # Stop if we reach the bottom of the box
+                if y_pos > info_box_rect.y + info_box_rect.height - text_surf.get_height():
+                    break
+            if y_pos > info_box_rect.y + info_box_rect.height - text_surf.get_height():
+                break
+        
+        # Reference instructions box dimensions and position
+        base_instructions_box = pygame.Rect(50, 400, dev_width-100, 180)
+        instructions_box_rect = scale_rect(base_instructions_box, (WIDTH, HEIGHT))
+        
+        # Draw instructions box
+        instructions_box = pygame.Surface((instructions_box_rect.width, instructions_box_rect.height), pygame.SRCALPHA)
+        instructions_box.fill((30, 30, 30, 180))  
+        screen.blit(instructions_box, (instructions_box_rect.x, instructions_box_rect.y))
+        pygame.draw.rect(screen, (100, 100, 150), instructions_box_rect, 2)
+        
+        # Draw gameplay instructions
+        y_pos = instructions_box_rect.y + 10
+        
+        for line in gameplay_text:
+            wrapped_lines = wrap_text(line, text_font, max_text_width)
+            for wrapped_line in wrapped_lines:
+                text_surf = text_font.render(wrapped_line, True, YELLOW)
+                screen.blit(text_surf, (instructions_box_rect.x + 20, y_pos))
+                y_pos += text_surf.get_height() + 5
+                
+                if y_pos > instructions_box_rect.y + instructions_box_rect.height - text_surf.get_height():
+                    break
+            if y_pos > instructions_box_rect.y + instructions_box_rect.height - text_surf.get_height():
+                break
+        
+        # 'Play' button - centered at bottom
+        base_button_height = 40
+        base_button_width = 200
+        base_button_y = dev_height - 90
+        
+        # Scale button dimensions
+        button_height = int(base_button_height * HEIGHT / dev_height)
+        button_width = int(base_button_width * WIDTH / dev_width)
+        
+        # Center button
+        button_x = (WIDTH - button_width) // 2
+        button_y = int(base_button_y * HEIGHT / dev_height)
+        
+        button_rects = []
+        name = ag_items[0]  # "Play"
+        color = YELLOW
+        bg_color = PURPLE
+        
+        box_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+        pygame.draw.rect(screen, bg_color, box_rect, border_radius=10)
+        
+        # Center text in button
+        text_surface = button_font.render(name, True, color)
+        text_x = box_rect.centerx - text_surface.get_width() // 2
+        text_y = box_rect.centery - text_surface.get_height() // 2
+        
+        screen.blit(text_surface, (text_x, text_y))
+        button_rects.append((box_rect, name))
+        
+        # Event Handling (key or mouse input)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    return "Play"  # Return "Play" to start the game
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_pos = pygame.mouse.get_pos()
+                for rect, item in button_rects:
+                    if rect.collidepoint(mouse_pos):
+                        return "Play"  # Return "Play" to start the game
+        
+        pygame.display.flip()
+        clock.tick(60)
 
 
-class PhaseThread(Thread):
-    def __init__(self, name):
-        super().__init__(name = name, daemon = True)
-        self._running = False
-        self._value = None
-
-    def reset(self):
-        self._value = None
-
-class Keypad(PhaseThread):
-    def __init__(self, keypad, name="Keypad"):
-        super().__init__(name)
-        self._value = ""
-        # the keypad pins
-        self._keypad = keypad
-
-    # runs the thread
-    def run(self):
-        self._running = True
-        while (True):
-            # process keys when keypad key(s) are pressed
-            if (self._keypad.pressed_keys):
-                # debounce
-                while (self._keypad.pressed_keys):
-                    try:
-                        key = self._keypad.pressed_keys[0]
-                    except:
-                        key = ""
-                    sleep(0.1)
-                # do we have an asterisk (*) (and it resets the passphrase)?
-                if (key == "*" and STAR_CLEARS_PASS):
-                    self._value = ""
-                # we haven't yet reached the max pass length (otherwise, we just ignore the keypress)
-                elif (len(self._value) < MAX_PASS_LEN):
-                    # log the key
-                    self._value += str(key)
-            sleep(0.1)
-        self._running = False
-
-    def __str__(self):
-        return self._value
-
-def show_tictactoe_game_screen(screen):
+def show_tictactoe_screen(screen):
     # First show the instructions screen
-    result = show_tictactoe_instructions_screen(screen)
+    result = show_hopscotch_instructions_screen(screen)
     
     # Only proceed to the game if the player clicked "Play"
     if result == "Play":
-        pygame.mixer.music.stop()
-        pygame.mixer.music.load("way_forward.mp3")
-        pygame.mixer.music.play(-1)
-        
         # Window setup
         WIDTH, HEIGHT = 288, 512  # Dimensions of game window for tall screens
         screen = pygame.display.set_mode((WIDTH, HEIGHT))  # Create window
@@ -76,19 +194,16 @@ def show_tictactoe_game_screen(screen):
         SPACE = SQUARE_SIZE // 4  # Spacing inside squares for shapes
 
         # Colors
-        BG_COLOR = (170, 132, 210)
-        LINE_COLOR = (206, 183, 231) 
-        #BG_COLOR = (28, 170, 156)       # Background
-        #LINE_COLOR = (23, 145, 135)     # Grid lines
-        # CIRCLE_COLOR = (239, 231, 200)  # CPU's move
-        CIRCLE_COLOR = (255, 255, 255)
+        BG_COLOR = (28, 170, 156)       # Background
+        LINE_COLOR = (23, 145, 135)     # Grid lines
+        CIRCLE_COLOR = (239, 231, 200)  # CPU's move
         CROSS_COLOR = (66, 66, 66)      # Player's move
         WIN_LINE_COLOR = (255, 50, 50)  # Winning line
 
         # Fonts
-        SCORE_FONT = pygame.font.Font("font1.otf", 26)
-        ROUND_FONT = pygame.font.Font("font1.otf", 38)
-        MESSAGE_FONT = pygame.font.Font("font1.otf", 30)
+        SCORE_FONT = pygame.font.SysFont("Arial", 26)
+        ROUND_FONT = pygame.font.SysFont("Arial", 42)
+        MESSAGE_FONT = pygame.font.SysFont("Arial", 36)
 
         # Draws the grid lines for the board
         def draw_lines():
@@ -173,7 +288,7 @@ def show_tictactoe_game_screen(screen):
 
         # Display the round number and score on screen
         def show_score(round_num, player_score, cpu_score):
-            score_text = SCORE_FONT.render(f"Round {round_num}  You: {player_score}  CPU: {cpu_score}", True, (255, 255, 255))
+            score_text = SCORE_FONT.render(f"Round {round_num} | You: {player_score}  CPU: {cpu_score}", True, (255, 255, 255))
             screen.blit(score_text, (10, 10))
 
         # Show message at end of each round
@@ -195,7 +310,7 @@ def show_tictactoe_game_screen(screen):
         # Show transition between rounds
         def show_next_round(round_num):
             screen.fill((0, 0, 0))
-            text = ROUND_FONT.render(f"Round {round_num}!", True, (255, 255, 255))
+            text = ROUND_FONT.render(f"Round {round_num} starts!", True, (255, 255, 255))
             screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 2))
             pygame.display.update()
             pygame.time.delay(1000)
@@ -283,23 +398,14 @@ def show_tictactoe_game_screen(screen):
                 if player_score == 3:
                     return "win"
                 elif cpu_score == 3:
-                    show_death_screen(screen)
                     return "lose"
 
                 # Prepare for next round
                 round_number += 1
                 show_next_round(round_number)
-           
 
-    result = play_tic_tac_toe()
-    return result
-    pygame.display.flip()
- 
- 
-if __name__ == "__main__":
-    keypad_cols = [DigitalInOut(i) for i in (board.D10, board.D9, board.D11)]
-    keypad_rows = [DigitalInOut(i) for i in (board.D5, board.D6, board.D13, board.D19)]
-    keypad_keys = ((1, 2, 3), (4, 5, 6), (7, 8, 9), ("*", 0, "#"))
-    matrix_keypad = Matrix_Keypad(keypad_rows, keypad_cols, keypad_keys)
-    keypad = Keypad(matrix_keypad)
-    keypad.start()
+# # Run this file standalone for testing
+# if __name__ == "__main__":
+#     result = play_tic_tac_toe()
+#     print("Result:", result)
+#     pygame.quit()

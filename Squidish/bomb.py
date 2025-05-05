@@ -1,4 +1,4 @@
-#################################
+e#################################
 # CSC 102 Defuse the Bomb Project
 # Main program
 # Team: 
@@ -13,7 +13,7 @@ from bomb_phases import *
 # functions
 ###########
 # generates the bootup sequence on the LCD
-'''def bootup(n=0):
+def bootup(n=0):
     # if we're not animating (or we're at the end of the bootup text)
     if (not ANIMATE or n == len(boot_text)):
         # if we're not animating, render the entire text at once (and don't process \x00)
@@ -34,7 +34,6 @@ from bomb_phases import *
         # scroll the next character after a slight delay (\x00 is a longer delay)
         gui.after(25 if boot_text[n] != "\x00" else 750, bootup, n + 1)
 
-'''
 # sets up the phase threads
 def setup_phases(): 
     global timer, keypad, wires, button, toggles
@@ -152,11 +151,11 @@ def check_phases():
     gui.after(100, check_phases)
 
 # handles a strike
-#def strike():
-#    global strikes_left
+def strike():
+    global strikes_left
     
     # note the strike
-#    strikes_left -= 1
+    strikes_left -= 1
 
 # turns off the bomb
 def turn_off():
@@ -173,7 +172,7 @@ def turn_off():
     # turn off the pushbutton's LED
     for pin in button._rgb:
         pin.value = True
-'''
+
 ######
 # MAIN
 ######
@@ -191,4 +190,3 @@ gui.after(1000, bootup)
 
 # display the LCD GUI
 window.mainloop()
-'''
