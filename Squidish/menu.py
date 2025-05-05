@@ -447,8 +447,8 @@ def show_meet_team(screen):
     teammates = [
         {"name": "Christa", "status": "Sophomore", "role": "Interface Architect", 
          "description": "I am a Computer Science major, with minors in Physics and Mathematics, from Trinidad and Tobago. My side quests include raising stray cats and emotionally adopting anime side characters."},
-        {"name": "Khalil", "status": "Junior", "role": "Sequence Strategist", 
-         "description": "I am a Computer Science and Chemistry double major from .... Some fun facts about me are..."},
+        {"name": "Khalil", "status": "Senior", "role": "Sequence Strategist", 
+         "description": "I am a Computer Science and Chemistry double major with a minor in mathematics and sociology from Chicago, IL. My favorite basketball team is the Golden State Warriors. "},
         {"name": "Matt", "status": "Junior",  "role": "Motion Engineer", 
          "description": "I am a Mathematics from... Some fun facts about me are.."},
         {"name": "Megan", "status": "Junior", "role": "Grid Tactician", 
