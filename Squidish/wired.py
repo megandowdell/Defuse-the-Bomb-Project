@@ -233,14 +233,33 @@ def main():
     game_over = False
     won = False
     status_message = ""
+    command_played = False # Check if command audio played or not
+
+   # Wire tracking variables
+    initial_wire_state = wires._value # Stores current state of wires before player action
+    updated_wire_state = wires._value # Stores state of wires after player action
+    action_result = None # Tracks player's actions
+    # action_time = 0 # Tracks timing of player's actions
+    
+    # Player tracking variables
+    player_confirmation = False # Check if player has confirmed their choice via space bar
+    wire_changed = False  # Check if initial state of wire has been changed
     
     # Main game loop
     clock = pygame.time.Clock()
     running = True
     
-    # Initialize the timer for 20 seconds
+    # Initialize the timer for 30 seconds
     command_start_time = time.time()
-    timer_duration = 20  # 20 seconds timer
+    timer_duration = 30  # 30 seconds timer
+    delay_time = 2 # Delays before player's action is checked
+    result_time = 2 # Time result is showed
+    
+    # If command has a sound, play it
+    if current_command in command_sounds:
+        pygame.mixer.music.stop()
+        command_sounds[current_command].play()
+        command_played = True
 
     while running:
         # Fill screen with black background
@@ -249,7 +268,14 @@ def main():
         # Calculate remaining time for current command
         elapsed_time = time.time() - command_start_time
         remaining_time = max(0, timer_duration - elapsed_time)
-        
+
+        # If the command has not been given, the game is still going and player has not yet confirmed, play another sound from list
+        if not command_played and not gamer_over and not player_confirmation:
+            if current_command in command_sounds:
+                pygame.mixer.stop()
+                command_sounds[current_command]
+            command_played = True
+            
         # Timer check: if the player hasn't made a move in 20 seconds, game ends
         if remaining_time <= 0 and not game_over:
             game_over = True
@@ -262,29 +288,33 @@ def main():
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and not game_over:
+                    current_wire_state = wires._value # Store wire state for it to be checked
                     # Check if command starts with "Simon says"
                     is_simon = current_command.startswith("Simon says")
                     is_disconnect = "disconnect" in current_command
                     color = next(c for c in colors if c in current_command)
                     color_index = colors.index(color)
 
-                    # Check if wire state matches command
-                    is_disconnected = wires._value[color_index] == "0"
+                    # Check if wire was changed from its previous state - TO CHANGE (298 - 301)
+                    is_disconnected = wires._value[color_index] == "0"  # Change : instead get current_wire state instead of directly from wire object
+                    # Implement check if wire was even connected to begin with
+                   # wire_change = implement to check if is disconnect and was ever connected are not equal
                     
-                    # If not a Simon says command, it should return false
+                    # If not a Simon says command, it should return false - TO CHANGE (303 - 312)
                     if not is_simon:
                         result = False
                         status_message = "Command does not start with 'Simon says'!"
                     else:
                         # Simon commands must be followed
                         if is_disconnect:
-                            result = is_disconnected
+                            result = is_disconnected # == is_disconnect
                         else:  # reconnect
                             result = not is_disconnected
 
                     if result:
+                        status_message = "SUCCESS"
                         # Move to next command
-                        current_command_index += 1
+                        current_command_index += 1 # TO CHANGE (317 - 321)
                         if current_command_index < len(commands):
                             current_command = commands[current_command_index]
                             # Reset timer for the new command
@@ -295,90 +325,92 @@ def main():
                             won = True
                     else:
                         # Player fails the game
+                        status_message = "FAILURE"
                         game_over = True
                         won = False
+
+            #Check for wire state changes (always update last_wire_state)
+        if wires._value != initial_wire_state:
+            initial_wire_state = wires._value
+            #Set waiting for confirmation only if the game is still active
+            if not game_over and not player_confirmation:
+                player_confirmation = True
+                status_message = "Press SPACE to check your action"
                 
-                elif event.key == pygame.K_r and game_over:
+                # elif event.key == pygame.K_r and game_over:
                     # Restart game
-                    print("Restarting game...")
+                    # #print("Restarting game...")
                     
-                    # Reset wire states
-                    wire_states = {color: True for color in colors}
-                    current_command_index = 0
-                    current_command = commands[current_command_index]
-                    game_over = False
-                    won = False
-                    status_message = ""
+                    # # Reset wire states
+                    # wire_states = {color: True for color in colors}
+                    # current_command_index = 0
+                    # current_command = commands[current_command_index]
+                    # game_over = False
+                    # won = False
+                    # status_message = ""
                     
-                    # Reset timer
-                    command_start_time = time.time()
+                    # # Reset timer
+                    # command_start_time = time.time()
                     
-                    # Reset physical wires to connected if in simulation
-                    if not RPi:
-                        for pin in wire_pins:
-                            if pin.value:  # If disconnected
-                                pin.toggle()  # Connect it
-                        wires.update_state()
+                    # # Reset physical wires to connected if in simulation
+                    # if not RPi:
+                    #     for pin in wire_pins:
+                    #         if pin.value:  # If disconnected
+                    #             pin.toggle()  # Connect it
+                    #     wires.update_state()
                 
-                # Simulation mode: toggle wires with number keys
-                elif not RPi and event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5]:
-                    index = event.key - pygame.K_1
-                    if index < len(wire_pins):
-                        wire_pins[index].toggle()
-                        wires.update_state()
-                        print(f"Toggled wire {index+1} ({colors[index]})")
-                        print(f"New wire state: {wires._value}")
+                # # Simulation mode: toggle wires with number keys
+                # elif not RPi and event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5]:
+                #     index = event.key - pygame.K_1
+                #     if index < len(wire_pins):
+                #         wire_pins[index].toggle()
+                #         wires.update_state()
+                #         print(f"Toggled wire {index+1} ({colors[index]})")
+                #         print(f"New wire state: {wires._value}")
         
         # Draw text elements
         # Title
-        title = font.render("Simon Says Wire Game", True, WHITE)
+        title = font.render("Simon Says", True, WHITE)
         screen.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, 30))
         
-        # Wire states
-        wire_state_text = font.render(f"Wire states: {wires._value}", True, WHITE)
-        screen.blit(wire_state_text, (30, 80))
+        #Draw background image
+        screen.blit(bg_image, (0, 0))  
+        #Draw semi-transparent overlay
+        screen.blit(overlay, (0, 0))  
         
+        #Display wire names and statuses
+        wire_display_x = 50
+        wire_display_y = 150
+        wire_spacing = 40
+
         # Individual wire labels and states
         for i, color in enumerate(colors):
+            y_pos = wire_display_y + i*wire_spacing
             wire_text = font.render(f"{color}: {'Connected' if wires._value[i] == '1' else 'Disconnected'}", True, WHITE)
-            screen.blit(wire_text, (30, 120 + i * 30))
-        
-        # Current command
-        cmd_text = font.render(f"Command: {current_command}", True, WHITE)
-        screen.blit(cmd_text, (30, 280))
+            screen.blit(wire_text, (wire_display_x, y_pos))
         
         # Progress
         progress = font.render(f"Progress: {current_command_index + 1}/{len(commands)}", True, WHITE)
-        screen.blit(progress, (30, 320))
+        screen.blit(progress, (30, 30))
         
         # Timer display
         timer_color = WHITE if remaining_time > 5 else RED  # Red when less than 5 seconds left
-        timer_text = font.render(f"Time remaining: {int(remaining_time)} seconds", True, timer_color)
-        screen.blit(timer_text, (30, 360))
+        timer_text = font.render(f"Time: {int(remaining_time)} s", True, timer_color)
+        screen.blit(timer_text, (SCREEN_WIDTH - timer_text.get_width() - 30, 30))
         
         # Status message
         if status_message:
-            status_text = font.render(f"Status: {status_message}", True, WHITE)
+            status_text = font.render(f"{status_message}", True, WHITE)
             screen.blit(status_text, (30, 400))
         
         # Game over message
         if game_over:
             result_text = font.render(f"Game Over - {'You Win!' if won else 'You Lose!'}", True, WHITE)
-            screen.blit(result_text, (30, 440))
-            restart_text = font.render("Press R to restart", True, WHITE)
-            screen.blit(restart_text, (30, 480))
+            screen.blit(result_text, (SCREEN_WIDTH // 2 - result_text.get_width() // 2, 400))
         
         # Instructions
-        if RPi:
-            instructions = font.render("Connect/disconnect physical wires. Press SPACE to check command.", True, WHITE)
-        else:
-            instructions = font.render("Press 1-5 to toggle wires. Press SPACE to check command.", True, WHITE)
-        screen.blit(instructions, (30, SCREEN_HEIGHT - 60))
-        
-        # Debug info
-        debug = font.render("See console for detailed debug info", True, WHITE)
-        screen.blit(debug, (30, SCREEN_HEIGHT - 30))
-        
+        instructions = font.render("Press SPACE to check command.", True, WHITE)
+
         # Update display
         pygame.display.flip()
         
