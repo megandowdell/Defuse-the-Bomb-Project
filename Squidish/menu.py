@@ -1676,10 +1676,6 @@ def show_tictactoe_game_screen(screen):
 
 
 
-
-
-
-
 # INSTRUCTIONS
 def show_redlightgreenlight_instructions_screen(screen):
     WIDTH, HEIGHT = screen.get_size()
@@ -1931,7 +1927,9 @@ def show_redlightgreenlight_game_screen(screen):
             
             # Game variables
             light_color = "red"
-            game_time = 20  # seconds to win
+            game_time = 120  # seconds to win
+            distance = 0
+            target_distance = 75
             start_time = time.time()
             next_change_time = start_time  # Initialize for immediate first change
             #message = "Press the button ONLY when the light is GREEN"
@@ -1994,20 +1992,24 @@ def show_redlightgreenlight_game_screen(screen):
                     print(f"THE LIGHT IS NOW {light_color.upper()}!")
                 
                 # Check button press
-                if button_pressed and not game_over:
+                if button_pressed or check_button_press() and not game_over:
                     print("Button Pressed!")
                     if light_color == "green":
-                        message = "Good move!"
-                        print("Good move!")
+                        distance += 1
+                        message = f"Good move!"
+                        print(message)
+                        time.sleep(0.4)
                     else:
                         message = "You pressed during RED! You lose!"
+                        print(message)
                         pygame.display.flip()
-                        #pygame.time.delay(1000)
                         show_death_screen(screen)
                         return "lose"
-                        #print("You pressed during RED! You lose!")
-#                         game_over = True
-#                         won = False
+                if distance >= target_distance and not game_over:
+                        return "win"
+
+                        
+            
                 
                 # Draw doll image based on light color
                 # Select the appropriate image
@@ -2032,6 +2034,9 @@ def show_redlightgreenlight_game_screen(screen):
                 
                 time_text = FONT.render(f"Time: {time_left:.1f}s", True, TEXT)
                 screen.blit(time_text, (margin, margin + font_size + 10))  # Position under state text
+                
+                distance_text = FONT.render(f"Distance: {distance :.0f} / {target_distance :.0f}", True, TEXT)
+                screen.blit(distance_text, (margin, margin + font_size + font_size + 20))  # Position under state text
                 
                 # Draw message
                 message_text = FONT.render(message, True, TEXT)
