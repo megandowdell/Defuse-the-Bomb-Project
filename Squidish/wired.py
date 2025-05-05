@@ -26,14 +26,14 @@ class Wires(PhaseThread):
             
         # All wires start connected - initialize with all 1's
         self._value = "1" * len(pins)
-        print(f"Initial wire state: {self._value}")
+        print(f"Initial wire state: {self._value}") # REMOVE
         self._prev_value = self._value
         self._state_changed = False
         
-        # Print configuration info
-        print(f"Wires component initialized with {len(pins)} wires")
-        print("All wires should start CONNECTED")
-        print("Physical setup: GPIO pins with pull-up resistors -> wires -> GND")
+        # Print configuration info - REMOVE
+        # print(f"Wires component initialized with {len(pins)} wires")
+        # print("All wires should start CONNECTED")
+        # print("Physical setup: GPIO pins with pull-up resistors -> wires -> GND")
     
     def run(self):
         """Main thread that continuously monitors wire state"""
