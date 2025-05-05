@@ -168,7 +168,7 @@ def main():
     wires.start()
     
     # Define colors and commands
-    colors = ["brown", "red", "orange", "yellow", "blue"]
+    colors = ["brown", "red", "orange", "yellow", "green"]
     GUI_colors = [BROWN_WIRE, RED_WIRE, ORANGE_WIRE, YELLOW_WIRE, GREEN_WIRE] 
     
     non_simon_discommands = [f"Disconnect the {color} wire" for color in colors]
