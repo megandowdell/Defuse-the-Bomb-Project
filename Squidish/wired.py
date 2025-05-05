@@ -310,11 +310,15 @@ def main():
                     # If not a Simon says command, it should return false - TO CHANGE (303 - 312)
                     if not is_simon:
                         wire_was_changed = (initial_wire_state[color_index] != current_wire_state[color_index])
-                        result = True
-                        status_message = "SUCCESS"
-                    elif not is_simon and initial_wire_state[color_index] == current_wire_state[color_index]:
-                        result = False
-                        status_message = "Command does not start with 'Simon says'!"
+                        if wire_was_changed: 
+                            result = False
+                            status_message = "FAILURE"
+                        else:
+                            result = True
+                            status_message = "SUCCESS"
+                    #elif not is_simon and initial_wire_state[color_index] == current_wire_state[color_index]:
+                       # result = False
+                        #status_message = "Command does not start with 'Simon says'!"
                     else:
                         # Simon commands must be followed
                         if is_disconnect:
@@ -338,7 +342,7 @@ def main():
                             won = True
                     else:
                         # Player fails the game
-                        status_message = ""
+                        status_message = "FAILURE"
                         game_over = True
                         won = False
 
