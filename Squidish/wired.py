@@ -26,7 +26,6 @@ class Wires(PhaseThread):
             
         # All wires start connected - initialize with all 1's
         self._value = "1" * len(pins)
-        print(f"Initial wire state: {self._value}") # REMOVE
         self._prev_value = self._value
         self._state_changed = False
         
@@ -38,15 +37,14 @@ class Wires(PhaseThread):
     def run(self):
         """Main thread that continuously monitors wire state"""
         self._running = True
-        # print(f"Wire monitoring thread running: {self._running}")
+        
         # Initial reading
         self.update_state()
         
         while (True):
             # Check if wire state has changed
             if self.update_state():
-                print(f"Wire state changed to: {self._value}")
-            
+                pass
             # Poll at a reasonable rate (100ms)
             sleep(0.1)
         
@@ -81,19 +79,10 @@ class Wires(PhaseThread):
             return True
         return False
     
-    def __str__(self):
-        """Display wire state as binary and decimal"""
-        return f"{self._value}/{int(self._value, 2)}"
+    
 
 # Simulation mode for testing without hardware
-class SimulatedPin:
-    def __init__(self, initial_value=False):
-        # False = connected (1), True = disconnected (0) with pull-ups
-        self.value = initial_value
-        
-    def toggle(self):
-        self.value = not self.value
-        print(f"Pin toggled to: {self.value}")
+
 
 # Initialize pygame
 pygame.init()
