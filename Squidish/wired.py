@@ -38,7 +38,7 @@ class Wires(PhaseThread):
     def run(self):
         """Main thread that continuously monitors wire state"""
         self._running = True
-        print(f"Wire monitoring thread running: {self._running}")
+        # print(f"Wire monitoring thread running: {self._running}")
         # Initial reading
         self.update_state()
         
@@ -99,15 +99,22 @@ class SimulatedPin:
 pygame.init()
 
 # Screen dimensions
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 576
+SCREEN_HEIGHT = 1024
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Simon Says Wire Game")
+pygame.display.set_caption("Simon Says")
 
-# Colors
+# Text Colours
 WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)  # Added for timer warning
+RED = (255, 0, 0)  
+GREEN = (0, 255, 0)
+
+# Wire Text Colours
+BROWN_WIRE = (139, 69, 19)
+RED_WIRE = (255, 0, 0)
+ORANGE_WIRE = (255, 165, 0)
+YELLOW_WIRE = (255, 255, 0)
+GREEN_WIRE = (0, 190, 104)
 
 # Font
 font = pygame.font.SysFont('Arial', 24)
