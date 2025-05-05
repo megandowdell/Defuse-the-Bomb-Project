@@ -150,18 +150,17 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 
 #Defining the wire colors
-BROWN = (139, 69, 19)
-#Named RED_WIRE to avoid conflict with RED
-RED_WIRE = (255, 0, 0)  
-ORANGE = (255, 165, 0)
-YELLOW = (255, 255, 0)
-#Renamed to avoid conflict
-GREEN_WIRE = (0, 190, 104)  
+# Wire Text Colours
+BROWN_WIRE = (255, 255, 0) # TRUE COLOUR = YELLOW
+RED_WIRE = (0, 190, 104) # TRUE COLOUR =  GREEN
+ORANGE_WIRE = (255, 0, 0) # TRUE COLOUR =  RED
+YELLOW_WIRE =  (255, 165, 0)# TRUE COLOUR =  ORANGE
+GREEN_WIRE =  (174, 90, 0)# TRUE COLOUR =  BROWN
 
 #Loading the fonts for different UI elements 
-font = pygame.font.SysFont('Arial', 30)
-small_font = pygame.font.SysFont('Arial', 24)
-wire_font = pygame.font.SysFont('Arial', 22)
+font = pygame.font.Font('font1.otf', 30)
+small_font = pygame.font.Font('font1.otf', 24)
+wire_font = pygame.font.Font('font1.otf', 22)
 
 #Main game function
 def main():
@@ -486,9 +485,7 @@ def main():
             wire_text = wire_font.render(f"{color.upper()} WIRE: {status_text}", True, color_values[i])
             screen.blit(wire_text, (wire_display_x, y_pos))
         
-        #Current command - make it larger and centered
-        cmd_text = font.render(f"{current_command}", True, WHITE)
-        screen.blit(cmd_text, (SCREEN_WIDTH // 2 - cmd_text.get_width() // 2, 50))
+     
         
         #Show progress
         progress = small_font.render(f"Progress: {current_command_index}/{len(commands)}", True, WHITE)
