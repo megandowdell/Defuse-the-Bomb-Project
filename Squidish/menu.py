@@ -251,7 +251,7 @@ def show_about_game_screen(screen):
     # Base font sizes for reference design
     base_title_size = 40
     base_button_size = 20
-    base_text_size = 14
+    base_text_size = 16
     
     # Scale font sizes
     title_size = scale_font_size(base_title_size, (WIDTH, HEIGHT))
