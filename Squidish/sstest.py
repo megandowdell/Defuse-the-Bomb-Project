@@ -411,7 +411,7 @@ def main():
         screen.blit(cmd_text, (SCREEN_WIDTH // 2 - cmd_text.get_width() // 2, 50))
         
         # Progress
-        progress = small_font.render(f"Progress: {current_command_index + 1}/{len(commands)}", True, WHITE)
+        progress = small_font.render(f"Progress: {current_command_index}/{len(commands)}", True, WHITE)
         screen.blit(progress, (30, 30))
         
         # Timer display or instruction

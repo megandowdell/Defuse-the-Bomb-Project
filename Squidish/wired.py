@@ -26,19 +26,19 @@ class Wires(PhaseThread):
             
         # All wires start connected - initialize with all 1's
         self._value = "1" * len(pins)
-        print(f"Initial wire state: {self._value}")
+        print(f"Initial wire state: {self._value}") # REMOVE
         self._prev_value = self._value
         self._state_changed = False
         
-        # Print configuration info
-        print(f"Wires component initialized with {len(pins)} wires")
-        print("All wires should start CONNECTED")
-        print("Physical setup: GPIO pins with pull-up resistors -> wires -> GND")
+        # Print configuration info - REMOVE
+        # print(f"Wires component initialized with {len(pins)} wires")
+        # print("All wires should start CONNECTED")
+        # print("Physical setup: GPIO pins with pull-up resistors -> wires -> GND")
     
     def run(self):
         """Main thread that continuously monitors wire state"""
         self._running = True
-        print(f"Wire monitoring thread running: {self._running}")
+        # print(f"Wire monitoring thread running: {self._running}")
         # Initial reading
         self.update_state()
         
@@ -99,39 +99,77 @@ class SimulatedPin:
 pygame.init()
 
 # Screen dimensions
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 576
+SCREEN_HEIGHT = 1024
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Simon Says Wire Game")
+pygame.display.set_caption("Simon Says")
 
-# Colors
+# Text Colours
 WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)  # Added for timer warning
+RED = (255, 0, 0)  
+GREEN = (0, 255, 0)
+
+# Wire Text Colours
+BROWN_WIRE = (139, 69, 19)
+RED_WIRE = (255, 0, 0)
+ORANGE_WIRE = (255, 165, 0)
+YELLOW_WIRE = (255, 255, 0)
+GREEN_WIRE = (0, 190, 104)
 
 # Font
-font = pygame.font.SysFont('Arial', 24)
+font = pygame.font.Font('font1.otf', 30)
+wire_font = pygame.font.Font('font1.otf', 24)
 
 # Main game function
 def main():
-    # Determine if running on Raspberry Pi with real hardware
-    RPi = False
-    try:
-        import board
-        from digitalio import DigitalInOut, Direction, Pull
-        RPi = True
-        print("Running on Raspberry Pi with hardware")
+    background = pygame.image.load("simonsays.png")
+    background = pygame.transform.scale(bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
+    overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 150)) 
+
+    # Dictionary mapping commands to appropriate sound files
+    command_sound_files = {
+        "Simon says disconnect the brown wire": "ssdisbw.mp3",
+        "Simon says reconnect the brown wire": "ssrebw.mp3",
+        "Disconnect the brown wire": "disbw.mp3",
+        "Reconnect the brown wire": "rebw.mp3",
+        "Simon says disconnect the red wire": "ssdisrw.mp3",
+        "Simon says reconnect the red wire": "ssrerw.mp3",
+        "Disconnect the red wire": "disrw.mp3",
+        "Reconnect the red wire": "rerw.mp3",
+        "Simon says disconnect the orange wire": "ssdisow.mp3",
+        "Simon says reconnect the orange wire": "ssreow.mp3",
+        "Disconnect the orange wire": "disow.mp3",
+        "Reconnect the orange wire": "reow.mp3",
+        "Simon says disconnect the yellow wire": "ssdisyw.mp3",
+        "Simon says reconnect the yellow wire": "ssreyw.mp3",
+        "Disconnect the yellow wire": "disyw.mp3",
+        "Reconnect the yellow wire": "reyw.mp3",
+        "Simon says disconnect the green wire": "ssdisgw.mp3",
+        "Simon says reconnect the green wire": "ssregw.mp3",
+        "Disconnect the green wire": "disgw.mp3",
+        "Reconnect the green wire": "regw.mp3"
+    }
+
+    # For each command in dictionary, play the assigned sound to match
+    command_sounds = {}
+    for command, command_sound in command_sound_files:
+        command_sounds[command] = pygame.mixer.music.Sound(command_sound)
+
+    # Setup for RPI environment
+    # RPI = True
+    # try:
+    #     import board
+    #     from digitalio import DigitalInOut, Direction, Pull
+    #     RPi = True
+    #     print("Running on Raspberry Pi with hardware")
         
         # Set up physical pins
         wire_pins = [DigitalInOut(i) for i in (board.D14, board.D15, board.D18, board.D23, board.D24)]
         for pin in wire_pins:
             pin.direction = Direction.INPUT
             pin.pull = Pull.DOWN
-            
-    except (ImportError, NotImplementedError):
-        RPi = False
-        print("Running in simulation mode (no hardware)")
-        wire_pins = [SimulatedPin() for _ in range(5)]
     
     # Create and start wires component
     wires = Wires(wire_pins)
@@ -139,7 +177,7 @@ def main():
     
     # Define colors and commands
     colors = ["brown", "red", "orange", "yellow", "blue"]
-    print(f"Wire colors: {colors}")
+    GUI_colors = [BROWN_WIRE, RED_WIRE, ORANGE_WIRE, YELLOW_WIRE, GREEN_WIRE] 
     
     non_simon_discommands = [f"Disconnect the {color} wire" for color in colors]
     non_simon_recommands = [f"Reconnect the {color} wire" for color in colors]
@@ -156,7 +194,6 @@ def main():
     wire_states[first_color] = False
     simon_disconnected.add(first_color)
     commands.append(simon_discommands[colors.index(first_color)])
-    print(f"First command: {commands[0]}")
     
     # Generate 9 more commands
     while len(commands) < 10:
@@ -195,7 +232,7 @@ def main():
             if cmd:
                 commands.append(cmd)
     
-    # Print all commands
+    # Print all commands - REMOVE
     print("Generated commands:")
     for i, cmd in enumerate(commands):
         print(f"{i+1}. {cmd}")
