@@ -158,23 +158,18 @@ def main():
         command_sounds[command] = pygame.mixer.music.Sound(command_sound)
 
     # Setup for RPI environment
-    RPi = False
-    try:
-        import board
-        from digitalio import DigitalInOut, Direction, Pull
-        RPi = True
-        print("Running on Raspberry Pi with hardware")
+    # RPI = True
+    # try:
+    #     import board
+    #     from digitalio import DigitalInOut, Direction, Pull
+    #     RPi = True
+    #     print("Running on Raspberry Pi with hardware")
         
         # Set up physical pins
         wire_pins = [DigitalInOut(i) for i in (board.D14, board.D15, board.D18, board.D23, board.D24)]
         for pin in wire_pins:
             pin.direction = Direction.INPUT
             pin.pull = Pull.DOWN
-            
-    except (ImportError, NotImplementedError):
-        RPi = False
-        print("Running in simulation mode (no hardware)")
-        wire_pins = [SimulatedPin() for _ in range(5)]
     
     # Create and start wires component
     wires = Wires(wire_pins)
@@ -182,7 +177,7 @@ def main():
     
     # Define colors and commands
     colors = ["brown", "red", "orange", "yellow", "blue"]
-    print(f"Wire colors: {colors}")
+    GUI_colors = [BROWN_WIRE, RED_WIRE, ORANGE_WIRE, YELLOW_WIRE, GREEN_WIRE] 
     
     non_simon_discommands = [f"Disconnect the {color} wire" for color in colors]
     non_simon_recommands = [f"Reconnect the {color} wire" for color in colors]
@@ -199,7 +194,6 @@ def main():
     wire_states[first_color] = False
     simon_disconnected.add(first_color)
     commands.append(simon_discommands[colors.index(first_color)])
-    print(f"First command: {commands[0]}")
     
     # Generate 9 more commands
     while len(commands) < 10:
@@ -238,7 +232,7 @@ def main():
             if cmd:
                 commands.append(cmd)
     
-    # Print all commands
+    # Print all commands - REMOVE
     print("Generated commands:")
     for i, cmd in enumerate(commands):
         print(f"{i+1}. {cmd}")
