@@ -428,7 +428,7 @@ def show_meet_team(screen):
     # Base font sizes
     base_title_size = 50
     base_char_size = 30
-    base_desc_size = 14
+    base_desc_size = 12
     base_button_size = 20
     
     # Scale font sizes
