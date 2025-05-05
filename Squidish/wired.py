@@ -176,9 +176,13 @@ def main():
     simon_discommands = [f"Simon says disconnect the {color} wire" for color in colors]
     simon_recommands = [f"Simon says reconnect the {color} wire" for color in colors]
     
+   #Generate game commands - unchanged
     wire_states = {color: True for color in colors}
+    #Colors Simon has commanded to disconnect 
     simon_disconnected = set()
+    #Colors Simon has commanded to reconnect 
     simon_reconnected = set()
+    #Creation of the list to hold the commands 
     commands = []
     
     # First Simon command
@@ -252,9 +256,9 @@ def main():
     clock = pygame.time.Clock()
     running = True
     
-    # Initialize the timer for 30 seconds
+    # Initialize the timer for 20 seconds
     command_start_time = time.time()
-    timer_duration = 30  # 30 seconds timer
+    timer_duration = 20  # 20 seconds timer
     delay_time = 2 # Delays before player's action is checked
     result_time = 2 # Time result is showed
     
@@ -395,7 +399,7 @@ def main():
         # Individual wire labels and states
         for i, color in enumerate(colors):
             y_pos = wire_display_y + i*wire_spacing
-            wire_text = font.render(f"{color}: {'Connected' if wires._value[i] == '1' else 'Disconnected'}", True, WHITE)
+            wire_text = font.render(f"{color}: {'Connected' if wires._value[i] == '1' else 'Disconnected'}", True, GUI_colors[i])
             screen.blit(wire_text, (wire_display_x, y_pos))
         
         # Progress
