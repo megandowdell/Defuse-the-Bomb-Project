@@ -586,7 +586,7 @@ def show_meet_team(screen):
                 name_y = card_y + int(card_height * 0.55)
                 screen.blit(name_text, (card_x + card_width//2 - name_text.get_width()//2, name_y))
                 
-                status_text = desc_font.render(teammate['status'], True, BEIGE)
+                status_text = stat_font.render(teammate['status'], True, BEIGE)
                 status_y = name_y + name_text.get_height() + 5
                 screen.blit(status_text, (card_x + card_width//2 - status_text.get_width()//2, status_y))
                 
