@@ -307,7 +307,7 @@ def main():
                         wire_was_changed = (initial_wire_state[color_index] != current_wire_state[color_index])
                         result = True
                         status_message = "SUCCESS"
-                        if initial_wire_state[color_index] = current_wire_state[color_index]
+                        if initial_wire_state[color_index] == current_wire_state[color_index]
                             result = False
                             status_message = "Command does not start with 'Simon says'!"
                     else:
