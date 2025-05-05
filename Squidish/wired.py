@@ -248,7 +248,7 @@ def main():
     
     #Define colors and commands
     colors = ["brown", "red", "orange", "yellow", "green"]
-    color_values = [BROWN, RED_WIRE, ORANGE, YELLOW, GREEN_WIRE]  # Actual RGB values for display
+    color_values = [BROWN_WIRE, RED_WIRE, ORANGE_WIRE, YELLOW_WIRE, GREEN_WIRE]  # Actual RGB values for display
 
     #Creatinng a random set of commands with some commands having Simon says and some not having Simon says 
     non_simon_discommands = [f"Disconnect the {color} wire" for color in colors]
