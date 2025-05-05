@@ -11,7 +11,6 @@ from time import sleep
 import bomb
 from bomb_configs import *
 from bomb_phases import *
-<<<<<<< HEAD
 #import RPi.GPIO as GPIO  # Uncomment if using GPIO on Raspberry Pi
 from adafruit_matrixkeypad import Matrix_Keypad
 import RPi.GPIO as GPIO  # Uncomment if using GPIO on Raspberry Pi
