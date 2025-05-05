@@ -122,7 +122,7 @@ wire_font = pygame.font.Font('font1.otf', 24)
 
 # Main game function
 def main():
-    background = pygame.image.load("how_to_play.jpg")
+    background = pygame.image.load("simonsays.jpg")
     background = pygame.transform.scale(bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
     overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
