@@ -287,7 +287,7 @@ def main():
         if remaining_time <= 0 and not game_over:
             game_over = True
             won = False
-            status_message = "Time's up! You took too long."
+            status_message = ""
         
         # Process events
         for event in pygame.event.get():
@@ -338,7 +338,7 @@ def main():
                             won = True
                     else:
                         # Player fails the game
-                        status_message = "FAILURE"
+                        status_message = ""
                         game_over = True
                         won = False
 
@@ -412,7 +412,7 @@ def main():
         screen.blit(timer_text, (SCREEN_WIDTH - timer_text.get_width() - 30, 30))
         
         # Status message
-        if status_message:
+        if status_message and not game_over :
             status_text = font.render(f"{status_message}", True, WHITE)
             screen.blit(status_text, (30, 400))
         
