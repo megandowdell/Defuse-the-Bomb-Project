@@ -414,8 +414,8 @@ def show_about_game_screen(screen):
                     if ag_items[selected_index] == "Back": # Back button returns to menu
                         return "Menu"  
                     elif ag_items[selected_index] == "Continue": # Continue button proceeds to game just as Start button would on the menu page
-                        random.choice(["Tic Tac Toe"])
-                        return random.choice(["Tic Tac Toe"]) 
+                        random.choice(["Hopscotch"])
+                        return random.choice(["Hopscotch"]) 
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = pygame.mouse.get_pos()
                 for rect, item in button_rects:
@@ -423,7 +423,7 @@ def show_about_game_screen(screen):
                         if item == "Back":
                             return "Menu"  
                         elif item == "Continue":
-                            return random.choice(["Tic Tac Toe"])  
+                            return random.choice(["Hopscotch"])  
         pygame.display.flip()
         clock.tick(60)
 ####################################################################################################################
@@ -755,8 +755,6 @@ class Toggles(PhaseThread):
 # toggle pins defined from RPi
 toggle_pins = [DigitalInOut(i) for i in (board.D12, board.D16, board.D20, board.D21)]
 
-# Create and start the toggle monitor
-toggles = Toggles(toggle_pins)
 
 
 
@@ -921,8 +919,13 @@ def show_hopscotch_game_screen(screen):
     
     if result == "Play":
         if RPi:  # Only start the real thread on a Pi
+            
+            #create new Toggles object every time
+            toggles = Toggles(toggle_pins)
+            
+            #start toggles
             toggles.start()
-        #toggles.start()
+        
         pygame.mixer.music.stop()
         pygame.mixer.music.load("round_round.mp3")
         pygame.mixer.music.play(-1)
@@ -1112,6 +1115,8 @@ def show_hopscotch_game_screen(screen):
                         # Check if selected toggle is correct for current row
                         # right answer
                         if selected_col in board[current_row]:
+                            tile_rect = get_tile_rect(0, selected_col)
+                            pygame.draw.rect(screen, SAFE, tile_rect)
                             
                             # move onto next row
                             rows_cleared += 1
@@ -2288,7 +2293,7 @@ def main():
     
     game_running = True
     game_state = "Menu"
-    mini_games = ["Tic Tac Toe"]
+    mini_games = ["Hopscotch"]
     completed_games = set()
 
     while game_running:
@@ -2298,7 +2303,7 @@ def main():
             pygame.mixer.music.play(-1)
             menu_choice = show_menu_screen(screen)
             if menu_choice == "Start":
-                game_state = random.choice(["Tic Tac Toe"])
+                game_state = random.choice(["Hopscotch"])
             elif menu_choice == "About Game":
                 game_state = "About Game"
             elif menu_choice == "Meet Team":
