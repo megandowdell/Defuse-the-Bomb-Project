@@ -122,7 +122,42 @@ wire_font = pygame.font.Font('font1.otf', 24)
 
 # Main game function
 def main():
-    # Determine if running on Raspberry Pi with real hardware
+    background = pygame.image.load("how_to_play.jpg")
+    background = pygame.transform.scale(bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
+    overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 150)) 
+
+    # Dictionary mapping commands to appropriate sound files
+    command_sound_files = {
+        "Simon says disconnect the brown wire": "ssdisbw.mp3",
+        "Simon says reconnect the brown wire": "ssrebw.mp3",
+        "Disconnect the brown wire": "disbw.mp3",
+        "Reconnect the brown wire": "rebw.mp3",
+        "Simon says disconnect the red wire": "ssdisrw.mp3",
+        "Simon says reconnect the red wire": "ssrerw.mp3",
+        "Disconnect the red wire": "disrw.mp3",
+        "Reconnect the red wire": "rerw.mp3",
+        "Simon says disconnect the orange wire": "ssdisow.mp3",
+        "Simon says reconnect the orange wire": "ssreow.mp3",
+        "Disconnect the orange wire": "disow.mp3",
+        "Reconnect the orange wire": "reow.mp3",
+        "Simon says disconnect the yellow wire": "ssdisyw.mp3",
+        "Simon says reconnect the yellow wire": "ssreyw.mp3",
+        "Disconnect the yellow wire": "disyw.mp3",
+        "Reconnect the yellow wire": "reyw.mp3",
+        "Simon says disconnect the green wire": "ssdisgw.mp3",
+        "Simon says reconnect the green wire": "ssregw.mp3",
+        "Disconnect the green wire": "disgw.mp3",
+        "Reconnect the green wire": "regw.mp3"
+    }
+
+    # For each command in dictionary, play the assigned sound to match
+    command_sounds = {}
+    for command, command_sound in command_sound_files:
+        command_sounds[command] = pygame.mixer.music.Sound(command_sound)
+
+    # Setup for RPI environment
     RPi = False
     try:
         import board
