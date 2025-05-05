@@ -153,7 +153,10 @@ def main():
     # Load audio files - only load the ones that exist
     command_sounds = {}
     for command, filename in command_sound_files.items():
-        command_sounds[command] = pygame.mixer.Sound(filename)
+        try:
+            command_sounds[command] = pygame.mixer.Sound(filename)
+        except:
+            pass  # Skip if file doesn't exist
         
 
     # Determine if running on Raspberry Pi with real hardware
@@ -257,8 +260,8 @@ def main():
     # Initialize the timer for 20 seconds
     command_start_time = time.time()
     timer_duration = 20  # 20 seconds timer
-    check_delay = 1.5  # Delay before checking the action
-    show_result_time = 1.5  # How long to show success/failure message
+    check_delay = 2.0  # Delay before checking the action
+    show_result_time = 2.0  # How long to show success/failure message
 
     # Play the first command
     if current_command in command_sounds:
@@ -285,9 +288,6 @@ def main():
             game_over = True
             won = False
             status_message = "Time's up! You took too long."
-            if failure_sound:
-                pygame.mixer.stop()
-                failure_sound.play()
         
         # Process events
         for event in pygame.event.get():
@@ -347,7 +347,7 @@ def main():
             # If not a Simon says command, it should return false
             if not is_simon:
                 action_result = False
-                status_message = "Command did not start with 'Simon says'!"
+                status_message = "FAILURE! Command did not start with 'Simon says'!"
             else:
                 # Simon commands must be followed
                 if is_disconnect:
@@ -357,17 +357,11 @@ def main():
             
             # Success or failure action
             if action_result:
-                status_message = "Success!"
-                if success_sound:
-                    pygame.mixer.stop()
-                    success_sound.play()
+                status_message = "SUCCESS!"
             else:
-                status_message = "Failure!"
+                status_message = "FAILURE!"
                 game_over = True
                 won = False
-                if failure_sound:
-                    pygame.mixer.stop()
-                    failure_sound.play()
         
         # Move to next command after a delay
         if action_result is True and current_time - action_time >= check_delay:
@@ -389,9 +383,6 @@ def main():
                 game_over = True
                 won = True
                 action_result = None
-                if success_sound:
-                    pygame.mixer.stop()
-                    success_sound.play()
         
         # Draw elements
         screen.blit(bg_image, (0, 0))  # Draw background image
@@ -424,8 +415,8 @@ def main():
         timer_text = small_font.render(f"Time: {int(remaining_time)}s", True, timer_color)
         screen.blit(timer_text, (SCREEN_WIDTH - timer_text.get_width() - 30, 30))
         
-        # Status message (success/failure)
-        if action_result is not None and current_time - action_time < show_result_time:
+        # Status message (success/failure) - always show if it exists
+        if action_result is not None:
             status_color = GREEN if action_result else RED
             status_text = font.render(status_message, True, status_color)
             screen.blit(status_text, (SCREEN_WIDTH // 2 - status_text.get_width() // 2, 350))
