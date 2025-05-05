@@ -146,6 +146,7 @@ def main():
     # For each command in dictionary, play the assigned sound to match
     command_sounds = {}
     for command, command_sound in command_sound_files.items():
+        print(command_sound)
         command_sounds[command] = pygame.mixer.Sound(command_sound)
 
     # Setup for RPI environment
@@ -398,7 +399,7 @@ def main():
             screen.blit(wire_text, (wire_display_x, y_pos))
         
         # Progress
-        progress = font.render(f"Progress: {current_command_index + 1}/{len(commands)}", True, WHITE)
+        progress = font.render(f"Progress: {current_command_index}/{len(commands)}", True, WHITE)
         screen.blit(progress, (30, 30))
         
         # Timer display
