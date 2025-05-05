@@ -13,6 +13,8 @@ from bomb_configs import *
 from bomb_phases import *
 from adafruit_matrixkeypad import Matrix_Keypad
 import RPi.GPIO as GPIO  # Uncomment if using GPIO on Raspberry Pi
+import board
+from digitalio import DigitalInOut, Direction, Pull
 ####################################################################################################################
 # MENU AUDIO
 pygame.mixer.init()
