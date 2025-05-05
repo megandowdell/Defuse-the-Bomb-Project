@@ -1296,7 +1296,7 @@ def show_tictactoe_instructions_screen(screen):
     hint_text = [
         "HINT:",
         "It guards the line, not claims it.",
-        "Win by force, not patience."
+        "Win by force and direction, not patience."
     ]
     
     ag_items = ["Play"]  
