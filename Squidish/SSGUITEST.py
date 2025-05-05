@@ -180,10 +180,26 @@ def main():
 
     # Sound file mappings - unchanged
     command_sound_files = {
-        "Simon says disconnect the brown wire": "ssdisbrw.mp3",
-        "Reconnect the brown wire": "rebrw.mp3",
+        "Simon says disconnect the brown wire": "ssdisbw.mp3",
+        "Simon says reconnect the brown wire": "ssrebw.mp3",
+        "Disconnect the brown wire": "disbw.mp3",
+        "Reconnect the brown wire": "rebw.mp3",
+        "Simon says disconnect the red wire": "ssdisrw.mp3",
+        "Simon says reconnect the red wire": "ssrerw.mp3",
+        "Disconnect the red wire": "disrw.mp3",
+        "Reconnect the red wire": "rerw.mp3",
         "Simon says disconnect the orange wire": "ssdisow.mp3",
+        "Simon says reconnect the orange wire": "ssreow.mp3",
+        "Disconnect the orange wire": "disow.mp3",
         "Reconnect the orange wire": "reow.mp3",
+        "Simon says disconnect the yellow wire": "ssdisyw.mp3",
+        "Simon says reconnect the yellow wire": "ssreyw.mp3",
+        "Disconnect the yellow wire": "disyw.mp3",
+        "Reconnect the yellow wire": "reyw.mp3",
+        "Simon says disconnect the green wire": "ssdisgw.mp3",
+        "Simon says reconnect the green wire": "ssregw.mp3",
+        "Disconnect the green wire": "disgw.mp3",
+        "Reconnect the green wire": "regw.mp3"
     }
     
     # Load audio files with improved error handling
