@@ -610,7 +610,7 @@ def show_meet_team(screen):
         desc_lines = wrap_text(teammate_desc, desc_font, max_desc_width)
         
         for i, line in enumerate(desc_lines):
-            if i >= 2:  # Limit to 2 lines for consistent display
+            if i >= 4:  # Limit to 2 lines for consistent display
                 break
             desc_text = desc_font.render(line, True, BEIGE)
             text_x = WIDTH//2 - desc_text.get_width()//2
