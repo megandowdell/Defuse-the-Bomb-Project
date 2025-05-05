@@ -125,7 +125,7 @@ def main():
     
     # Load background image with error handling
     try:
-        bg_image = pygame.image.load("how_to_play.jpg")
+        bg_image = pygame.image.load("simonsays.png")
         bg_image = pygame.transform.scale(bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
     except Exception as e:
         print(f"Failed to load background image: {e}")
