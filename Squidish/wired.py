@@ -270,10 +270,10 @@ def main():
         remaining_time = max(0, timer_duration - elapsed_time)
 
         # If the command has not been given, the game is still going and player has not yet confirmed, play another sound from list
-        if not command_played and not gamer_over and not player_confirmation:
+        if not command_played and not game_over and not player_confirmation:
             if current_command in command_sounds:
                 pygame.mixer.stop()
-                command_sounds[current_command]
+                command_sounds[current_command].play()
             command_played = True
             
         # Timer check: if the player hasn't made a move in 20 seconds, game ends
@@ -315,6 +315,8 @@ def main():
                         status_message = "SUCCESS"
                         # Move to next command
                         current_command_index += 1 # TO CHANGE (317 - 321)
+                        player_confirmation = False
+                        command_played = False
                         if current_command_index < len(commands):
                             current_command = commands[current_command_index]
                             # Reset timer for the new command
