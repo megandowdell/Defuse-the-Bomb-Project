@@ -138,8 +138,8 @@ class SimulatedPin:
 pygame.init()
 
 #Screen dimensions and create display surface
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 576
+SCREEN_HEIGHT = 1024
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Simon Says Wire Game")
 
