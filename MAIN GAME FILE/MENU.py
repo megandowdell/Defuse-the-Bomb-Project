@@ -2903,8 +2903,8 @@ def play_redlightgreenlight(screen):
             # Set next change time (2-5 seconds)
             next_change = random.uniform(2, 5)
             next_change_time = current_time + next_change
-            message = f"THE LIGHT IS NOW {light_color.upper()}!"
-            print(f"THE LIGHT IS NOW {light_color.upper()}!")
+            # message = f"THE LIGHT IS NOW {light_color.upper()}!"
+            # print(f"THE LIGHT IS NOW {light_color.upper()}!")
         
 
         # Check button press
@@ -2968,13 +2968,13 @@ def play_redlightgreenlight(screen):
         screen.blit(message_text, (message_x, message_y))
 
         
-        # Draw instructions
-        if not game_over:
-            instructions = FONT.render("Press SPACE or CLICK to move forward", True, TEXT)
-            instructions_x = WIDTH // 2 - instructions.get_width() // 2
-            # Position instructions at the bottom of the screen
-            instructions_y = HEIGHT - int(60 * HEIGHT / dev_height)
-            screen.blit(instructions, (instructions_x, instructions_y))
+        # # Draw instructions
+        # if not game_over:
+        #     instructions = FONT.render("Press SPACE or CLICK to move forward", True, TEXT)
+        #     instructions_x = WIDTH // 2 - instructions.get_width() // 2
+        #     # Position instructions at the bottom of the screen
+        #     instructions_y = HEIGHT - int(60 * HEIGHT / dev_height)
+        #     screen.blit(instructions, (instructions_x, instructions_y))
         
         # Update display
         pygame.display.flip()
