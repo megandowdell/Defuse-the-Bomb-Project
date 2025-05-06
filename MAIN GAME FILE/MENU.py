@@ -1992,7 +1992,7 @@ def show_simon_says_game_screen(screen):
         #Initialize the timer for 20 seconds
         command_start_time = time.time()
         #20 seconds timer
-        timer_duration = 10
+        timer_duration = 11
         #Delay before checking the action
         check_delay = 2.0  
         #How long to show success/failure message
@@ -2511,7 +2511,7 @@ def show_simon_says_game_screen(screen):
 
 # INSTRUCTIONS
 def show_simon_says_instructions_screen(screen):
-    
+    WIDTH, HEIGHT = screen.get_size()
     pygame.display.set_caption("Simon Says Instructions")
     
     # Base font sizes for reference design
