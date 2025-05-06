@@ -3337,6 +3337,8 @@ def show_redlightgreenlight_game_screen(screen):
     result = show_redlightgreenlight_instructions_screen(screen)
     
     if result == "Play":
+        WIDTH, HEIGHT = screen.get_size()
+        pygame.display.set_caption("Red Light Green Light Instructions")
         pygame.mixer.music.stop()
         pygame.mixer.music.load("fly_me.mp3")  # Or another appropriate music
         pygame.mixer.music.play(-1)
@@ -3668,7 +3670,7 @@ def play_redlightgreenlight(screen):
 
 # INSTRUCTIONS
 def show_redlightgreenlight_instructions_screen(screen):
-    # WIDTH, HEIGHT = screen.get_size()
+    WIDTH, HEIGHT = screen.get_size()
     pygame.display.set_caption("Red Light Green Light Instructions")
     
     # Base font sizes for reference design
