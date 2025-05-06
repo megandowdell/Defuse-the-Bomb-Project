@@ -2921,7 +2921,7 @@ def main():
             elif game_state == "Simon Says":
                 pygame.mixer.music.load("salesman_sound.mp3")
                 pygame.mixer.music.play(-1)
-                result = show_simon_says_game_screen(screen)  
+                result = show_simonsays_game_screen(screen)  
   
             # Handle result
             if result == "win" or result == True:
