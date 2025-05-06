@@ -3254,7 +3254,7 @@ def show_win_screen(screen):
 #     sys.exit()
 
 # os.environ['RPI_MODE'] = 'TRUE'
-# main()
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((800, 600))
@@ -3273,15 +3273,12 @@ def main():
     completed_games = set()
 
     while game_running:
-        # If timer is done, check win/loss immediately
-        if timer._value <= 0:
-            if len(completed_games) == len(mini_games):
-                game_state = "Win"  # Completed all games just in time
-            else:
-                timer.pause()
-                show_death_screen(screen)
-                pygame.quit()
-                sys.exit()
+        # If timer is done and not all games complete, show death screen and exit
+        if timer._value <= 0 and len(completed_games) < len(mini_games):
+            timer.pause()
+            show_death_screen(screen)
+            pygame.quit()
+            sys.exit()
 
         # Handle main menu
         if game_state == "Menu":
@@ -3332,25 +3329,21 @@ def main():
             if result == "win" or result is True:
                 completed_games.add(game_state)
                 if len(completed_games) == len(mini_games):
-                    game_state = "Win"
+                    # All games completed, show win screen
+                    timer.pause()
+                    show_win_screen(screen)
+                    game_state = "Menu"
                 else:
+                    # More games to play, choose next
                     unplayed = [g for g in mini_games if g not in completed_games]
                     game_state = random.choice(unplayed)
             elif result == "lose" or result is False:
-                # Player lost - show death screen and return to menu
-                game_state = "Die"
+                # Player lost, show death screen and return to menu
+                timer.pause()
+                show_death_screen(screen)
+                game_state = "Menu"
             else:
                 game_state = "Menu"
-
-        elif game_state == "Win":
-            timer.pause()
-            show_win_screen(screen)
-            game_state = "Menu"  # Return to menu after win screen
-
-        elif game_state == "Die":
-            timer.pause()
-            show_death_screen(screen)
-            game_state = "Menu"  # Return to menu after death screen
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -3358,3 +3351,4 @@ def main():
 
     pygame.quit()
     sys.exit()
+
