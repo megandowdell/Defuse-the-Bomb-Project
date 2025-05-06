@@ -9,8 +9,10 @@ import bomb
 from bomb_configs import *
 from bomb_phases import *
 
-# Set display environment variables for Raspberry Pi
-os.environ["SDL_VIDEODRIVER"] = "fbcon"  # Try different drivers if needed: x11, directfb
+# Try different display drivers
+# Comment out the one you don't want to use
+# os.environ["SDL_VIDEODRIVER"] = "fbcon"  # Framebuffer console
+os.environ["SDL_VIDEODRIVER"] = "x11"    # X11 window system
 os.environ["SDL_VIDEO_CENTERED"] = "1"
 
 # Print diagnostic info
@@ -34,6 +36,7 @@ pygame.init()
 pygame.mixer.init()
 
 
+
 def show_death_screen(screen):
     WIDTH, HEIGHT = screen.get_size()
     screen.fill((0, 0, 0))  # Black background
@@ -49,7 +52,53 @@ def show_death_screen(screen):
 
 def show_redlightgreenlight_game_screen(screen):
     print("Starting Red Light Green Light game...")
-def play_redlightgreenlight():
+    
+    # Define constants needed in the inner function
+    dev_width = 800
+    dev_height = 600
+    
+    # Set up hardware
+    component_button_RGB = [
+        DigitalInOut(board.D17),  # Red pin
+        DigitalInOut(board.D27),  # Green pin
+        DigitalInOut(board.D22)   # Blue pin
+    ]
+
+    for pin in component_button_RGB:
+        pin.direction = Direction.OUTPUT
+        pin.value = True  # Initialize all LEDs to OFF
+
+    # Setup for button
+    component_button_state = DigitalInOut(board.D4)
+    component_button_state.direction = Direction.INPUT
+    component_button_state.pull = Pull.DOWN
+    
+    # Define hardware interaction functions
+    def check_button_press():
+        """Check if the button is pressed."""
+        return component_button_state.value
+    
+    def set_led(color):
+        """Set the RGB LED based on the current light color"""
+        if color == "green":
+            component_button_RGB[0].value = True   # Red OFF
+            component_button_RGB[1].value = False  # Green ON
+            component_button_RGB[2].value = True   # Blue OFF
+        elif color == "red":
+            component_button_RGB[0].value = False  # Red ON
+            component_button_RGB[1].value = True   # Green OFF
+            component_button_RGB[2].value = True   # Blue OFF
+        else:
+            # turn everything off
+            for pin in component_button_RGB:
+                pin.value = True
+    
+    # Load music
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load("fly_me.mp3")
+    pygame.mixer.music.play(-1)
+    
+    def play_redlightgreenlight():
         WIDTH, HEIGHT = screen.get_size()
         pygame.display.set_caption("Red Light Green Light")
         clock = pygame.time.Clock()
@@ -135,6 +184,7 @@ def play_redlightgreenlight():
             # Change light color
             if current_time >= next_change_time and not game_over:
                 light_color = "green" if light_color == "red" else "red"
+                set_led(light_color)  # Set the LED to match the game state
                 if light_color == "green":
                     pygame.mixer.music.stop()
                     pygame.mixer.music.load("redlight.mp3")
@@ -180,24 +230,27 @@ def play_redlightgreenlight():
             # Draw text
             screen.blit(FONT.render(f"State: {light_color.upper()}", True, TEXT), (margin, margin))
             screen.blit(FONT.render(f"Time: {time_left:.1f}s", True, TEXT), (margin, margin + font_size + 10))
-            screen.blit(FONT.render(f"Distance: {distance :.0f} / {target_distance :.0f}", True, TEXT),
+            screen.blit(FONT.render(f"Distance: {distance:.0f} / {target_distance:.0f}", True, TEXT),
                         (margin, margin + font_size * 2 + 20))
 
             message_text = FONT.render(message, True, TEXT)
             screen.blit(message_text, (WIDTH // 2 - message_text.get_width() // 2,
-                                       HEIGHT - int(120 * HEIGHT / dev_height)))
+                                    HEIGHT - int(120 * HEIGHT / dev_height)))
 
             if not game_over:
                 instructions = FONT.render("Press SPACE or CLICK to move forward", True, TEXT)
                 screen.blit(instructions, (WIDTH // 2 - instructions.get_width() // 2,
-                                           HEIGHT - int(60 * HEIGHT / dev_height)))
+                                        HEIGHT - int(60 * HEIGHT / dev_height)))
             else:
                 result = FONT.render("You won! Press R to restart" if won else "You lost! Press R to restart", True, TEXT)
                 screen.blit(result, (WIDTH // 2 - result.get_width() // 2,
-                                     HEIGHT - int(60 * HEIGHT / dev_height)))
+                                    HEIGHT - int(60 * HEIGHT / dev_height)))
 
             pygame.display.flip()
             clock.tick(60)
-
-        result = play_redlightgreenlight()
-        return result
+            
+        return "lose"  # Default return if loop exits without winning
+    
+    # Call the inner function and return its result
+    result = play_redlightgreenlight()
+    return result
