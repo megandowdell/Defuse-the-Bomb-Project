@@ -4536,6 +4536,9 @@ def main():
     # Screen setup
     WIDTH, HEIGHT = 576, 1024
     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SHOWN)
+    screen.fill((0, 0, 0))  # Fill with black (or any appropriate color)
+    
+    pygame.display.flip()  # Update the display
     
     game_running = True
     game_state = "Menu"
