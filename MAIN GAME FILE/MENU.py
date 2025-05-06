@@ -3492,12 +3492,15 @@ def play_redlightgreenlight(screen):
                 pygame.mixer.music.stop()
                 pygame.mixer.music.load("redlight.mp3")
                 pygame.mixer.music.play()
+                pygame.mixer.music.stop()
+                
                 # # pygame.mixer.Sound("redlight.mp3")
                 # pygame.mixer.mus
             else:
                 pygame.mixer.music.stop()
                 pygame.mixer.music.load("redlight.mp3")
                 pygame.mixer.music.play()
+                pygame.mixer.music.stop()
             #     pygame.mixer.Sound("greenlight.mp3")
             # pygame.mixer.music.play()
                 
