@@ -3196,7 +3196,7 @@ def main():
                 result = show_simon_says_game_screen(screen)  
   
             # Handle result
-            if result == "win":
+            if result == "win" or result == True:
                 completed_games.add(game_state)
                 if len(completed_games) == len(mini_games):
                     game_state = "Win"
@@ -3204,7 +3204,7 @@ def main():
                     unplayed = [g for g in mini_games if g not in completed_games]
                     game_state = random.choice(unplayed)
             
-            elif result == "lose":
+            elif result == "lose" or result == False:
                 game_state = "Death"
             else:
                 game_state = "Menu"
