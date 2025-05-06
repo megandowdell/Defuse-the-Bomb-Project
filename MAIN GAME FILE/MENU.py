@@ -3507,8 +3507,8 @@ def play_redlightgreenlight(screen):
             # Set next change time (2-5 seconds)
             next_change = random.uniform(2, 5)
             next_change_time = current_time + next_change
-            message = f"THE LIGHT IS NOW {light_color.upper()}!"
-            print(f"THE LIGHT IS NOW {light_color.upper()}!")
+            # message = f"THE LIGHT IS NOW {light_color.upper()}!"
+            # print(f"THE LIGHT IS NOW {light_color.upper()}!")
         
         # Check button press
         if (button_pressed or check_button_press()) and not game_over:
