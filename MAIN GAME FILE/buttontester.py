@@ -216,7 +216,8 @@ def play_redlightgreenlight():
         
 
         # Check button press
-        if button_pressed and not game_over:
+        # if button_pressed and not game_over:
+        if (button_pressed or check_button_press()) and not game_over:
             if light_color == "green":
                 distance += 1
                 message = f"Good move!"
