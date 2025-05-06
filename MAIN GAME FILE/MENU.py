@@ -2692,6 +2692,7 @@ def show_redlightgreenlight_game_screen(screen):
     
     return "Menu"  # If they didn't click Pla
 
+def play_redlightgreenlight():
     # Set up LED control
     def set_led(color):
         #Set the RGB LED based on the current light color
@@ -2762,7 +2763,7 @@ def show_redlightgreenlight_game_screen(screen):
         set_led("off")
         return True
     
-def play_redlightgreenlight():
+
     dev_width = 800
     dev_height = 600
     
