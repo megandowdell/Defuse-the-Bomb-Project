@@ -2712,7 +2712,7 @@ def show_redlightgreenlight_game_screen(screen):
     
     return "Menu"  # If they didn't click Play
 
-def play_redlightgreenlight():
+def play_redlightgreenlight(screen):
     # Set up LED control
     def set_led(color):
         #Set the RGB LED based on the current light color
@@ -2983,12 +2983,13 @@ def play_redlightgreenlight():
         clock.tick(60)
     set_led("off")
     return "lose"
+return "win" if won else "lose"
 
-pygame.init()
-pygame.mixer.init()
-screen = pygame.display.set_mode((576, 1024))
-result = play_redlightgreenlight()
-pygame.display.flip()
+# pygame.init()
+# pygame.mixer.init()
+# screen = pygame.display.set_mode((576, 1024))
+# result = play_redlightgreenlight()
+# pygame.display.flip()
     
 
 
