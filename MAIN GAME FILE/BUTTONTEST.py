@@ -33,10 +33,6 @@ print("Initializing pygame...")
 pygame.init()
 pygame.mixer.init()
 
-# Print display info
-print("Available display drivers:", pygame.display.get_drivers())
-print("Current display driver:", pygame.display.get_driver())
-print("Display info:", pygame.display.Info())
 
 def show_death_screen(screen):
     WIDTH, HEIGHT = screen.get_size()
