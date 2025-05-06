@@ -3007,25 +3007,6 @@ def main():
     completed_games = set()
 
     while game_running:
-        # Check timer first
-        if timer.has_expired():
-            # Show death screen and use its return value
-            pygame.mixer.music.stop()
-            return_state = show_death_screen(screen)
-            
-            # Reset timer
-            timer = Timer()
-            timer.start()
-            
-            # Set game state based on return value
-            if return_state == "Menu":
-                game_state = "Menu"
-                completed_games.clear()
-            else:
-                game_running = False
-            
-            continue
-         
 
         if game_state == "Menu":
             completed_games.clear()  # Reset progress when returning to menu
@@ -3104,5 +3085,6 @@ def main():
     
         pygame.quit()
         sys.exit()
+        
     os.environ['RPI_MODE'] = 'TRUE'
     main()
