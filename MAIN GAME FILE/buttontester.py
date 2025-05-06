@@ -316,12 +316,9 @@ def play_redlightgreenlight():
         # Control frame rate
         clock.tick(60)
     set_led("off")
-    return "win" if result else "lose"
+    return "lose"
     
-
-    
-    result = play_redlightgreenlight()
-#return "win" if win else "lose"
+result = play_redlightgreenlight()
 return result
 pygame.display.flip()
     
