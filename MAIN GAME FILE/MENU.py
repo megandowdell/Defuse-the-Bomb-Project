@@ -3148,7 +3148,10 @@ def main():
     
     while game_running:
         if timer._value <= 0 and len(completed_games) < len(mini_games):
-            game_state = "Death"  # Time's up, show death screen
+            game_state = "Die"  # Time's up, show death screen
+            continue
+        if timer._value <= 0 and len(completed_games) == len(mini_games):
+            game_state = "Live"  # Time's up, show death screen
             continue
         if game_state == "Menu":
             completed_games.clear()  # Reset progress when returning to menu
@@ -3212,12 +3215,12 @@ def main():
             else:
                 game_state = "Menu"
             
-        elif game_state == "Win":
+        elif game_state == "Live":
             timer.pause()
             show_win_screen(screen)
             game_state = "Menu"
         
-        elif game_state == "Death":
+        elif game_state == "Die":
             # Pause the timer when player dies
             timer.pause()
             show_death_screen(screen)
