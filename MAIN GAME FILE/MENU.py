@@ -3559,7 +3559,7 @@ def play_redlightgreenlight(screen):
         message_text = FONT.render(message, True, TEXT)
         message_x = WIDTH // 2 - message_text.get_width() // 2
         # Position message near the bottom of the screen
-        message_y = HEIGHT - int(120 * HEIGHT / dev_height)
+        message_y = HEIGHT - int(140 * HEIGHT / dev_height)
         screen.blit(message_text, (message_x, message_y))
         
         # # Draw instructions
