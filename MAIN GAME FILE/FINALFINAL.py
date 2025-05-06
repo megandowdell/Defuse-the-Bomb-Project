@@ -15,6 +15,8 @@ from adafruit_matrixkeypad import Matrix_Keypad
 import RPi.GPIO as GPIO  # Uncomment if using GPIO on Raspberry Pi
 import board
 from digitalio import DigitalInOut, Direction, Pull
+import cv2
+import numpy as np
 ####################################################################################################################
 # MENU AUDIO
 pygame.mixer.init()
