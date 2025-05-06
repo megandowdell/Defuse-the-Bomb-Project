@@ -3542,21 +3542,21 @@ def play_redlightgreenlight(screen):
     next_change_time = current_time + next_change
     message = f"THE LIGHT IS NOW {light_color.upper()}!"
         # Change light color based on timing
-        if current_time >= next_change_time and not game_over:
-            # Switch the light
-            light_color = "green" if light_color == "red" else "red"
-            set_led(light_color)
-            if light_color == "green":
-               green_light_sound.play()
-            else:
-                 red_light_sound.play()
+    if current_time >= next_change_time and not game_over:
+        # Switch the light
+        light_color = "green" if light_color == "red" else "red"
+        set_led(light_color)
+        if light_color == "green":
+           green_light_sound.play()
+        else:
+             red_light_sound.play()
+        
             
-                
-            # Set next change time (2-5 seconds)
-            next_change = random.uniform(2, 5)
-            next_change_time = current_time + next_change
-            message = f"THE LIGHT IS NOW {light_color.upper()}!"
-            # print(f"THE LIGHT IS NOW {light_color.upper()}!")
+        # Set next change time (2-5 seconds)
+        next_change = random.uniform(2, 5)
+        next_change_time = current_time + next_change
+        message = f"THE LIGHT IS NOW {light_color.upper()}!"
+        # print(f"THE LIGHT IS NOW {light_color.upper()}!")
         
 
         # Check button press
