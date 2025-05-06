@@ -3147,6 +3147,9 @@ def main():
     completed_games = set()
     
     while game_running:
+        if timer._value == 0 and game_state not in ["Menu", "About Game", "Meet Team", "Win", "Death"]:
+            game_state = "Death"  # Time's up, show death screen
+            continue
         if game_state == "Menu":
             completed_games.clear()  # Reset progress when returning to menu
             pygame.mixer.music.load("pink_soldiers.mp3")
