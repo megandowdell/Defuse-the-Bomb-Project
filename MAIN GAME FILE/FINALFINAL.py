@@ -3009,77 +3009,77 @@ def main():
         
          
 
-        if game_state == "Menu":
-            completed_games.clear()  # Reset progress when returning to menu
-            pygame.mixer.music.load("pink_soldiers.mp3")
+    if game_state == "Menu":
+        completed_games.clear()  # Reset progress when returning to menu
+        pygame.mixer.music.load("pink_soldiers.mp3")
+        pygame.mixer.music.play(-1)
+        menu_choice = show_menu_screen(screen)
+        if menu_choice == "Start":
+            game_state = random.choice(["Hopscotch", "Tic Tac Toe","Simon Says"])
+        elif menu_choice == "About Game":
+            game_state = "About Game"
+        elif menu_choice == "Meet Team":
+            game_state = "Meet Team"
+    
+    elif game_state == "About Game":
+        game_choice = show_about_game_screen(screen)
+        game_state = game_choice  # Will return a game name
+    
+    elif game_state == "Meet Team":
+        choice = show_meet_team(screen)
+        game_state = "Menu"
+    
+    elif game_state in mini_games:
+        if game_state in completed_games:
+            # Skip already played game
+            unplayed = [g for g in mini_games if g not in completed_games]
+            game_state = random.choice(unplayed) if unplayed else "Win"
+            continue
+        if game_state == "Hopscotch":
+            pygame.mixer.music.stop()
+            pygame.mixer.music.load("hopscotch_instructions.mp3")
+            pygame.mixer.music.play()
+            result = show_hopscotch_game_screen(screen)
+
+        elif game_state == "Tic Tac Toe":
+            pygame.mixer.music.load("tictactoe_instructions.mp3")
             pygame.mixer.music.play(-1)
-            menu_choice = show_menu_screen(screen)
-            if menu_choice == "Start":
-                game_state = random.choice(["Hopscotch", "Tic Tac Toe","Simon Says"])
-            elif menu_choice == "About Game":
-                game_state = "About Game"
-            elif menu_choice == "Meet Team":
-                game_state = "Meet Team"
-        
-        elif game_state == "About Game":
-            game_choice = show_about_game_screen(screen)
-            game_state = game_choice  # Will return a game name
-        
-        elif game_state == "Meet Team":
-            choice = show_meet_team(screen)
-            game_state = "Menu"
-        
-        elif game_state in mini_games:
-            if game_state in completed_games:
-                # Skip already played game
-                unplayed = [g for g in mini_games if g not in completed_games]
-                game_state = random.choice(unplayed) if unplayed else "Win"
-                continue
-            if game_state == "Hopscotch":
-                pygame.mixer.music.stop()
-                pygame.mixer.music.load("hopscotch_instructions.mp3")
-                pygame.mixer.music.play()
-                result = show_hopscotch_game_screen(screen)
-
-            elif game_state == "Tic Tac Toe":
-                pygame.mixer.music.load("tictactoe_instructions.mp3")
-                pygame.mixer.music.play(-1)
-                result = show_tictactoe_game_screen(screen)
-                
-            elif game_state == "Red Light Green Light":
-                pygame.mixer.music.load("redlightgreenlight_instructions.mp3")
-                pygame.mixer.music.play(-1)
-                result = show_redlightgreenlight_game_screen(screen)
-
-            elif game_state == "Simon Says":
-                pygame.mixer.music.load("simonsays_instructions.mp3")
-                pygame.mixer.music.play(-1)
-                result = show_simon_says_game_screen(screen)  
-           
-            # if timer.has_expired():
-            # # Show game over screen and exit
-            #     show_death_screen(screen)
-            #     game_running = False
-            #     continue
+            result = show_tictactoe_game_screen(screen)
             
-            # Handle result
-            if result == "win":
-                completed_games.add(game_state)
-                if len(completed_games) == len(mini_games):
-                    game_state = "Win"
-                else:
-                    unplayed = [g for g in mini_games if g not in completed_games]
-                    game_state = random.choice(unplayed)
-            else:
-                game_state = "Menu"
+        elif game_state == "Red Light Green Light":
+            pygame.mixer.music.load("redlightgreenlight_instructions.mp3")
+            pygame.mixer.music.play(-1)
+            result = show_redlightgreenlight_game_screen(screen)
 
-        elif game_state == "Win":
-            show_win_screen(screen)
+        elif game_state == "Simon Says":
+            pygame.mixer.music.load("simonsays_instructions.mp3")
+            pygame.mixer.music.play(-1)
+            result = show_simon_says_game_screen(screen)  
+       
+        # if timer.has_expired():
+        # # Show game over screen and exit
+        #     show_death_screen(screen)
+        #     game_running = False
+        #     continue
+        
+        # Handle result
+        if result == "win":
+            completed_games.add(game_state)
+            if len(completed_games) == len(mini_games):
+                game_state = "Win"
+            else:
+                unplayed = [g for g in mini_games if g not in completed_games]
+                game_state = random.choice(unplayed)
+        else:
             game_state = "Menu"
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                game_running = False
+    elif game_state == "Win":
+        show_win_screen(screen)
+        game_state = "Menu"
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            game_running = False
 
     pygame.quit()
     sys.exit()
