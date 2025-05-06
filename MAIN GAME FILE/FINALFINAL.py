@@ -2934,15 +2934,14 @@ def show_death_screen(screen):
         
     return "Menu"
 # # WIN SCREEN
-import pygame
-import cv2
-import numpy as np
 
-pygame.mixer.init()
-pygame.mixer.music.load("coins1.mp3")
-pygame.mixer.music.play(-1)
+
+
 
 def show_win_screen(screen):
+    pygame.mixer.init()
+    pygame.mixer.music.load("coins1.mp3")
+    pygame.mixer.music.play(-1)
     # Setup
     WIDTH, HEIGHT = screen.get_size()
     background = pygame.image.load("win2.jpg")
