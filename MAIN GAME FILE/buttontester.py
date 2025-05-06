@@ -72,7 +72,7 @@ def RedLightGreenLight():
         while time.time() < change_time:
             if check_button_press():
                 if light_color == "green":
-                    pass
+                    return True
                 else:
                     set_led("off")
                     return  False # End the game immediately
