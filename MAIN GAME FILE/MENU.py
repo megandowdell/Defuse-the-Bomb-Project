@@ -1813,7 +1813,7 @@ small_font = pygame.font.Font('font1.otf', 24)
 wire_font = pygame.font.Font('font1.otf', 22)
 
 #Main game function
-def main():
+def show_simon_says_game_screen(screen):
     #Load background image with error handling
     bg_image = pygame.image.load("simonsays.png")
     bg_image = pygame.transform.scale(bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
