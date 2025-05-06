@@ -415,7 +415,7 @@ def show_about_game_screen(screen):
                         if item == "Back":
                             return "Menu"  
                         elif item == "Continue":
-                            return random.choice(["Hopscotch", "Tic Tac Toe"])  
+                            return random.choice(["Hopscotch", "Tic Tac Toe", "Simon Says"])  
         pygame.display.flip()
         clock.tick(60)
 ####################################################################################################################
@@ -1782,7 +1782,8 @@ class Wires(PhaseThread):
     def __str__(self):
         #Showing the binary values of the pins 
         return f"{self._value}/{int(self._value, 2)}"
-def_show_simonssays_game_screen(screen): 
+
+def show_simonssays_game_screen(screen): 
     #Initialize pygame
     pygame.init()
     
@@ -2871,7 +2872,7 @@ def main():
     
     game_running = True
     game_state = "Menu"
-    mini_games = ["Hopscotch", "Tic Tac Toe"]
+    mini_games = ["Hopscotch", "Tic Tac Toe", "Simon Says"]
     completed_games = set()
 
     while game_running:
@@ -2881,7 +2882,7 @@ def main():
             pygame.mixer.music.play(-1)
             menu_choice = show_menu_screen(screen)
             if menu_choice == "Start":
-                game_state = random.choice(["Hopscotch", "Tic Tac Toe"])
+                game_state = random.choice(["Hopscotch", "Tic Tac Toe", "Simon Says"])
             elif menu_choice == "About Game":
                 game_state = "About Game"
             elif menu_choice == "Meet Team":
