@@ -45,10 +45,10 @@ component_button_RGB = [
         DigitalInOut(board.D22)   # Blue pin
 ]
 
-    # Set each pin as output
-    for pin in component_button_RGB:
-        pin.direction = Direction.OUTPUT
-        pin.value = True  # Initialize all LEDs to OFF
+# Set each pin as output
+for pin in component_button_RGB:
+    pin.direction = Direction.OUTPUT
+    pin.value = True  # Initialize all LEDs to OFF
 
     # Setup for button - FROM BOMB CONFIGS
 global component_button_state
