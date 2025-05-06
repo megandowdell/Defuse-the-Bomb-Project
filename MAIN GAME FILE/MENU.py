@@ -4536,9 +4536,12 @@ def main():
     # Screen setup
     WIDTH, HEIGHT = 576, 1024
     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SHOWN)
-    screen.fill((0, 0, 0))  # Fill with black (or any appropriate color)
+    bg_image = pygame.image.load("menu.jpg")  # Use your menu background image
+    bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
+    screen.blit(bg_image, (0, 0))
+    pygame.display.flip() 
     
-    pygame.display.flip()  # Update the display
+    
     
     game_running = True
     game_state = "Menu"
