@@ -1993,7 +1993,7 @@ def show_simon_says_game_screen(screen):
         #Initialize the timer for 20 seconds
         command_start_time = time.time()
         #20 seconds timer
-        timer_duration = 10
+        timer_duration = 11
         #Delay before checking the action
         check_delay = 2.0  
         #How long to show success/failure message
