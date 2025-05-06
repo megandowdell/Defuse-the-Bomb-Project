@@ -3014,6 +3014,11 @@ def main():
        
     
     while game_running:
+         if timer.has_expired():
+            # Show game over screen and exit
+                show_death_screen(screen)
+                game_running = False
+                continue
          
 
         if game_state == "Menu":
@@ -3063,11 +3068,7 @@ def main():
                 pygame.mixer.music.play(-1)
                 result = show_simon_says_game_screen(screen)  
            
-            if timer.has_expired():
-            # Show game over screen and exit
-                show_death_screen(screen)
-                game_running = False
-                continue
+           
             
             # Handle result
             if result == "win":
