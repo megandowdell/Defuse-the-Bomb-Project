@@ -2105,10 +2105,10 @@ def show_simon_says_game_screen(screen):
             screen.blit(bg_image, (0, 0))  
             #Draw semi-transparent overlay
             screen.blit(overlay, (0, 0))  
-            screen_width, screen_height = screen.get_size()
+            SCRREN_WIDTH, SCREEN_HEIGHT = screen.get_size()
             #Display wire names and statuses
             wire_display_x = 30
-            wire_display_y = HEIGHT - 200
+            wire_display_y = SCREEN_HEIGHT - 200
             wire_spacing = 40
             
             for i, color in enumerate(colors):
