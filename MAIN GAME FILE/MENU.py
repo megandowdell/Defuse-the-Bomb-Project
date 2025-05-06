@@ -2164,7 +2164,7 @@ def show_simon_says_game_screen(screen):
 
 # INSTRUCTIONS
 def show_simon_says_instructions_screen(screen):
-    WIDTH, HEIGHT = screen.get_size()
+    
     pygame.display.set_caption("Simon Says Instructions")
     
     # Base font sizes for reference design
