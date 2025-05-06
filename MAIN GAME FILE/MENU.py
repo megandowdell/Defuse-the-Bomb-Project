@@ -3216,7 +3216,7 @@ def main():
         
         elif game_state == "Death":
             # Pause the timer when player dies
-            timer.pause()
+            # timer.pause()
             show_death_screen(screen)
             game_state = "Menu"
 
