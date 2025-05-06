@@ -3420,7 +3420,7 @@ def play_redlightgreenlight(screen):
     target_distance = 40
     start_time = time.time()
     next_change_time = start_time  # Initialize for immediate first change
-    # message = "Press the button ONLY when the light is GREEN"
+    message = "Press the button ONLY when the light is GREEN"
 
     # Game state variables
     running = True
