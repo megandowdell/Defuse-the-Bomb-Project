@@ -2934,6 +2934,7 @@ def show_death_screen(screen):
 # # WIN SCREEN
 
 
+
 ####################################################################################################################  
 class Timer(PhaseThread):
     def __init__(self, name="GameTimer"):
@@ -3009,13 +3010,8 @@ def main():
     game_state = "Menu"
     mini_games = ["Hopscotch", "Tic Tac Toe", "Simon Says"]
     completed_games = set()
-
-   
-       
     
     while game_running:
-         
-
         if game_state == "Menu":
             completed_games.clear()  # Reset progress when returning to menu
             pygame.mixer.music.load("pink_soldiers.mp3")
