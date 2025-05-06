@@ -3273,22 +3273,19 @@ def main():
     completed_games = set()
 
     while game_running:
-        # Handle timer conditions - these take precedence over other game states
+        # If timer is done, check win/loss immediately
         if timer._value <= 0:
-            timer.pause()
             if len(completed_games) == len(mini_games):
-                # All games completed just as timer expires
-                show_win_screen(screen)
+                game_state = "Win"  # Completed all games just in time
             else:
-                # Didn't complete all games in time
+                timer.pause()
                 show_death_screen(screen)
-            # Exit after showing appropriate screen when timer expires
-            pygame.quit()
-            sys.exit()
-        
-        # Process game states
+                pygame.quit()
+                sys.exit()
+
+        # Handle main menu
         if game_state == "Menu":
-            completed_games.clear()  # Reset progress when returning to menu
+            completed_games.clear()
             pygame.mixer.music.load("pink_soldiers.mp3")
             pygame.mixer.music.play(-1)
             menu_choice = show_menu_screen(screen)
@@ -3298,81 +3295,66 @@ def main():
                 game_state = "About Game"
             elif menu_choice == "Meet Team":
                 game_state = "Meet Team"
-        
+
         elif game_state == "About Game":
-            game_choice = show_about_game_screen(screen)
-            game_state = game_choice  # Will return a game name or "Menu"
-        
+            game_state = show_about_game_screen(screen)
+
         elif game_state == "Meet Team":
-            choice = show_meet_team(screen)
+            show_meet_team(screen)
             game_state = "Menu"
-        
+
         elif game_state in mini_games:
             if game_state in completed_games:
-                # Skip already played game
                 unplayed = [g for g in mini_games if g not in completed_games]
                 game_state = random.choice(unplayed) if unplayed else "Win"
                 continue
-                
+
+            # Instructions + gameplay
+            pygame.mixer.music.stop()
             if game_state == "Hopscotch":
-                pygame.mixer.music.stop()
                 pygame.mixer.music.load("hopscotch_instructions.mp3")
                 pygame.mixer.music.play()
                 result = show_hopscotch_game_screen(screen)
-
             elif game_state == "Tic Tac Toe":
                 pygame.mixer.music.load("tictactoe_instructions.mp3")
                 pygame.mixer.music.play(-1)
                 result = show_tictactoe_game_screen(screen)
-                
             elif game_state == "Red Light Green Light":
                 pygame.mixer.music.load("redlightgreenlight_instructions.mp3")
                 pygame.mixer.music.play(-1)
                 result = show_redlightgreenlight_game_screen(screen)
-
             elif game_state == "Simon Says":
                 pygame.mixer.music.load("simonsays_instructions.mp3")
                 pygame.mixer.music.play(-1)
-                result = show_simon_says_game_screen(screen)  
-  
-            # Handle mini-game results
+                result = show_simon_says_game_screen(screen)
+
+            # Evaluate result
             if result == "win" or result is True:
-                # Player won the mini-game
                 completed_games.add(game_state)
                 if len(completed_games) == len(mini_games):
-                    # All games completed, show win screen
                     game_state = "Win"
                 else:
-                    # More games to play, choose next random game
                     unplayed = [g for g in mini_games if g not in completed_games]
                     game_state = random.choice(unplayed)
-            
             elif result == "lose" or result is False:
-                # Player lost the mini-game, show death screen then return to menu
-                game_state = "Die" 
-            
+                # Player lost - show death screen and return to menu
+                game_state = "Die"
             else:
-                # No clear result (e.g., back button pressed), return to menu
                 game_state = "Menu"
-        
+
         elif game_state == "Win":
-            # Player completed all games, show win screen then return to menu
             timer.pause()
             show_win_screen(screen)
-            game_state = "Menu"
-        
+            game_state = "Menu"  # Return to menu after win screen
+
         elif game_state == "Die":
-            # Player lost a game but still has time, show death screen then return to menu
             timer.pause()
             show_death_screen(screen)
-            game_state = "Menu"
+            game_state = "Menu"  # Return to menu after death screen
 
-        # Check for quit events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game_running = False
 
     pygame.quit()
     sys.exit()
-    
-
