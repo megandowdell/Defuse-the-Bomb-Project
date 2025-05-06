@@ -2860,13 +2860,12 @@ def show_death_screen(screen):
 def main():
     # Initialize pygame
     pygame.init()
+    pygame.mixer.init()
     pygame.display.set_caption("Squid-ish Games")
 
     # Screen setup
-    if os.environ.get('RPI_MODE', 'False').lower() == 'true':
-        WIDTH, HEIGHT = 576, 1024
-    else:
-        WIDTH, HEIGHT = 800, 700
+    WIDTH, HEIGHT = 576, 1024
+    
 
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     
@@ -2918,13 +2917,13 @@ def main():
                 pygame.mixer.music.play(-1)
                 result = show_redlightgreenlight_game_screen(screen)
 
-#             elif game_state == "Simon Says":
-#                 pygame.mixer.music.load("salesman_sound.mp3")
-#                 pygame.mixer.music.play(-1)
-#                 result = show_simon_says_game_screen(screen)  
-#   
+            elif game_state == "Simon Says":
+                pygame.mixer.music.load("salesman_sound.mp3")
+                pygame.mixer.music.play(-1)
+                result = show_simon_says_game_screen(screen)  
+  
             # Handle result
-            if result == "win":
+            if result == "win" or result == True:
                 completed_games.add(game_state)
                 if len(completed_games) == len(mini_games):
                     game_state = "Win"
@@ -2932,6 +2931,7 @@ def main():
                     unplayed = [g for g in mini_games if g not in completed_games]
                     game_state = random.choice(unplayed)
             else:
+                show_death_screen(screen)
                 game_state = "Menu"
 
         elif game_state == "Win":
