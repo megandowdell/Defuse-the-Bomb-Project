@@ -661,29 +661,12 @@ def show_meet_team(screen):
 # HOPSCOTCH GAME
 # TOGGLES
 # Only import GPIO stuff if on a Pi
-# try:
-#     import board
-#     from digitalio import DigitalInOut, Direction, Pull
-#     RPi = True
-# except ImportError:
-#     RPi = False
-#     print("GPIO not available. Running in simulation mode.")
-
-# Base thread class for phases like toggles/wires/buttons
 
 class PhaseThread(Thread):
     def __init__(self, name):
         super().__init__(name=name, daemon=True)
         self._running = False
         self._value = None
-        
-# if RPi:
-#     for pin in self._pins:
-#                 pin.direction = Direction.INPUT
-#                 pin.pull = Pull.DOWN
-
-#     def reset(self):
-#         self._value = None
 
 # Toggle switch handler class
 class Toggles(PhaseThread):
