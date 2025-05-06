@@ -1785,7 +1785,7 @@ class Wires(PhaseThread):
         return f"{self._value}/{int(self._value, 2)}"
 
 #Initialize pygame
-pygame.init()
+# pygame.init()
 
 #Screen dimensions and create display surface
 SCREEN_WIDTH = 576
