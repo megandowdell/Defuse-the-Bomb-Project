@@ -21,7 +21,7 @@ pygame.mixer.init() # for game sounds
 # Set up LED control
 def set_led(color):
     #Set the RGB LED based on the current light color
-        if color == "green":
+    if color == "green":
         component_button_RGB[0].value = True   # Red OFF
         component_button_RGB[1].value = False  # Green ON
         component_button_RGB[2].value = True   # Blue OFF
@@ -39,11 +39,11 @@ def check_button_press():
     return component_button_state.value
 
 global component_button_RGB
-    component_button_RGB = [
+component_button_RGB = [
         DigitalInOut(board.D17),  # Red pin
         DigitalInOut(board.D27),  # Green pin
         DigitalInOut(board.D22)   # Blue pin
-    ]
+]
 
     # Set each pin as output
     for pin in component_button_RGB:
@@ -51,10 +51,10 @@ global component_button_RGB
         pin.value = True  # Initialize all LEDs to OFF
 
     # Setup for button - FROM BOMB CONFIGS
-    global component_button_state
-    component_button_state = DigitalInOut(board.D4)
-    component_button_state.direction = Direction.INPUT
-    component_button_state.pull = Pull.DOWN
+global component_button_state
+component_button_state = DigitalInOut(board.D4)
+component_button_state.direction = Direction.INPUT
+component_button_state.pull = Pull.DOWN
 
 def RedLightGreenLight():
     # Initial light color
@@ -316,17 +316,14 @@ def play_redlightgreenlight():
         # Control frame rate
         clock.tick(60)
     set_led("off")
-    return "win" if result else return "lose"
+    return "win" if result else "lose"
     
-def play_redlightgreenlight(
-        
-    #return "win" if win else "lose"
-        #return result
+
     
-    result = play_redlightgreenlight()
-    #return "win" if win else "lose"
-    return result
-    pygame.display.flip()
+result = play_redlightgreenlight()
+#return "win" if win else "lose"
+return result
+pygame.display.flip()
     
 
 
