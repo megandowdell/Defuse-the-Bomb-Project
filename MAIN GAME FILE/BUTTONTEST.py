@@ -203,5 +203,5 @@ def play_redlightgreenlight():
             pygame.display.flip()
             clock.tick(60)
 
-    result = play_redlightgreenlight()
-    return result
+        result = play_redlightgreenlight()
+        return result
