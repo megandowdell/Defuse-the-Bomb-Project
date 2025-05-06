@@ -3076,6 +3076,9 @@ def main():
     elif game_state == "Win":
         show_win_screen(screen)
         game_state = "Menu"
+    else: 
+        show_death_screen(screen)
+        game_state = "Menu"
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
