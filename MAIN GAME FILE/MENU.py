@@ -3668,7 +3668,7 @@ def play_redlightgreenlight(screen):
 
 # INSTRUCTIONS
 def show_redlightgreenlight_instructions_screen(screen):
-    WIDTH, HEIGHT = screen.get_size()
+    # WIDTH, HEIGHT = screen.get_size()
     pygame.display.set_caption("Red Light Green Light Instructions")
     
     # Base font sizes for reference design
