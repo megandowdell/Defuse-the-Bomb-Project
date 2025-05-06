@@ -3269,24 +3269,35 @@ def main():
     while game_running:
         # Handle timer conditions - these take precedence over other game states
         if timer._value <= 0:
-            if len(completed_games) == len(mini_games):
-                game_state = "Live"  # Completed all games, show win screen
-            else:
-                game_state = "Die"   # Didn't complete all games, show death screen
-            # Since timer conditions are critical, immediately process the state
-            # without waiting for the next loop iteration
-            if game_state == "Die":
-                timer.pause()
-                show_death_screen(screen)
-                pygame.quit()
-                sys.exit()
-            elif game_state == "Live":
-                timer.pause()
-                show_win_screen(screen)
-                game_state = "Menu"
-                # Reset the timer for when returning to menu
-                timer.reset(60)
-                timer.start()
+            print("Timer hit zero in main!")  # Debug
+
+        timer.pause()  # Optional: freezes the display and prevents counting negative
+        show_death_screen(screen)
+
+        pygame.display.update()
+        pygame.time.wait(3000)  # Delay so the death screen is visible
+        game_running = False
+        pygame.quit()
+        sys.exit()
+        # if timer._value <= 0:
+        #     if len(completed_games) == len(mini_games):
+        #         game_state = "Live"  # Completed all games, show win screen
+        #     else:
+        #         game_state = "Die"   # Didn't complete all games, show death screen
+        #     # Since timer conditions are critical, immediately process the state
+        #     # without waiting for the next loop iteration
+        #     if game_state == "Die":
+        #         timer.pause()
+        #         show_death_screen(screen)
+        #         pygame.quit()
+        #         sys.exit()
+        #     elif game_state == "Live":
+        #         timer.pause()
+        #         show_win_screen(screen)
+        #         game_state = "Menu"
+        #         # Reset the timer for when returning to menu
+        #         timer.reset(60)
+        #         timer.start()
         
         # Process game states
         if game_state == "Menu":
