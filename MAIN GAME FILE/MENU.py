@@ -1014,7 +1014,7 @@ def show_hopscotch_game_screen(screen):
                     screen.blit(label, (rect.x + TILE_WIDTH//2 - 10, rect.y + 15))
 
             # Level display
-            level_text = FONT.render(f"Level: {rows_cleared}/{ROWS}", True, TEXT)
+            level_text = FONT.render(f"Level: {rows_cleared + 1}/{ROWS}", True, TEXT)
             screen.blit(level_text, (20, 20))
 
             # Lives display 
@@ -2861,7 +2861,7 @@ def show_death_screen(screen):
     
     # Animation settings
     duration = 4.0  # seconds for full animation
-    fps = 60
+    fps = 100
     total_frames = int(duration * fps)
     text_delay = 30  # frames to wait after coffin passes center
     
