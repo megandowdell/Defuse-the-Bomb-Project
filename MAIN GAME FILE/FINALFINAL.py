@@ -1136,8 +1136,8 @@ def show_hopscotch_game_screen(screen):
                             lives -= 1
                                 
                             if lives == 0:    
-                                print("BOOM!")
-                                # show_death_screen(screen)
+                                
+                                show_death_screen(screen)
                                 # lost game
                                 return False
                             else:
