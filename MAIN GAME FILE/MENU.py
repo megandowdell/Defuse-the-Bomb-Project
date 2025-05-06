@@ -1857,7 +1857,7 @@ def show_simon_says_game_screen(screen):
         command_sounds = {}
         for command, filename in command_sound_files.items():
             sound = pygame.mixer.Sound(filename)
-            sound.set_volume(0.8)  # Set volume to 80% (adjust as needed)
+            sound.set_volume(1.0)  # Set volume to 80% (adjust as needed)
             command_sounds[command] = sound
                 
         
