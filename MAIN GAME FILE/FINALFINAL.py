@@ -3019,6 +3019,7 @@ def main():
                 show_death_screen(screen)
                 game_running = False
                 continue
+        time_str = timer.get_time_str()
          
 
         if game_state == "Menu":
