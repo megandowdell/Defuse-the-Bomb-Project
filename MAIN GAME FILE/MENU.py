@@ -450,7 +450,7 @@ def show_meet_team(screen):
         {"name": "Khalil", "status": "Senior", "role": "Sequence Strategist", 
          "description": "I am a Computer Science and Chemistry double major with minors in Mathematics and Sociology from Chicago, IL. My favorite basketball team is the Golden State Warriors."},
         {"name": "Matt", "status": "Junior",  "role": "Motion Engineer", 
-         "description": "I am a Mathematics from... Some fun facts about me are.."},
+         "description": "I am a Chemistry and Mathematics double major from Tampa, FL. The Buffalo Bills are my favorite NFL team and my favorite passtime is playing with my dog or watching cows in my backyard."},
         {"name": "Megan", "status": "Junior", "role": "Grid Tactician", 
          "description": "I am a Mathematics with Computer Science major from Sarasota, FL. Some fun facts about me are I play lacrosse and drift cars."}
     ]
