@@ -139,7 +139,7 @@ def play_redlightgreenlight():
 
     # Game variables
     light_color = "red"
-    game_time = 120  # seconds to win
+    game_time = 100  # seconds to win
     distance = 0
     target_distance = 50
     start_time = time.time()
