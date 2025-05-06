@@ -23,6 +23,7 @@ pygame.mixer.music.play(-1)  # -1 makes it loop indefinitely
 ####################################################################################################################
 # CONSTANTS
 # References for scaling
+RPi = True
 dev_width, dev_height = 800, 700  # Resolution of development screen
 reference_scale = (dev_width, dev_height)  # Used to scale based on development screen
 
