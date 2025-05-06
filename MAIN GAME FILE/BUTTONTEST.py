@@ -180,8 +180,8 @@ def show_redlightgreenlight_game_screen(screen):
     doll_height = int(doll_width * 1.8)  # aspect ratio of 1.8
     
     try:
-        doll_red_img = pygame.image.load("redlightdoll.jpg")
-        doll_green_img = pygame.image.load("greenlightdoll.jpg")
+        doll_red_img = pygame.image.load("redlightdoll.png")
+        doll_green_img = pygame.image.load("greenlightdoll.png")
         
         # Scale images to the desired size
         doll_red_img = pygame.transform.scale(doll_red_img, (doll_width, doll_height))
