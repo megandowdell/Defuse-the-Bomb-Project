@@ -1815,7 +1815,7 @@ wire_font = pygame.font.Font('font1.otf', 22)
 #Main game function
 def show_simon_says_game_screen(screen):
 # First show the instructions screen
-    result = show_hopscotch_instructions_screen(screen)
+    result = show_simon_says_instructions_screen(screen)
     
     if result == "Play":
 
