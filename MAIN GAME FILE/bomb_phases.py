@@ -156,15 +156,15 @@ class Timer(PhaseThread):
 
     # runs the thread - adds logic to code
     def run(self):
-    self._running = True
-    while self._running:
-        if not self._paused:
-            self._update()
-            self._component.print(str(self))
-            sleep(self._interval)
-            self._value -= 1  # allow _value to reach 0
-        else:
-            sleep(0.1)
+        self._running = True
+        while self._running:
+            if not self._paused:
+                self._update()
+                self._component.print(str(self))
+                sleep(self._interval)
+                self._value -= 1  # allow _value to reach 0
+            else:
+                sleep(0.1)
 
 
     # def run(self):
