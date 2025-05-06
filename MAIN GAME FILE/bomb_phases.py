@@ -165,9 +165,13 @@ class Timer(PhaseThread):
                 # wait 1s (default) and continue
                 sleep(self._interval)
                 # the timer has expired -> phase failed (explode)
-                if (self._value == 0):
-                    self._running = False
                 self._value -= 1
+                if self._value <= 0:
+                    self._running = False
+
+                # if (self._value == 0):
+                #     self._running = False
+                # self._value -= 1
             else:
                 sleep(0.1)
 
