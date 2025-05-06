@@ -3391,9 +3391,9 @@ def play_redlightgreenlight(screen):
     big_font_size = int(base_big_font_size * HEIGHT / dev_height)
     
     # Fonts
-    python# Updated fonts with larger sizes
-    FONT = pygame.font.Font("font1.otf", 22)        # Increased from 16 to 22
-    BIG_FONT = pygame.font.Font("font1.otf", 36)    # Increased from 26 to 36
+    
+    FONT = pygame.font.Font("font1.otf", 22)       
+    BIG_FONT = pygame.font.Font("font1.otf", 36)    
     # MESSAGE_FONT = pygame.font.Font("font1.otf", 28)
     
     bg_image = pygame.image.load("redlight_greenlight.png") 
