@@ -54,25 +54,25 @@ def show_redlightgreenlight_game_screen(screen):
     #result = show_redlightgreenlight_instructions_screen(screen)
     
     # Only proceed to the game if the player clicked "Play"
-component_button_RGB = [
-    DigitalInOut(board.D17),  # Red pin
-    DigitalInOut(board.D27),  # Green pin
-    DigitalInOut(board.D22)   # Blue pin
-]
+# component_button_RGB = [
+#     DigitalInOut(board.D17),  # Red pin
+#     DigitalInOut(board.D27),  # Green pin
+#     DigitalInOut(board.D22)   # Blue pin
+# ]
 
-# Set each pin as output
-for pin in component_button_RGB:
-    pin.direction = Direction.OUTPUT
-    pin.value = True  # Initialize all LEDs to OFF
+# # Set each pin as output
+# for pin in component_button_RGB:
+#     pin.direction = Direction.OUTPUT
+#     pin.value = True  # Initialize all LEDs to OFF
 
-# Setup for button
-component_button_state = DigitalInOut(board.D4)
-component_button_state.direction = Direction.INPUT
-component_button_state.pull = Pull.DOWN
+# # Setup for button
+# component_button_state = DigitalInOut(board.D4)
+# component_button_state.direction = Direction.INPUT
+# component_button_state.pull = Pull.DOWN
 
-pygame.mixer.music.stop()
-pygame.mixer.music.load("fly_me.mp3")
-pygame.mixer.music.play(-1)
+# pygame.mixer.music.stop()
+# pygame.mixer.music.load("fly_me.mp3")
+# pygame.mixer.music.play(-1)
     # Get current screen dimensions
 def play_redlightgreenlight():
     WIDTH, HEIGHT = screen.get_size()
