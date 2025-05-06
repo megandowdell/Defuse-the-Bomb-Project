@@ -3023,7 +3023,7 @@ def main():
             continue
         
         # Get current time string for display
-        time_str = game_timer.get_time_str()
+        time_str = timer.get_time_str()
     
     while game_running:
         if game_state == "Menu":
