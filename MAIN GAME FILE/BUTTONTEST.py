@@ -1,7 +1,6 @@
 import pygame
-import sys  # to exit game
-from pygame.locals import *  # handles events, mouse/keyboard controls etc.
-import os  # for environment variables
+import sys
+import os
 import random
 import time
 from threading import Thread
@@ -10,63 +9,51 @@ import bomb
 from bomb_configs import *
 from bomb_phases import *
 
-import RPi.GPIO as GPIO  # Uncomment if using GPIO on Raspberry Pi
+# Set display environment variables for Raspberry Pi
+os.environ["SDL_VIDEODRIVER"] = "fbcon"  # Try different drivers if needed: x11, directfb
+os.environ["SDL_VIDEO_CENTERED"] = "1"
+
+# Print diagnostic info
+print("Setting up environment...")
+print("Python version:", sys.version)
+print("Current working directory:", os.getcwd())
+print("Files in directory:", os.listdir())
+
+import RPi.GPIO as GPIO
 from adafruit_matrixkeypad import Matrix_Keypad
 import board
 from digitalio import DigitalInOut, Direction, Pull
 
+# GPIO setup
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+
+# Initialize pygame
+print("Initializing pygame...")
 pygame.init()
 pygame.mixer.init()
 
+# Print display info
+print("Available display drivers:", pygame.display.get_drivers())
+print("Current display driver:", pygame.display.get_driver())
+print("Display info:", pygame.display.Info())
+
+def show_death_screen(screen):
+    WIDTH, HEIGHT = screen.get_size()
+    screen.fill((0, 0, 0))  # Black background
+    
+    font = pygame.font.Font("font1.otf", 36)
+    text = font.render("YOU DIED!", True, (255, 0, 0))  # Red text
+    
+    text_rect = text.get_rect(center=(WIDTH//2, HEIGHT//2))
+    screen.blit(text, text_rect)
+    
+    pygame.display.flip()
+    pygame.time.delay(2000)  # 2 seconds
+
 def show_redlightgreenlight_game_screen(screen):
-    dev_width = 800
-    dev_height = 600
-
-    # Default vertical reference dimensions for the portrait mode
-    portrait_width = 576
-    portrait_height = 1024
-
-    # GPIO setup (must be inside the function)
-    component_button_RGB = [
-        DigitalInOut(board.D17),  # Red pin
-        DigitalInOut(board.D27),  # Green pin
-        DigitalInOut(board.D22)   # Blue pin
-    ]
-
-    for pin in component_button_RGB:
-        pin.direction = Direction.OUTPUT
-        pin.value = True  # Initialize all LEDs to OFF
-
-    # Setup for button
-    component_button_state = DigitalInOut(board.D4)
-    component_button_state.direction = Direction.INPUT
-    component_button_state.pull = Pull.DOWN
-
-    # Set up LED control
-    def set_led(color):
-        # Set the RGB LED based on the current light color
-        if color == "green":
-            component_button_RGB[0].value = True   # Red OFF
-            component_button_RGB[1].value = False  # Green ON
-            component_button_RGB[2].value = True   # Blue OFF
-        elif color == "red":
-            component_button_RGB[0].value = False  # Red ON
-            component_button_RGB[1].value = True   # Green OFF
-            component_button_RGB[2].value = True   # Blue OFF
-        else:
-            # turn everything off
-            for pin in component_button_RGB:
-                pin.value = True
-
-    def check_button_press():
-        """Check if the button is pressed."""
-        return component_button_state.value
-
-    pygame.mixer.music.stop()
-    pygame.mixer.music.load("fly_me.mp3")
-    pygame.mixer.music.play(-1)
-
-    def play_redlightgreenlight():
+    print("Starting Red Light Green Light game...")
+def play_redlightgreenlight():
         WIDTH, HEIGHT = screen.get_size()
         pygame.display.set_caption("Red Light Green Light")
         clock = pygame.time.Clock()
