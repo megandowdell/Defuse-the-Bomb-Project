@@ -3152,9 +3152,9 @@ def main():
             game_state = "Die"  # Time's up without completing all games, show death screen
         elif timer._value <= 0 and len(completed_games) == len(mini_games):
             game_state = "Live"  # Completed all games before time's up, show win screen
-        elif timer._value > 0 and game_state not in ["Menu", "Start", "About Game", "Meet Team"]:
-            # If timer is still running, return to menu (except when already in menu screens)
-            game_state = "Menu"
+        # elif timer._value > 0 and game_state not in ["Menu", "Start", "About Game", "Meet Team"]:
+        #     # If timer is still running, return to menu (except when already in menu screens)
+        #     game_state = "Menu"
         # if timer._value <= 0 and len(completed_games) < len(mini_games):
         #     game_state = "Die"  # Time's up, show death screen
         #     continue
