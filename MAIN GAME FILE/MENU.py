@@ -2162,8 +2162,8 @@ def show_simon_says_game_screen(screen):
             
             #Cap the frame rate
             clock.tick(60)
-            return "win" if won else "lose"
-        return "Menu"
+        return "win" if won else "lose"
+        # return "Menu"
         
         # won = play_game()
         # return won #true if won, false if lost
