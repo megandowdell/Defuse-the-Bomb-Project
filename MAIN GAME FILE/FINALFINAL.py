@@ -3021,7 +3021,7 @@ def main():
             continue
         
         # Get current time string for display
-        time_str = timer.get_time_str()
+        # time_str = timer.get_time_str()
 
         if game_state == "Menu":
             completed_games.clear()  # Reset progress when returning to menu
