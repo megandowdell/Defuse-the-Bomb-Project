@@ -2864,8 +2864,8 @@ def show_death_screen(screen):
     text_rect = game_over_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     
     # Animation settings
-    duration = 4.0  # seconds for full animation
-    fps = 100
+    duration = 2.5  # seconds for full animation
+    fps = 60
     total_frames = int(duration * fps)
     text_delay = 25  # frames to wait after coffin passes center
     
@@ -3010,6 +3010,17 @@ def main():
        
     
     while game_running:
+        if timer.has_expired():
+            # Show death screen and use its return value
+            return_state = show_death_screen(screen)
+            if return_state == "Menu":
+                game_state = "Menu"
+                # Reset timer for new game
+                timer = Timer()
+                timer.start()
+            else:
+                game_running = False
+            continue
 
         
          
@@ -3061,11 +3072,11 @@ def main():
                 pygame.mixer.music.play(-1)
                 result = show_simon_says_game_screen(screen)  
            
-            if timer.has_expired():
-            # Show game over screen and exit
-                show_death_screen(screen)
-                game_running = False
-                continue
+            # if timer.has_expired():
+            # # Show game over screen and exit
+            #     show_death_screen(screen)
+            #     game_running = False
+            #     continue
             
             # Handle result
             if result == "win":
