@@ -3534,17 +3534,23 @@ def play_redlightgreenlight(screen):
             pygame.time.delay(1000)  # Show the winning state briefly
             return "win"  # Return win result directly
             
+    red_light_sound = pygame.mixer.Sound("redlight.mp3")
+    green_light_sound = pygame.mixer.Sound("greenlight.mp3")
         
+    # Set next change time (2-5 seconds)
+    next_change = random.uniform(2, 5)
+    next_change_time = current_time + next_change
+    message = f"THE LIGHT IS NOW {light_color.upper()}!"
         # Change light color based on timing
         if current_time >= next_change_time and not game_over:
             # Switch the light
             light_color = "green" if light_color == "red" else "red"
             set_led(light_color)
             if light_color == "green":
-                pygame.mixer.music.load("redlight.mp3")
+               green_light_sound.play()
             else:
-                pygame.mixer.music.load("greenlight.mp3")
-            pygame.mixer.music.play()
+                 red_light_sound.play()
+            
                 
             # Set next change time (2-5 seconds)
             next_change = random.uniform(2, 5)
