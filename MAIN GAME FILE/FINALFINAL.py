@@ -3006,7 +3006,7 @@ def main():
     mini_games = ["Hopscotch", "Tic Tac Toe", "Simon Says"]
     completed_games = set()
 
-     while game_running:
+    while game_running:
         # Check timer first
         if timer.has_expired():
             # Show death screen and use its return value
