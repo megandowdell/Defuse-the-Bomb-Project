@@ -23,8 +23,8 @@ pygame.mixer.music.play(-1)  # -1 makes it loop indefinitely
 ####################################################################################################################
 # CONSTANTS
 # References for scaling
-dev_width, dev_height = 800, 700  # Resolution of development screen
-reference_scale = (dev_width, dev_height)  # Used to scale based on development screen
+# dev_width, dev_height = 800, 700  # Resolution of development screen
+# reference_scale = (dev_width, dev_height)  # Used to scale based on development screen
 
 # Colors
 BEIGE = (232, 218, 189)
