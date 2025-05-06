@@ -3147,12 +3147,20 @@ def main():
     completed_games = set()
     
     while game_running:
+        # Check timer conditions first
         if timer._value <= 0 and len(completed_games) < len(mini_games):
-            game_state = "Die"  # Time's up, show death screen
-            continue
-        if timer._value <= 0 and len(completed_games) == len(mini_games):
-            game_state = "Live"  # Time's up, show death screen
-            continue
+            game_state = "Die"  # Time's up without completing all games, show death screen
+        elif timer._value <= 0 and len(completed_games) == len(mini_games):
+            game_state = "Live"  # Completed all games before time's up, show win screen
+        elif timer._value > 0 and game_state not in ["Menu", "About Game", "Meet Team"]:
+            # If timer is still running, return to menu (except when already in menu screens)
+            game_state = "Menu"
+        # if timer._value <= 0 and len(completed_games) < len(mini_games):
+        #     game_state = "Die"  # Time's up, show death screen
+        #     continue
+        # if timer._value <= 0 and len(completed_games) == len(mini_games):
+        #     game_state = "Live"  # Time's up, show death screen
+        #     continue
         if game_state == "Menu":
             completed_games.clear()  # Reset progress when returning to menu
             pygame.mixer.music.load("pink_soldiers.mp3")
@@ -3213,14 +3221,22 @@ def main():
             elif result == "lose" or result == False:
                 game_state = "Death"
             else:
-                game_state = "Menu"
+                if timer._value > 0:
+                    game_state = "Menu"
+                else:
+                    # If timer ran out, determine outcome based on completion
+                    if len(completed_games) == len(mini_games):
+                        game_state = "Live"
+                    else:
+                        game_state = "Die"
+              
             
         elif game_state == "Live":
             timer.pause()
             show_win_screen(screen)
             game_state = "Menu"
         
-        elif game_state == "Die":
+        elif game_state == "Die" or game_state == "Death":
             # Pause the timer when player dies
             timer.pause()
             show_death_screen(screen)
