@@ -2153,7 +2153,7 @@ def show_simon_says_game_screen(screen):
                 # pygame.time.delay(1000)  # Show result for 2 seconds
             
             # Return "win" or "lose" based on game outcome
-                return "win" if won else "lose"
+            return "win" if won else "lose"
         
             
             #Update display
