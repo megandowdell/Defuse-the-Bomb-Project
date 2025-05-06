@@ -2950,18 +2950,14 @@ class Timer(PhaseThread):
         self._update()  # Initialize display format
         
         while self._running:
-            if not self._paused:
-                # Wait first, then update timer (so it starts at exactly 5:00)
-                sleep(self._interval)
-                
-                if self._value > 0:
-                    self._value -= 1
-                    self._update()
-                else:
-                    self._expired = True
-                    self._running = False
+            if self._value > 0:
+                self._value -= 1
+                self._update()
             else:
-                sleep(0.1)
+                self._expired = True
+                self._running = False
+        else:
+            sleep(0.1)
     
     # Updates the timer format
     def _update(self):
