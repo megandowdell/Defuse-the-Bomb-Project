@@ -3149,8 +3149,7 @@ def main():
     while game_running:
         if timer._value == 0 and len(completed_games) < len(mini_games):
             game_state = "Death"  # Time's up, show death screen
-            pygame.quit()
-            sys.exit()
+            continue
         if game_state == "Menu":
             completed_games.clear()  # Reset progress when returning to menu
             pygame.mixer.music.load("pink_soldiers.mp3")
@@ -3220,9 +3219,11 @@ def main():
         
         elif game_state == "Death":
             # Pause the timer when player dies
-            # timer.pause()
+            timer.pause()
             show_death_screen(screen)
-            game_state = "Menu"
+            pygame.quit()
+            sys.exit()
+            # game_state = "Menu"
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
