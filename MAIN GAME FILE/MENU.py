@@ -3565,6 +3565,7 @@ def play_redlightgreenlight(screen):
         
     set_led("off")
     return "lose"
+pygame.mixer.init()
 
 # def show_redlightgreenlight_game_screen(screen):
 #     # First show the instructions screen
