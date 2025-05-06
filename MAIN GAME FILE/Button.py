@@ -68,7 +68,7 @@ for pin in component_button_RGB:
 # Setup for button
 component_button_state = DigitalInOut(board.D4)
 component_button_state.direction = Direction.INPUT
-component_button_state.pull = Pull.UP
+component_button_state.pull = Pull.DOWN
 
 pygame.mixer.music.stop()
 pygame.mixer.music.load("fly_me.mp3")
