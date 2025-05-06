@@ -4538,7 +4538,7 @@ def main():
     else:
         WIDTH, HEIGHT = 800, 700
 
-    screen = pygame.display.set_mode(((WIDTH, HEIGHT), pygame.SHOWN))
+    screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SHOWN)
     
     game_running = True
     game_state = "Menu"
