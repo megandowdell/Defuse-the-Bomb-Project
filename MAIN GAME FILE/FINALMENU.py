@@ -2186,7 +2186,7 @@ def show_simonsays_instructions_screen(screen):
     # Hint
     hint_text = [
         "HINT:",
-        "Act by ear, not only sight.
+        "Act by ear, not only sight."
         "Misfortune nears when wrong is right.",
     ]
     
