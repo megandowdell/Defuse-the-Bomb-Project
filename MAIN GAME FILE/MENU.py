@@ -1814,8 +1814,6 @@ wire_font = pygame.font.Font('font1.otf', 22)
 
 #Main game function
 def show_simon_says_game_screen(screen):
-    SCREEN_WIDTH = 576
-    SCREEN_HEIGHT = 1024
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 # First show the instructions screen
     result = show_simon_says_instructions_screen(screen)
@@ -2108,7 +2106,7 @@ def show_simon_says_game_screen(screen):
             screen.blit(bg_image, (0, 0))  
             #Draw semi-transparent overlay
             screen.blit(overlay, (0, 0))  
-            SCRREN_WIDTH, SCREEN_HEIGHT = screen.get_size()
+            
             #Display wire names and statuses
             wire_display_x = 30
             wire_display_y = SCREEN_HEIGHT - 200
