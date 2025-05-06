@@ -2983,7 +2983,7 @@ def play_redlightgreenlight(screen):
         clock.tick(60)
     set_led("off")
     return "lose"
-return "win" if won else "lose"
+# return "win" if won else "lose"
 
 # pygame.init()
 # pygame.mixer.init()
