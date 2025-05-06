@@ -3334,7 +3334,12 @@ def main():
                     game_state = random.choice(unplayed)
             
             elif result == "lose" or result == False:
-                game_state = "Death"
+                # If player loses but still has time, return to menu
+                if timer._value > 0:
+                    game_state = "Menu"
+                else:
+                    # Timer ran out, go to death screen
+                    game_state = "Die"
             else:
                 # No clear result (like back button pressed)
                 if timer._value > 0:
