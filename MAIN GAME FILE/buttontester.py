@@ -141,7 +141,7 @@ def play_redlightgreenlight():
     light_color = "red"
     game_time = 120  # seconds to win
     distance = 0
-    target_distance = 75
+    target_distance = 50
     start_time = time.time()
     next_change_time = start_time  # Initialize for immediate first change
     # message = "Press the button ONLY when the light is GREEN"
