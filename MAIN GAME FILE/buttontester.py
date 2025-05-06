@@ -89,7 +89,7 @@ def RedLightGreenLight():
     return True
 
 
-def play_redlightgreenlight(screen):
+def play_redlightgreenlight():
     dev_width = 800
     dev_height = 600
     
@@ -318,7 +318,7 @@ def play_redlightgreenlight(screen):
     set_led("off")
     return "lose"
     
-result = play_redlightgreenlight(screen)
+result = play_redlightgreenlight()
 
 pygame.display.flip()
     
