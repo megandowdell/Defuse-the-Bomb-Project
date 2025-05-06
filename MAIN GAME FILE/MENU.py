@@ -2680,6 +2680,7 @@ def show_simon_says_instructions_screen(screen):
 # # BUTTON
 
 def show_redlightgreenlight_game_screen(screen):
+    # First show the instructions screen
     result = show_redlightgreenlight_instructions_screen(screen)
     
     if result == "Play":
@@ -2687,10 +2688,29 @@ def show_redlightgreenlight_game_screen(screen):
         pygame.mixer.music.load("fly_me.mp3")  # Or another appropriate music
         pygame.mixer.music.play(-1)
         
-        # Then call the actual game function
-        return play_redlightgreenlight(screen)  # This should return "win" or "lose"
+        # Set up LED control
+        global component_button_RGB
+        component_button_RGB = [
+            DigitalInOut(board.D17),  # Red pin
+            DigitalInOut(board.D27),  # Green pin
+            DigitalInOut(board.D22)   # Blue pin
+        ]
+        
+        # Set each pin as output
+        for pin in component_button_RGB:
+            pin.direction = Direction.OUTPUT
+            pin.value = True  # Initialize all LEDs to OFF
+        
+        # Setup for button - FROM BOMB CONFIGS
+        global component_button_state
+        component_button_state = DigitalInOut(board.D4)
+        component_button_state.direction = Direction.INPUT
+        component_button_state.pull = Pull.DOWN
+        
+        # Call the play function which contains the game logic
+        return play_redlightgreenlight(screen)
     
-    return "Menu"  # If they didn't click Pla
+    return "Menu"  # If they didn't click Play
 
 def play_redlightgreenlight():
     # Set up LED control
