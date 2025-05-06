@@ -16,8 +16,6 @@ import board
 from digitalio import DigitalInOut, Direction, Pull
 RPi = True
 
-# pygame.mixer.init() # for game sounds
-
 # Set up LED control
 def set_led(color):
     #Set the RGB LED based on the current light color
@@ -87,7 +85,6 @@ def RedLightGreenLight():
     # Survived the game
     set_led("off")
     return True
-
 
 def play_redlightgreenlight():
     dev_width = 800
@@ -206,8 +203,6 @@ def play_redlightgreenlight():
                 pygame.mixer.music.load("greenlight.mp3")
             pygame.mixer.music.play()
                 
-                
-                 
             # Set next change time (2-5 seconds)
             next_change = random.uniform(2, 5)
             next_change_time = current_time + next_change
@@ -233,23 +228,6 @@ def play_redlightgreenlight():
             set_led("off")
             return "win"
 
-#         # Check button press
-#         if button_pressed and not game_over:
-#             print("Button Pressed!")
-#             if light_color == "green":
-#                 message = "Good move!"
-#                 #print("Good move!")
-#             else:
-#                 message = "You pressed during RED! You lose!"
-#                 pygame.display.flip()
-#                 #pygame.time.delay(1000)
-#                 show_death_screen(screen)
-#                 return "lose"
-#                 #print("You pressed during RED! You lose!")
-# #                         game_over = True
-# #                         won = False
-
-        
         # Draw doll image based on light color
         # Select the appropriate image
         doll_img = doll_red_img if light_color == "red" else doll_green_img
@@ -300,17 +278,6 @@ def play_redlightgreenlight():
             # Position instructions at the bottom of the screen
             instructions_y = HEIGHT - int(60 * HEIGHT / dev_height)
             screen.blit(instructions, (instructions_x, instructions_y))
-        # else:
-        #     if "win":
-        #         return "win"
-        #         result = FONT.render("You won! Press R to restart", True, TEXT)
-        #     else:
-        #         return "lose"
-        #         result = FONT.render("You lost! Press R to restart", True, TEXT)
-        #     result_x = WIDTH // 2 - result.get_width() // 2
-        #     # Position result text at the bottom of the screen
-        #     result_y = HEIGHT - int(60 * HEIGHT / dev_height)
-        #     screen.blit(result, (result_x, result_y))
         
         # Update display
         pygame.display.flip()
