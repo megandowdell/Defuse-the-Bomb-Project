@@ -1820,7 +1820,7 @@ def show_simon_says_game_screen(screen):
     if result == "Play":
         pygame.mixer.music.stop()
         pygame.mixer.music.load("salesman_sound.mp3")
-        pygame.mixer.music.set_volume(0.3)
+        pygame.mixer.music.set_volume(0.1)
         pygame.mixer.music.play(-1)
 
         #Load background image with error handling
@@ -1861,6 +1861,7 @@ def show_simon_says_game_screen(screen):
             try:
                 #Load sounds 
                 command_sounds[command] = pygame.mixer.Sound(filename)
+                pygame.mixer.music.set_volume(0.5)
                 print(f"Successfully loaded sound: {filename}")
             except Exception as e:
                 print(f"Failed to load sound {filename}: {e}")
