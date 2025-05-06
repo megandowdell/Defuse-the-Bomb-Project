@@ -3109,13 +3109,13 @@ def show_win_screen(screen):
     
     video.release()
     
-if __name__ == "__main__":
-    pygame.init()
-    WIDTH, HEIGHT = 288, 512
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Win Screen")
-    show_win_screen(screen)
-    pygame.quit()
+# if __name__ == "__main__":
+#     pygame.init()
+#     WIDTH, HEIGHT = 288, 512
+#     screen = pygame.display.set_mode((WIDTH, HEIGHT))
+#     pygame.display.set_caption("Win Screen")
+#     show_win_screen(screen)
+#     pygame.quit()
 
 
 
