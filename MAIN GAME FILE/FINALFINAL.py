@@ -2761,7 +2761,7 @@ def show_simon_says_instructions_screen(screen):
 
 ####################################################################################################################
 # RESULT SCREENS
-DEATH SCREEN
+# DEATH SCREEN
 def show_death_screen(screen):
     # Get screen dimensions
     pygame.mixer.music.load("gunshot.mp3")
