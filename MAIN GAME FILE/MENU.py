@@ -2154,19 +2154,20 @@ def show_simon_says_game_screen(screen):
             
             # Return "win" or "lose" based on game outcome
                 return "win" if won else "lose"
-        return "Menu"
+        
             
             #Update display
             pygame.display.flip()
             
             #Cap the frame rate
             clock.tick(60)
+        return "Menu"
         
-        won = play_game()
-        return won #true if won, false if lost
+        # won = play_game()
+        # return won #true if won, false if lost
     
-        screen.fill(BG)
-        pygame.display.flip()
+        # screen.fill(BG)
+        # pygame.display.flip()
         
         # #Clean up
         # pygame.quit()
