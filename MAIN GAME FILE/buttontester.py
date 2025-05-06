@@ -94,7 +94,7 @@ def play_redlightgreenlight():
     dev_height = 600
     
     WIDTH, HEIGHT = screen.get_size()
-    bg_image = pygame.image.load("redlightbg.png")
+    bg_image = pygame.image.load("redlight_greenlight.png")
     bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
     pygame.display.set_caption("Red Light Green Light")
     clock = pygame.time.Clock()
