@@ -452,7 +452,7 @@ def show_meet_team(screen):
         {"name": "Matt", "status": "Junior",  "role": "Motion Engineer", 
          "description": "I am a Mathematics from... Some fun facts about me are.."},
         {"name": "Megan", "status": "Junior", "role": "Grid Tactician", 
-         "description": "I am a Mathematics with Computer Science major from ....Some fun facts about me are.."}
+         "description": "I am a Mathematics with Computer Science major from Sarasota, FL. Some fun facts about me are I play lacrosse and drift cars."}
     ]
     
     # Reference image size
