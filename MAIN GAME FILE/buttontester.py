@@ -318,7 +318,7 @@ def play_redlightgreenlight():
     set_led("off")
     return "lose"
     
-result = play_redlightgreenlight()
+    result = play_redlightgreenlight()
 return result
 pygame.display.flip()
     
