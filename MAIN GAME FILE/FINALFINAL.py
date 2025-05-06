@@ -1120,7 +1120,7 @@ def show_hopscotch_game_screen(screen):
                             if rows_cleared == ROWS:
                                 print("User won the game!")
                                 # won game
-                                return "win"
+                                return True
                         # wrong answer
                         else:
                             tile_rect = get_tile_rect(0, selected_col)
@@ -1136,7 +1136,10 @@ def show_hopscotch_game_screen(screen):
                             lives -= 1
                                 
                             if lives == 0:    
-                                return "lose"
+                                print("BOOM!")
+                                # show_death_screen(screen)
+                                # lost game
+                                return False
                             else:
                                 current_row = 0
                                 rows_cleared = 0
@@ -1146,7 +1149,8 @@ def show_hopscotch_game_screen(screen):
                             
                             print("WRONG TILE — Strike!")
                             if lives == 0:
-                                return "lose"
+                                print("BOOM!")
+                                return False
  
                     draw_board(board, current_row, lives, rows_cleared)
                     toggles._state_changed = False
@@ -1154,8 +1158,8 @@ def show_hopscotch_game_screen(screen):
                 clock.tick(60)
 
 
-        result = play_game()
-        return result #true if won, false if lost
+        won = play_game()
+        return won #true if won, false if lost
     
         screen.fill(BG)
         pygame.display.flip()
@@ -2864,8 +2868,8 @@ def show_death_screen(screen):
     text_rect = game_over_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     
     # Animation settings
-    duration = 2.5  # seconds for full animation
-    fps = 60
+    duration = 4.0  # seconds for full animation
+    fps = 100
     total_frames = int(duration * fps)
     text_delay = 25  # frames to wait after coffin passes center
     
@@ -3006,7 +3010,11 @@ def main():
     mini_games = ["Hopscotch", "Tic Tac Toe", "Simon Says"]
     completed_games = set()
 
+   
+       
+    
     while game_running:
+         
 
         if game_state == "Menu":
             completed_games.clear()  # Reset progress when returning to menu
@@ -3039,7 +3047,7 @@ def main():
                 pygame.mixer.music.load("hopscotch_instructions.mp3")
                 pygame.mixer.music.play()
                 result = show_hopscotch_game_screen(screen)
-    
+
             elif game_state == "Tic Tac Toe":
                 pygame.mixer.music.load("tictactoe_instructions.mp3")
                 pygame.mixer.music.play(-1)
@@ -3049,17 +3057,17 @@ def main():
                 pygame.mixer.music.load("redlightgreenlight_instructions.mp3")
                 pygame.mixer.music.play(-1)
                 result = show_redlightgreenlight_game_screen(screen)
-    
+
             elif game_state == "Simon Says":
                 pygame.mixer.music.load("simonsays_instructions.mp3")
                 pygame.mixer.music.play(-1)
                 result = show_simon_says_game_screen(screen)  
            
-            # if timer.has_expired():
-            # # Show game over screen and exit
-            #     show_death_screen(screen)
-            #     game_running = False
-            #     continue
+            if timer.has_expired():
+            # Show game over screen and exit
+                show_death_screen(screen)
+                game_running = False
+                continue
             
             # Handle result
             if result == "win":
@@ -3071,20 +3079,16 @@ def main():
                     game_state = random.choice(unplayed)
             else:
                 game_state = "Menu"
-    
+
         elif game_state == "Win":
             show_win_screen(screen)
             game_state = "Menu"
-        else: 
-            show_death_screen(screen)
-            game_state = "Menu"
-    
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game_running = False
-    
-        pygame.quit()
-        sys.exit()
-        
-    os.environ['RPI_MODE'] = 'TRUE'
-    main()
+
+    pygame.quit()
+    sys.exit()
+os.environ['RPI_MODE'] = 'TRUE'
+main()
