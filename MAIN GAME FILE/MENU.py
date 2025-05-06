@@ -2863,7 +2863,7 @@ def show_death_screen(screen):
     duration = 4.0  # seconds for full animation
     fps = 100
     total_frames = int(duration * fps)
-    text_delay = 20  # frames to wait after coffin passes center
+    text_delay = 25  # frames to wait after coffin passes center
     
     # Animation loop variables
     clock = pygame.time.Clock()
