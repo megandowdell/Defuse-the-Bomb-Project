@@ -1256,7 +1256,7 @@ def show_tictactoe_instructions_screen(screen):
     
     # instructions
     introduction_text = [
-        "Welcome to the Tic Tac Toe game! In this challenge, you'll face off against the computer in a game of classic Tic Tac Toe. You must win 3 rounds to pass. Use the keypad numbers to place your X, either vertically, horizontally or diagonally, to form a line of three before the computer can. Good luck and think ahead. ",
+        "In this challenge, you'll face off against the computer in a game of classic Tic Tac Toe. You must win 3 rounds to pass. Use the keypad numbers to place your X, either vertically, horizontally or diagonally, to form a line of three before the computer can. Good luck and think ahead. ",
     ]
     
     # Hint
@@ -2189,7 +2189,7 @@ def show_simon_says_instructions_screen(screen):
     
     # Hopscotch-specific instructions
     welcome_text = [
-        " In this challenge, your memory and focus will be put to the test. Listen carefully as Simon calls out a sequence of commands for you to execute using the wires. For each executed command, use the space bar to confirm whether or not you made the right decision. Remember,  don’t act unless Simon says! One wrong move, and it's game over. Stay sharp, follow only when told, and survive the mind games ahead. Good luck!",
+        "In this challenge, your memory and focus will be put to the test. Listen carefully as Simon calls out a sequence of commands for you to execute using the wires. For each executed command, use the space bar to confirm whether or not you made the right decision. Remember,  don’t act unless Simon says! One wrong move, and it's game over. Stay sharp, follow only when told, and survive the mind games ahead. Good luck!",
     ]
     
     # Hint
@@ -3200,7 +3200,7 @@ def show_simon_says_instructions_screen(screen):
     
     # Hopscotch-specific instructions
     welcome_text = [
-        " In this challenge, your memory and focus will be put to the test. Listen carefully as Simon calls out a sequence of commands for you to execute using the wires. For each executed command, use the space bar to confirm whether or not you made the right decision. Remember,  don’t act unless Simon says! One wrong move, and it's game over. Stay sharp, follow only when told, and survive the mind games ahead. Good luck!",
+        "In this challenge, your memory and focus will be put to the test. Listen carefully as Simon calls out a sequence of commands for you to execute using the wires. For each executed command, use the space bar to confirm whether or not you made the right decision. Remember,  don’t act unless Simon says! One wrong move, and it's game over. Stay sharp, follow only when told, and survive the mind games ahead. Good luck!",
     ]
     
     # Hint
@@ -3463,15 +3463,15 @@ def play_redlightgreenlight(screen):
             if event.type == pygame.QUIT:
                 running = False
             
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and not game_over:
-                    button_pressed = True
-                if event.key == pygame.K_r and game_over:
-                    # Restart the game
-                    return show_redlightgreenlight_game_screen(screen)
+            # if event.type == pygame.KEYDOWN:
+            #     if event.key == pygame.K_SPACE and not game_over:
+            #         button_pressed = True
+            #     if event.key == pygame.K_r and game_over:
+            #         # Restart the game
+            #         return show_redlightgreenlight_game_screen(screen)
             
-            if event.type == pygame.MOUSEBUTTONDOWN and not game_over:
-                button_pressed = True
+            # if event.type == pygame.MOUSEBUTTONDOWN and not game_over:
+            #     button_pressed = True
         
         # Check win condition (time elapsed)
         if time_left <= 0 and not game_over:
@@ -3562,13 +3562,13 @@ def play_redlightgreenlight(screen):
         message_y = HEIGHT - int(120 * HEIGHT / dev_height)
         screen.blit(message_text, (message_x, message_y))
         
-        # Draw instructions
-        if not game_over:
-            instructions = FONT.render("Press SPACE or CLICK to move forward", True, TEXT)
-            instructions_x = WIDTH // 2 - instructions.get_width() // 2
-            # Position instructions at the bottom of the screen
-            instructions_y = HEIGHT - int(60 * HEIGHT / dev_height)
-            screen.blit(instructions, (instructions_x, instructions_y))
+        # # Draw instructions
+        # if not game_over:
+        #     instructions = FONT.render("Press SPACE or CLICK to move forward", True, TEXT)
+        #     instructions_x = WIDTH // 2 - instructions.get_width() // 2
+        #     # Position instructions at the bottom of the screen
+        #     instructions_y = HEIGHT - int(60 * HEIGHT / dev_height)
+        #     screen.blit(instructions, (instructions_x, instructions_y))
         
         # Update display
         pygame.display.flip()
@@ -3954,7 +3954,7 @@ def show_redlightgreenlight_instructions_screen(screen):
     
     # Hopscotch-specific instructions
     welcome_text = [
-        " In this challenge,In this challenge, you'll be playing a game of pattern recognition and response. Listen closely to the doll’s voice, she’ll tell you when to move and when to stop using the button. But beware, she’s watching for cheaters. Follow her instructions exactly or face the consequences. Good luck, and don’t move a muscle or you'll be eliminated." 
+        "In this challenge,In this challenge, you'll be playing a game of pattern recognition and response. Listen closely to the doll’s voice, she’ll tell you when to move and when to stop using the button. But beware, she’s watching for cheaters. Follow her instructions exactly or face the consequences. Good luck, and don’t move a muscle or you'll be eliminated." 
     ]
     
     # Hint
