@@ -2862,7 +2862,7 @@ def show_death_screen(screen):
 def main():
     # Initialize pygame
     pygame.init()
-    pygame.mixer.init()
+   
     pygame.display.set_caption("Squid-ish Games")
 
     # Screen setup
