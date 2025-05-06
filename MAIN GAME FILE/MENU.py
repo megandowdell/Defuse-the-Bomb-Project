@@ -2914,7 +2914,7 @@ def play_redlightgreenlight(screen):
                 pygame.display.flip()
                 # show_death_screen(screen)
                 return "lose"
-        if distance >= target_distance and not game_over:
+        if distance > target_distance and not game_over:
             set_led("off")
             return "win"
 
