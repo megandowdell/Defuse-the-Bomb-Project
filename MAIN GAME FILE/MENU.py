@@ -660,8 +660,7 @@ def show_meet_team(screen):
 ####################################################################################################################       
 # HOPSCOTCH GAME
 # TOGGLES
-# Only import GPIO stuff if on a Pi
-
+# Base class for toggles
 class PhaseThread(Thread):
     def __init__(self, name):
         super().__init__(name=name, daemon=True)
@@ -709,7 +708,6 @@ class Toggles(PhaseThread):
         
         return changed
     
- 
     def has_changed(self):
         """Checks if toggles changed since last time."""
         if self._state_changed:
@@ -1378,9 +1376,6 @@ def show_tictactoe_game_screen(screen):
     keypad = Keypad(matrix_keypad)
     keypad.start()
     
-    # Run the game
-    #show_tictactoe_game_screen(screen, keypad)
-    
     # Only proceed to the game if the player clicked "Play"
     if result == "Play":
         pygame.mixer.music.stop()
@@ -1389,7 +1384,6 @@ def show_tictactoe_game_screen(screen):
         
         # Window setup
         WIDTH, HEIGHT = screen.get_size()  # Dimensions of game window for tall screens
-        #screen = pygame.display.set_mode((WIDTH, HEIGHT))  # Create window
         pygame.display.set_caption('Tic Tac Toe')  # Window title
 
         # Game board setup
@@ -1643,9 +1637,6 @@ def show_tictactoe_game_screen(screen):
         result = play_tic_tac_toe()
         return result
 
-#     return None
-#     result = play_tic_tac_toe()
-#     return result
     pygame.display.flip()
     return None
 #####################################################################################################################
@@ -1842,18 +1833,7 @@ def show_simon_says_game_screen(screen):
             sound = pygame.mixer.Sound(filename)
             sound.set_volume(1.0)  # Set volume to 80% (adjust as needed)
             command_sounds[command] = sound
-                
-        
-        # #Test the first loaded sound if any were loaded
-        # if command_sounds:
-        #     #Play test sounds 
-        #     first_sound = list(command_sounds.values())[0]
-        #     first_sound.play()
-        #     print(f"Playing test sound from command file")
-        # else:
-        #     print("No sound files loaded successfully! Check your sound files.")
-    
-       
+            
         wire_pins = [DigitalInOut(i) for i in (board.D14, board.D15, board.D18, board.D23, board.D24)]
         for pin in wire_pins:
             pin.direction = Direction.INPUT
@@ -2300,862 +2280,6 @@ def show_simon_says_instructions_screen(screen):
         
         pygame.display.flip()
         clock.tick(60)
-# # SIMON SAYS
-# #Base class for bomb components
-# class PhaseThread(Thread):
-#     def __init__(self, name):
-#         #Set thread as daemon to exit with main program 
-#         super().__init__(name = name, daemon = True)
-#         #Track if thread is active
-#         self._running = False
-#         #Store current state value
-#         self._value = None
-
-#     #Setting up getters and setters 
-#     def get_running(self):
-#         return self._running 
-#     def get_value(self):
-#         return self._value
-
-#     def set_running(self, value):
-#         self._name = value 
-#     def set_value(self, value):
-#         self._value = value 
-
-#     #Reset value 
-#     def reset(self):
-#         self._value = None
-
-#     #Setting up properties 
-#     running = property(get_running, set_running)
-#     value = property(get_value, set_value)
-
-# #Creation of the wire class that runs in background thread
-# class Wires(PhaseThread):
-#     def __init__(self, pins, name = "Wires"):
-#         super().__init__(name)
-#         #List of GPIO pins for the wires 
-#         self._pins = pins
-#         #Making sure all the wires are started connected = 1
-#         self._value = "1" * len(pins)
-#         #Checking the previous state 
-#         self._prev_value = self._value
-#         #Tracking if the wires have been changed 
-#         self._state_changed = False
-
-#     #Setting up getters and setters 
-#     def get_pins(self):
-#         return self._pins
-#     def get_value(self):
-#         return self._value
-#     def get_pre_value(self):
-#         return self._pre_value
-#     def get_state_changed(self):
-#         return self._state_changed
-
-#     def set_pins(self, value):
-#         self._pins = value 
-#     def set_value(self, value):
-#         self._value = value 
-#     def set_pre_value(self, value):
-#         self._pre_value = value 
-#     def set_state_changed(self, value):
-#         self._state_changed = value 
-
-#     #Setting up the properties 
-#     pins = property(get_pins, set_pins)
-#     value = property(get_value, set_value)
-#     pre_value = property(get_pre_value, set_pre_value)
-#     state_changed = property(get_state_changed, set_state_changed)
-
-#     #Starting the thread loop and checking the wire states 
-#     def run(self):
-#         self._running = True
-#         #Initial reading of the wires 
-#         self.update_state()
-#         while (True):
-#             #Check if wire state has changed
-#             if self.update_state():
-#                 #Update if the wires change
-#                 pass  
-            
-#             #Check every 100ms
-#             sleep(0.1)
-#         #The thread is not exected to reach this point 
-#         self._running = False
-
-#     #Subroutine that updates teh wire states and returns true when the wire state changes 
-#     def update_state(self):
-#         #Reading all the pin states (TRUE = disconnected, FALSE = connected with pull-ups)
-#         raw_values = [pin.value for pin in self._pins]
-        
-#         #Convert to wire state (1 = connected, 0 = disconnected)
-#         #With pull-up resistors: False = connected (1), True = disconnected (0)
-#         new_state = "".join(["0" if not val else "1" for val in raw_values])
-        
-#         #Check if state changed 
-#         changed = new_state != self._value
-#         if changed:
-#             #Save old state 
-#             self._prev_value = self._value
-#             #Update the old state to the new state 
-#             self._value = new_state
-#             #Mark the changes 
-#             self._state_changed = True
-#         else:
-#             self._state_changed = False
-            
-#         return changed
-    
-#     def has_changed(self):
-#         """Returns True if wire state has changed since last check"""
-#         if self._state_changed:
-#             self._state_changed = False
-#             return True
-#         return False
-    
-#     def __str__(self):
-#         #Showing the binary values of the pins 
-#         return f"{self._value}/{int(self._value, 2)}"
-
-# #Initialize pygame
-# pygame.init()
-
-# #Screen dimensions and create display surface
-# SCREEN_WIDTH = 576
-# SCREEN_HEIGHT = 1024
-# screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-# pygame.display.set_caption("Simon Says")
-
-# #Define RGB color values 
-# WHITE = (255, 255, 255)
-# BLACK = (0, 0, 0)
-# RED = (255, 0, 0)
-# GREEN = (0, 255, 0)
-
-# #Defining the wire colors
-# # Wire Text Colours
-# BROWN_WIRE = (255, 255, 0) # TRUE COLOUR = YELLOW
-# RED_WIRE = (0, 190, 104) # TRUE COLOUR =  GREEN
-# ORANGE_WIRE = (255, 0, 0) # TRUE COLOUR =  RED
-# YELLOW_WIRE =  (255, 165, 0)# TRUE COLOUR =  ORANGE
-# GREEN_WIRE =  (174, 90, 0)# TRUE COLOUR =  BROWN
-
-# #Loading the fonts for different UI elements 
-# font = pygame.font.Font('font1.otf', 30)
-# small_font = pygame.font.Font('font1.otf', 24)
-# wire_font = pygame.font.Font('font1.otf', 22)
-
-# #Main game function
-# def show_simon_says_game_screen(screen):
-# # First show the instructions screen
-#     result = show_simon_says_instructions_screen(screen)
-    
-#     if result == "Play":
-#         pygame.mixer.music.stop()
-#         WIDTH, HEIGHT = screen.get_size()
-#         pygame.display.set_caption("Simon Says")
-
-#         #Load background image with error handling
-#         bg_image = pygame.image.load("simonsays.png")
-#         bg_image = pygame.transform.scale(bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
-    
-#         #Create a semi-transparent overlay for better text readability
-#         overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-#         overlay.fill((0, 0, 0, 150)) 
-    
-#         #Sound file mappings - unchanged
-#         command_sound_files = {
-#             "Simon says disconnect the brown wire": "ssdisbw.mp3",
-#             "Simon says reconnect the brown wire": "ssrebw.mp3",
-#             "Disconnect the brown wire": "disbw.mp3",
-#             "Reconnect the brown wire": "rebw.mp3",
-#             "Simon says disconnect the red wire": "ssdisrw.mp3",
-#             "Simon says reconnect the red wire": "ssrerw.mp3",
-#             "Disconnect the red wire": "disrw.mp3",
-#             "Reconnect the red wire": "rerw.mp3",
-#             "Simon says disconnect the orange wire": "ssdisow.mp3",
-#             "Simon says reconnect the orange wire": "ssreow.mp3",
-#             "Disconnect the orange wire": "disow.mp3",
-#             "Reconnect the orange wire": "reow.mp3",
-#             "Simon says disconnect the yellow wire": "ssdisyw.mp3",
-#             "Simon says reconnect the yellow wire": "ssreyw.mp3",
-#             "Disconnect the yellow wire": "disyw.mp3",
-#             "Reconnect the yellow wire": "reyw.mp3",
-#             "Simon says disconnect the green wire": "ssdisgw.mp3",
-#             "Simon says reconnect the green wire": "ssregw.mp3",
-#             "Disconnect the green wire": "disgw.mp3",
-#             "Reconnect the green wire": "regw.mp3"
-#         }
-        
-#         #Load audio files with improved error handling
-#         command_sounds = {}
-#         for command, filename in command_sound_files.items():
-#             sound = pygame.mixer.Sound(filename)
-#             sound.set_volume(1.0)  # Set volume to 80% (adjust as needed)
-#             command_sounds[command] = sound
-                
-        
-#         # #Test the first loaded sound if any were loaded
-#         # if command_sounds:
-#         #     #Play test sounds 
-#         #     first_sound = list(command_sounds.values())[0]
-#         #     first_sound.play()
-#         #     print(f"Playing test sound from command file")
-#         # else:
-#         #     print("No sound files loaded successfully! Check your sound files.")
-    
-       
-#         wire_pins = [DigitalInOut(i) for i in (board.D14, board.D15, board.D18, board.D23, board.D24)]
-#         for pin in wire_pins:
-#             pin.direction = Direction.INPUT
-#             pin.pull = Pull.DOWN
-            
-#         #Create wires object
-#         wires = Wires(wire_pins)
-#         #Start monitoring wires
-#         wires.start()
-        
-#         #Define colors and commands
-#         colors = ["brown", "red", "orange", "yellow", "green"]
-#         color_values = [BROWN_WIRE, RED_WIRE, ORANGE_WIRE, YELLOW_WIRE, GREEN_WIRE]  
-    
-#         #Creatinng a random set of commands with some commands having Simon says and some not having Simon says 
-#         non_simon_discommands = [f"Disconnect the {color} wire" for color in colors]
-#         non_simon_recommands = [f"Reconnect the {color} wire" for color in colors]
-#         simon_discommands = [f"Simon says disconnect the {color} wire" for color in colors]
-#         simon_recommands = [f"Simon says reconnect the {color} wire" for color in colors]
-        
-#         #Generate game commands - unchanged
-#         wire_states = {color: True for color in colors}
-#         #Colors Simon has commanded to disconnect 
-#         simon_disconnected = set()
-#         #Colors Simon has commanded to reconnect 
-#         simon_reconnected = set()
-#         #Creation of the list to hold the commands 
-#         commands = []
-        
-#         #First Simon command
-#         #Randomly pick a wire color to disconnect first 
-#         first_color = random.choice(colors)
-#         #Marking the wire as diconnected 
-#         wire_states[first_color] = False
-#         #Adding it to the list of disconnected colors 
-#         simon_disconnected.add(first_color)
-#         #Add the corresponding command 
-#         commands.append(simon_discommands[colors.index(first_color)])
-        
-#         #Generate 9 more commands - unchanged
-#         while len(commands) < 10:
-#             #Possible valid actions for the next command 
-#             valid_actions = []
-    
-#             #Add disconnect actions for wires not yet disconnected 
-#             for color in colors:
-#                 if wire_states[color] and color not in simon_disconnected:
-#                     valid_actions.append(("simon_disconnect", color))
-#             #Add reconnect actions for wires that have been disconnected but not reconnected 
-#             for color in simon_disconnected:
-#                 if not wire_states[color] and color not in simon_reconnected:
-#                     valid_actions.append(("simon_reconnect", color))
-#             #60 percent chance to pick a valid Simon says command
-#             if valid_actions and random.random() < 0.6:
-#                 #Choose one 
-#                 action, color = random.choice(valid_actions)
-#                 if action == "simon_disconnect":
-#                     command = simon_discommands[colors.index(color)]
-#                     wire_states[color] = False
-#                     simon_disconnected.add(color)
-#                 elif action == "simon_reconnect":
-#                     command = simon_recommands[colors.index(color)]
-#                     wire_states[color] = True
-#                     simon_reconnected.add(color)
-#                 commands.append(command)
-#             else:
-#                 cmd = None
-#                 #Create a non Simon says command 
-#                 if random.choice(["disconnect", "reconnect"]) == "disconnect":
-#                     #Still connected 
-#                     valid = [c for c in colors if wire_states[c]]
-#                     if valid:
-#                         color = random.choice(valid)
-#                         cmd = non_simon_discommands[colors.index(color)]
-#                 else:
-#                     valid = [c for c in simon_disconnected if not wire_states[c] and c not in simon_reconnected]
-#                     if valid:
-#                         color = random.choice(valid)
-#                         cmd = non_simon_recommands[colors.index(color)]
-#                 if cmd:
-#                     commands.append(cmd)
-        
-#         #Reset wire states for game start
-#         wire_states = {color: True for color in colors}
-#         #All wires start connected 
-#         current_command_index = 0
-#         #Start with the first command 
-#         current_command = commands[current_command_index]
-#         game_over = False
-#         won = False
-#         #Displa success/failure/status to player 
-#         status_message = ""
-        
-#         #Audio playback variables
-#         #Track if audio has played for the command 
-#         command_played = False
-        
-#         #For automatic checking
-#         #Initial state of wires 
-#         last_wire_state = wires._value
-#         #Result of the player's action
-#         action_result = None 
-#         #Time when action result was determined
-#         #action_time = 0
-        
-#         #Variables for tracking player actions
-#         player_confirmation = False
-#         #Track if player took an action
-#         #Whether a wire was chnaged
-#         wire_changed = False  
-        
-#         #Store wire state at the start of each command 
-#         initial_wire_state = wires._value
-        
-#         #Main game loop
-#         clock = pygame.time.Clock()
-#         running = True
-        
-#         #Initialize the timer for 20 seconds
-#         command_start_time = time.time()
-#         #20 seconds timer
-#         timer_duration = 11
-#         #Delay before checking the action
-#         check_delay = 2.0  
-#         #How long to show success/failure message
-#         show_result_time = 2.0  
-    
-#         #Play the first command
-#         if current_command in command_sounds:
-#             #Stop any currently playing sounds
-#             pygame.mixer.stop()  
-#             command_sounds[current_command].play()
-#             command_played = True
-    
-#         while running:
-#             current_time = time.time()
-            
-#             #Calculate remaining time for current command
-#             elapsed_time = current_time - command_start_time
-#             remaining_time = max(0, timer_duration - elapsed_time)
-            
-#             #Play command audio if not played yet
-#             if not command_played and not game_over and not player_confirmation:
-#                 if current_command in command_sounds:
-#                     pygame.mixer.stop()  # Stop any currently playing sounds
-#                     command_sounds[current_command].play()
-#                 command_played = True
-            
-#             #Timer check: if the player hasn't made a move in 20 seconds, game ends
-#             if remaining_time <= 0 and not game_over and not player_confirmation:
-#                 game_over = True
-#                 won = False
-#                 status_message = "Time's up! You took too long."
-            
-#             #Handle events 
-#             for event in pygame.event.get():
-#                 if event.type == pygame.QUIT:
-#                     running = False
-#                 elif event.type == pygame.KEYDOWN:
-#                     #Space to check command when waiting for confirmation
-#                     if event.key == pygame.K_SPACE:
-#                         #Always allow checking with space, even if no wire changes detected
-#                         if not game_over:
-#                             #Store current wire state for evaluation
-#                             current_wire_state = wires._value
-                            
-#                             #Check if command starts with "Simon says"
-#                             is_simon = current_command.startswith("Simon says")
-#                             is_disconnect = "disconnect" in current_command
-#                             color = next(c for c in colors if c in current_command)
-#                             color_index = colors.index(color)
-                            
-#                             #Get wire state for the specific color
-#                             is_disconnected = current_wire_state[color_index] == "0"
-#                             initial_was_disconnected = initial_wire_state[color_index] == "0"
-                            
-#                             #Check if the player actually changed the wire state
-#                             wire_was_changed = is_disconnected != initial_was_disconnected
-                            
-#                             #First, determine the correct action based on command
-#                             if is_simon:
-#                                 #Simon says: must follow command
-#                                 correct_action = is_disconnect == is_disconnected
-#                             else:
-#                                 #Not Simon says: must ignore command
-#                                 #Success if the wire state hasn't changed
-#                                 correct_action = not wire_was_changed
-                            
-#                             #Set result
-#                             action_result = correct_action
-                            
-#                             #Success or failure action
-#                             if action_result:
-#                                 status_message = "SUCCESS!"
-#                                 #Move to next command after success
-#                                 current_command_index += 1
-#                                 if current_command_index < len(commands):
-#                                     current_command = commands[current_command_index]
-#                                     #Reset timer for the new command
-#                                     command_start_time = time.time()
-#                                     action_result = None
-#                                     command_played = False
-#                                     player_confirmation = False
-#                                     #Store new initial wire state for the new command
-#                                     initial_wire_state = wires._value
-#                                 else:
-#                                     current_command = "All commands completed!"
-#                                     game_over = True
-#                                     won = True
-#                             else:
-#                                 status_message = "FAILURE!"
-#                                 game_over = True
-#                                 won = False
-                    
-#                     #Simulation mode: toggle wires with number keys
-#                     elif not RPi and event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5]:
-#                         index = event.key - pygame.K_1
-#                         if index < len(wire_pins):
-#                             wire_pins[index].toggle()
-#                             wires.update_state()
-            
-#             #Check for wire state changes (always update last_wire_state)
-#             if wires._value != last_wire_state:
-#                 last_wire_state = wires._value
-#                 #Set waiting for confirmation only if the game is still active
-#                 if not game_over and not player_confirmation:
-#                     player_confirmation = True
-#                     status_message = "Press SPACE to check your action"
-            
-#             #Draw elements
-#             #Draw background image
-#             screen.blit(bg_image, (0, 0))  
-#             #Draw semi-transparent overlay
-#             screen.blit(overlay, (0, 0))  
-            
-#             #Display wire names and statuses
-#             wire_display_x = 50
-#             wire_display_y = 150
-#             wire_spacing = 40
-            
-#             for i, color in enumerate(colors):
-#                 y_pos = wire_display_y + i * wire_spacing
-#                 is_connected = wires._value[i] == "1"
-#                 status_text = "CONNECTED" if is_connected else "DISCONNECTED"
-                
-#                 #Display wire name and status
-#                 wire_text = wire_font.render(f"{color.upper()} WIRE: {status_text}", True, color_values[i])
-#                 screen.blit(wire_text, (wire_display_x, y_pos))
-                
-#             #Show progress
-#             progress = small_font.render(f"Progress: {current_command_index}/{len(commands)}", True, WHITE)
-#             screen.blit(progress, (30, 30))
-            
-#             #Timer display or instruction
-#             if not player_confirmation and not game_over:
-#                 #Red when less than 5 seconds left
-#                 timer_color = WHITE if remaining_time > 5 else RED  
-#                 timer_text = small_font.render(f"Time: {int(remaining_time)}s", True, timer_color)
-#                 screen.blit(timer_text, (SCREEN_WIDTH - timer_text.get_width() - 30, 30))
-#             else:
-#                 #Show "Press SPACE" message
-#                 space_text = small_font.render("PRESS SPACE TO CHECK", True, GREEN)
-#                 screen.blit(space_text, (SCREEN_WIDTH - space_text.get_width() - 30, 30))
-            
-#             #Status message (success/failure) - always show if it exists
-#             if status_message:
-#                 if action_result is not None:
-#                     status_color = GREEN if action_result else RED
-#                 else:
-#                     #For the "Press SPACE" message
-#                     status_color = WHITE  
-#                 status_text = font.render(status_message, True, status_color)
-#                 screen.blit(status_text, (SCREEN_WIDTH // 2 - status_text.get_width() // 2, 350))
-            
-#             #Game over message - no restart option
-#             if game_over:
-#                 result_text = font.render(f"Game Over - {'You Win!' if won else 'You Lose!'}", True, WHITE)
-#                 screen.blit(result_text, (SCREEN_WIDTH // 2 - result_text.get_width() // 2, 400))
-#                 pygame.display.update()
-#                 # pygame.time.delay(1000)  # Show result for 2 seconds
-            
-#             # Return "win" or "lose" based on game outcome
-#             return "win" if won else "lose"
-        
-            
-#             #Update display
-#             pygame.display.flip()
-            
-#             #Cap the frame rate
-#             clock.tick(60)
-#         return "win" if won else "lose"
-#         # return "Menu"
-        
-        # won = play_game()
-        # return won #true if won, false if lost
-    
-        # screen.fill(BG)
-        # pygame.display.flip()
-        
-        # #Clean up
-        # pygame.quit()
-        # sys.exit()
-# def show_simon_says_game_screen(screen):
-    
-# # First show the instructions screen
-#     result = show_simon_says_instructions_screen(screen)
-    
-#     if result == "Play":
-#         pygame.mixer.music.stop()
-        
-
-#         #Load background image with error handling
-#         bg_image = pygame.image.load("simonsays.png")
-#         bg_image = pygame.transform.scale(bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
-    
-#         #Create a semi-transparent overlay for better text readability
-#         overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-#         overlay.fill((0, 0, 0, 150)) 
-    
-#         #Sound file mappings - unchanged
-#         command_sound_files = {
-#             "Simon says disconnect the brown wire": "ssdisbw.mp3",
-#             "Simon says reconnect the brown wire": "ssrebw.mp3",
-#             "Disconnect the brown wire": "disbw.mp3",
-#             "Reconnect the brown wire": "rebw.mp3",
-#             "Simon says disconnect the red wire": "ssdisrw.mp3",
-#             "Simon says reconnect the red wire": "ssrerw.mp3",
-#             "Disconnect the red wire": "disrw.mp3",
-#             "Reconnect the red wire": "rerw.mp3",
-#             "Simon says disconnect the orange wire": "ssdisow.mp3",
-#             "Simon says reconnect the orange wire": "ssreow.mp3",
-#             "Disconnect the orange wire": "disow.mp3",
-#             "Reconnect the orange wire": "reow.mp3",
-#             "Simon says disconnect the yellow wire": "ssdisyw.mp3",
-#             "Simon says reconnect the yellow wire": "ssreyw.mp3",
-#             "Disconnect the yellow wire": "disyw.mp3",
-#             "Reconnect the yellow wire": "reyw.mp3",
-#             "Simon says disconnect the green wire": "ssdisgw.mp3",
-#             "Simon says reconnect the green wire": "ssregw.mp3",
-#             "Disconnect the green wire": "disgw.mp3",
-#             "Reconnect the green wire": "regw.mp3"
-#         }
-        
-#         #Load audio files with improved error handling
-#         command_sounds = {}
-#         for command, filename in command_sound_files.items():
-#             sound = pygame.mixer.Sound(filename)
-#             sound.set_volume(1.0)  # Set volume to 80% (adjust as needed)
-#             command_sounds[command] = sound
-                
-        
-#         # #Test the first loaded sound if any were loaded
-#         # if command_sounds:
-#         #     #Play test sounds 
-#         #     first_sound = list(command_sounds.values())[0]
-#         #     first_sound.play()
-#         #     print(f"Playing test sound from command file")
-#         # else:
-#         #     print("No sound files loaded successfully! Check your sound files.")
-    
-       
-#         wire_pins = [DigitalInOut(i) for i in (board.D14, board.D15, board.D18, board.D23, board.D24)]
-#         for pin in wire_pins:
-#             pin.direction = Direction.INPUT
-#             pin.pull = Pull.DOWN
-            
-#         #Create wires object
-#         wires = Wires(wire_pins)
-#         #Start monitoring wires
-#         wires.start()
-        
-#         #Define colors and commands
-#         colors = ["brown", "red", "orange", "yellow", "green"]
-#         color_values = [BROWN_WIRE, RED_WIRE, ORANGE_WIRE, YELLOW_WIRE, GREEN_WIRE]  
-    
-#         #Creatinng a random set of commands with some commands having Simon says and some not having Simon says 
-#         non_simon_discommands = [f"Disconnect the {color} wire" for color in colors]
-#         non_simon_recommands = [f"Reconnect the {color} wire" for color in colors]
-#         simon_discommands = [f"Simon says disconnect the {color} wire" for color in colors]
-#         simon_recommands = [f"Simon says reconnect the {color} wire" for color in colors]
-        
-#         #Generate game commands - unchanged
-#         wire_states = {color: True for color in colors}
-#         #Colors Simon has commanded to disconnect 
-#         simon_disconnected = set()
-#         #Colors Simon has commanded to reconnect 
-#         simon_reconnected = set()
-#         #Creation of the list to hold the commands 
-#         commands = []
-        
-#         #First Simon command
-#         #Randomly pick a wire color to disconnect first 
-#         first_color = random.choice(colors)
-#         #Marking the wire as diconnected 
-#         wire_states[first_color] = False
-#         #Adding it to the list of disconnected colors 
-#         simon_disconnected.add(first_color)
-#         #Add the corresponding command 
-#         commands.append(simon_discommands[colors.index(first_color)])
-        
-#         #Generate 9 more commands - unchanged
-#         while len(commands) < 10:
-#             #Possible valid actions for the next command 
-#             valid_actions = []
-    
-#             #Add disconnect actions for wires not yet disconnected 
-#             for color in colors:
-#                 if wire_states[color] and color not in simon_disconnected:
-#                     valid_actions.append(("simon_disconnect", color))
-#             #Add reconnect actions for wires that have been disconnected but not reconnected 
-#             for color in simon_disconnected:
-#                 if not wire_states[color] and color not in simon_reconnected:
-#                     valid_actions.append(("simon_reconnect", color))
-#             #60 percent chance to pick a valid Simon says command
-#             if valid_actions and random.random() < 0.6:
-#                 #Choose one 
-#                 action, color = random.choice(valid_actions)
-#                 if action == "simon_disconnect":
-#                     command = simon_discommands[colors.index(color)]
-#                     wire_states[color] = False
-#                     simon_disconnected.add(color)
-#                 elif action == "simon_reconnect":
-#                     command = simon_recommands[colors.index(color)]
-#                     wire_states[color] = True
-#                     simon_reconnected.add(color)
-#                 commands.append(command)
-#             else:
-#                 cmd = None
-#                 #Create a non Simon says command 
-#                 if random.choice(["disconnect", "reconnect"]) == "disconnect":
-#                     #Still connected 
-#                     valid = [c for c in colors if wire_states[c]]
-#                     if valid:
-#                         color = random.choice(valid)
-#                         cmd = non_simon_discommands[colors.index(color)]
-#                 else:
-#                     valid = [c for c in simon_disconnected if not wire_states[c] and c not in simon_reconnected]
-#                     if valid:
-#                         color = random.choice(valid)
-#                         cmd = non_simon_recommands[colors.index(color)]
-#                 if cmd:
-#                     commands.append(cmd)
-        
-#         #Reset wire states for game start
-#         wire_states = {color: True for color in colors}
-#         #All wires start connected 
-#         current_command_index = 0
-#         #Start with the first command 
-#         current_command = commands[current_command_index]
-#         game_over = False
-#         won = False
-#         #Displa success/failure/status to player 
-#         status_message = ""
-        
-#         #Audio playback variables
-#         #Track if audio has played for the command 
-#         command_played = False
-        
-#         #For automatic checking
-#         #Initial state of wires 
-#         last_wire_state = wires._value
-#         #Result of the player's action
-#         action_result = None 
-#         #Time when action result was determined
-#         #action_time = 0
-        
-#         #Variables for tracking player actions
-#         player_confirmation = False
-#         #Track if player took an action
-#         #Whether a wire was chnaged
-#         wire_changed = False  
-        
-#         #Store wire state at the start of each command 
-#         initial_wire_state = wires._value
-        
-#         #Main game loop
-#         clock = pygame.time.Clock()
-#         running = True
-        
-#         #Initialize the timer for 20 seconds
-#         command_start_time = time.time()
-#         #20 seconds timer
-#         timer_duration = 11
-#         #Delay before checking the action
-#         check_delay = 2.0  
-#         #How long to show success/failure message
-#         show_result_time = 2.0  
-    
-#         #Play the first command
-#         if current_command in command_sounds:
-#             #Stop any currently playing sounds
-#             pygame.mixer.stop()  
-#             command_sounds[current_command].play()
-#             command_played = True
-    
-#         while running:
-#             current_time = time.time()
-            
-#             #Calculate remaining time for current command
-#             elapsed_time = current_time - command_start_time
-#             remaining_time = max(0, timer_duration - elapsed_time)
-            
-#             #Play command audio if not played yet
-#             if not command_played and not game_over and not player_confirmation:
-#                 if current_command in command_sounds:
-#                     pygame.mixer.stop()  # Stop any currently playing sounds
-#                     command_sounds[current_command].play()
-#                 command_played = True
-            
-#             #Timer check: if the player hasn't made a move in 20 seconds, game ends
-#             if remaining_time <= 0 and not game_over and not player_confirmation:
-#                 game_over = True
-#                 won = False
-#                 status_message = "Time's up! You took too long."
-            
-#             #Handle events 
-#             for event in pygame.event.get():
-#                 if event.type == pygame.QUIT:
-#                     running = False
-#                 elif event.type == pygame.KEYDOWN:
-#                     #Space to check command when waiting for confirmation
-#                     if event.key == pygame.K_SPACE:
-#                         #Always allow checking with space, even if no wire changes detected
-#                         if not game_over:
-#                             #Store current wire state for evaluation
-#                             current_wire_state = wires._value
-                            
-#                             #Check if command starts with "Simon says"
-#                             is_simon = current_command.startswith("Simon says")
-#                             is_disconnect = "disconnect" in current_command
-#                             color = next(c for c in colors if c in current_command)
-#                             color_index = colors.index(color)
-                            
-#                             #Get wire state for the specific color
-#                             is_disconnected = current_wire_state[color_index] == "0"
-#                             initial_was_disconnected = initial_wire_state[color_index] == "0"
-                            
-#                             #Check if the player actually changed the wire state
-#                             wire_was_changed = is_disconnected != initial_was_disconnected
-                            
-#                             #First, determine the correct action based on command
-#                             if is_simon:
-#                                 #Simon says: must follow command
-#                                 correct_action = is_disconnect == is_disconnected
-#                             else:
-#                                 #Not Simon says: must ignore command
-#                                 #Success if the wire state hasn't changed
-#                                 correct_action = not wire_was_changed
-                            
-#                             #Set result
-#                             action_result = correct_action
-                            
-#                             #Success or failure action
-#                             if action_result:
-#                                 status_message = "SUCCESS!"
-#                                 #Move to next command after success
-#                                 current_command_index += 1
-#                                 if current_command_index < len(commands):
-#                                     current_command = commands[current_command_index]
-#                                     #Reset timer for the new command
-#                                     command_start_time = time.time()
-#                                     action_result = None
-#                                     command_played = False
-#                                     player_confirmation = False
-#                                     #Store new initial wire state for the new command
-#                                     initial_wire_state = wires._value
-#                                 else:
-#                                     current_command = "All commands completed!"
-#                                     game_over = True
-#                                     won = True
-#                             else:
-#                                 status_message = "FAILURE!"
-#                                 game_over = True
-#                                 won = False
-                    
-#                     #Simulation mode: toggle wires with number keys
-#                     elif not RPi and event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5]:
-#                         index = event.key - pygame.K_1
-#                         if index < len(wire_pins):
-#                             wire_pins[index].toggle()
-#                             wires.update_state()
-            
-#             #Check for wire state changes (always update last_wire_state)
-#             if wires._value != last_wire_state:
-#                 last_wire_state = wires._value
-#                 #Set waiting for confirmation only if the game is still active
-#                 if not game_over and not player_confirmation:
-#                     player_confirmation = True
-#                     status_message = "Press SPACE to check your action"
-            
-#             #Draw elements
-#             #Draw background image
-#             screen.blit(bg_image, (0, 0))  
-#             #Draw semi-transparent overlay
-#             screen.blit(overlay, (0, 0))  
-            
-#             #Display wire names and statuses
-#             wire_display_x = 50
-#             wire_display_y = 150
-#             wire_spacing = 40
-            
-#             for i, color in enumerate(colors):
-#                 y_pos = wire_display_y + i * wire_spacing
-#                 is_connected = wires._value[i] == "1"
-#                 status_text = "CONNECTED" if is_connected else "DISCONNECTED"
-                
-#                 #Display wire name and status
-#                 wire_text = wire_font.render(f"{color.upper()} WIRE: {status_text}", True, color_values[i])
-#                 screen.blit(wire_text, (wire_display_x, y_pos))
-                
-#             #Show progress
-#             progress = small_font.render(f"Progress: {current_command_index}/{len(commands)}", True, WHITE)
-#             screen.blit(progress, (30, 30))
-            
-#             #Timer display or instruction
-#             if not player_confirmation and not game_over:
-#                 #Red when less than 5 seconds left
-#                 timer_color = WHITE if remaining_time > 5 else RED  
-#                 timer_text = small_font.render(f"Time: {int(remaining_time)}s", True, timer_color)
-#                 screen.blit(timer_text, (SCREEN_WIDTH - timer_text.get_width() - 30, 30))
-#             else:
-#                 #Show "Press SPACE" message
-#                 space_text = small_font.render("PRESS SPACE TO CHECK", True, GREEN)
-#                 screen.blit(space_text, (SCREEN_WIDTH - space_text.get_width() - 30, 30))
-            
-#             #Status message (success/failure) - always show if it exists
-#             if status_message:
-#                 if action_result is not None:
-#                     status_color = GREEN if action_result else RED
-#                 else:
-#                     #For the "Press SPACE" message
-#                     status_color = WHITE  
-#                 status_text = font.render(status_message, True, status_color)
-#                 screen.blit(status_text, (SCREEN_WIDTH // 2 - status_text.get_width() // 2, 350))
-            
-#             #Game over message - no restart option
-#             if game_over:
-#                 result_text = font.render(f"Game Over - {'You Win!' if won else 'You Lose!'}", True, WHITE)
-#                 screen.blit(result_text, (SCREEN_WIDTH // 2 - result_text.get_width() // 2, 400))
-#                 return "Menu"
-            
-#             #Update display
-#             pygame.display.flip()
-            
-#             #Cap the frame rate
-#             clock.tick(60)
-        
-#         #Clean up
-#         pygame.quit()
-#         sys.exit()
 
 # INSTRUCTIONS
 def show_simon_says_instructions_screen(screen):
@@ -3348,571 +2472,6 @@ def show_redlightgreenlight_game_screen(screen):
     
     return "Menu"  # If they didn't click Play
 
-def play_redlightgreenlight(screen):
-    dev_width = 800
-    dev_height = 600
-    
-    WIDTH, HEIGHT = screen.get_size()
-    bg_image = pygame.image.load("redlight_greenlight.png")
-    bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
-    pygame.display.set_caption("Red Light Green Light")
-    clock = pygame.time.Clock()
-    
-    # Colors
-    BG = (183, 246, 244)      # Background
-    SAFE = (180, 38, 38)      # For green light (red in this version)
-    FAIL = (0, 144, 57)       # For red light (green in this version)
-    TEXT = (0, 0, 0)          # Black text
-    RED = (255, 0, 0)         # Bright red
-    GREEN = (0, 255, 0)       # Bright green
-
-    
-    # Scale font sizes based on screen dimensions
-    base_font_size = 30
-    base_big_font_size = 50
-    font_size = int(base_font_size * WIDTH / dev_width)
-    big_font_size = int(base_big_font_size * HEIGHT / dev_height)
-    
-    # Fonts
-    
-    FONT = pygame.font.Font("font1.otf", 22)       
-    BIG_FONT = pygame.font.Font("font1.otf", 36)    
-    # MESSAGE_FONT = pygame.font.Font("font1.otf", 28)
-    
-    bg_image = pygame.image.load("redlight_greenlight.png") 
-    bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
-    screen.blit(bg_image, (0, 0))
-    
-    # Scale elements based on screen size
-    button_size = int(200 * WIDTH / dev_width)
-    margin = int(50 * WIDTH / dev_width)
-    
-    # Load doll images 
-    doll_width = int(WIDTH * 0.5)  # 50% of screen width
-    doll_height = int(doll_width * 1.8)  # aspect ratio of 1.8
-    
-    doll_red_img = pygame.image.load("redlightdoll.png")  # Doll facing player (red light)
-    doll_green_img = pygame.image.load("greenlightdoll.png")  # Doll facing away (green light)
-        
-    # Scale images to the desired size
-    doll_red_img = pygame.transform.scale(doll_red_img, (doll_width, doll_height))
-    doll_green_img = pygame.transform.scale(doll_green_img, (doll_width, doll_height))
-    
-    # Game variables
-    light_color = "red"
-    game_time = 120  # seconds to win
-    distance = 0
-    target_distance = 40
-    start_time = time.time()
-    next_change_time = start_time  # Initialize for immediate first change
-    message = "Press the button ONLY when the light is GREEN"
-
-    # Game state variables
-    running = True
-    game_over = False
-    won = False
-
-    # Set up LED control
-    def set_led(color):
-        # Set the RGB LED based on the current light color
-        if color == "green":
-            component_button_RGB[0].value = True   # Red OFF
-            component_button_RGB[1].value = False  # Green ON
-            component_button_RGB[2].value = True   # Blue OFF
-        elif color == "red":
-            component_button_RGB[0].value = False  # Red ON
-            component_button_RGB[1].value = True   # Green OFF
-            component_button_RGB[2].value = True   # Blue OFF
-        else:
-            # turn everything off
-            for pin in component_button_RGB:
-                pin.value = True
-
-    def check_button_press():
-        """Check if the button is pressed."""
-        return component_button_state.value
-    
-    # Set initial LED state
-    set_led(light_color)
-
-    
-    while running:
-        current_time = time.time()
-        elapsed_time = current_time - start_time
-        time_left = max(0, game_time - elapsed_time)
-        screen.blit(bg_image, (0, 0))
-        
-        # Process events
-        button_pressed = False
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            
-            # if event.type == pygame.KEYDOWN:
-            #     if event.key == pygame.K_SPACE and not game_over:
-            #         button_pressed = True
-            #     if event.key == pygame.K_r and game_over:
-            #         # Restart the game
-            #         return show_redlightgreenlight_game_screen(screen)
-            
-            # if event.type == pygame.MOUSEBUTTONDOWN and not game_over:
-            #     button_pressed = True
-        
-        # Check win condition (time elapsed)
-        if time_left <= 0 and not game_over:
-            message = "Congratulations! You survived and won!"
-            game_over = True
-            won = True
-            pygame.display.flip()  # Make sure screen is updated
-            pygame.time.delay(1000)  # Show the winning state briefly
-            return "win"  # Return win result directly
-        
-        # Change light color based on timing
-        if current_time >= next_change_time and not game_over:
-            # Switch the light
-            light_color = "green" if light_color == "red" else "red"
-            set_led(light_color)
-            
-            if light_color == "green":
-                pygame.mixer.music.stop()
-                pygame.mixer.music.load("redlight.mp3")
-                pygame.mixer.music.play()
-                
-                
-                # # pygame.mixer.Sound("redlight.mp3")
-                # pygame.mixer.mus
-            else:
-                pygame.mixer.music.stop()
-                pygame.mixer.music.load("greenlight.mp3")
-                pygame.mixer.music.play()
-              
-            #     pygame.mixer.Sound("greenlight.mp3")
-            # pygame.mixer.music.play()
-                
-            # Set next change time (2-5 seconds)
-            next_change = random.uniform(2, 5)
-            next_change_time = current_time + next_change
-            # message = f"THE LIGHT IS NOW {light_color.upper()}!"
-            # print(f"THE LIGHT IS NOW {light_color.upper()}!")
-        
-        # Check button press
-        if (button_pressed or check_button_press()) and not game_over:
-            if light_color == "green":
-                distance += 1
-                # message = f"Good move!"
-                print(message)
-                time.sleep(0.4)
-            else:
-                # message = "You pressed during RED! You lose!"
-                print(message)
-                pygame.display.flip()
-                set_led("off")
-                return "lose"
-                
-        if distance >= target_distance and not game_over:
-            set_led("off")
-            return "win"
-
-        # Draw doll image based on light color
-        # Select the appropriate image
-        doll_img = doll_red_img if light_color == "red" else doll_green_img
-        
-        # Position doll (centered)
-        doll_x = WIDTH // 2 - doll_width // 2  # Center horizontally
-        doll_y = HEIGHT // 2 - doll_height // 2  # Center vertically 
-        screen.blit(doll_img, (doll_x, doll_y))
-        
-        # Draw color indicator in top right
-        color = SAFE if light_color == "green" else FAIL
-        pygame.draw.rect(screen, color, (
-            WIDTH - button_size - margin, 
-            margin, 
-            button_size, 
-            button_size))
-        
-        # Draw state and time display
-        state_text = FONT.render(f"State: {light_color.upper()}", True, TEXT)
-        screen.blit(state_text, (margin, margin))
-        
-        time_text = FONT.render(f"Time: {time_left:.1f}s", True, TEXT)
-        screen.blit(time_text, (margin, margin + font_size + 10))  # Position under state text
-        
-        distance_text = FONT.render(f"Distance: {distance:.0f} / {target_distance:.0f}", True, TEXT)
-        screen.blit(distance_text, (margin, margin + font_size + font_size + 20))  # Position under state text
-        
-        # Draw message
-        message_text = FONT.render(message, True, TEXT)
-        message_x = WIDTH // 2 - message_text.get_width() // 2
-        # Position message near the bottom of the screen
-        message_y = HEIGHT - int(140 * HEIGHT / dev_height)
-        screen.blit(message_text, (message_x, message_y))
-        
-        # # Draw instructions
-        # if not game_over:
-        #     instructions = FONT.render("Press SPACE or CLICK to move forward", True, TEXT)
-        #     instructions_x = WIDTH // 2 - instructions.get_width() // 2
-        #     # Position instructions at the bottom of the screen
-        #     instructions_y = HEIGHT - int(60 * HEIGHT / dev_height)
-        #     screen.blit(instructions, (instructions_x, instructions_y))
-        
-        # Update display
-        pygame.display.flip()
-        
-        # Control frame rate
-        clock.tick(60)
-        
-    set_led("off")
-    return "lose"
-pygame.mixer.init()
-
-
-
-
-
-
-# def show_redlightgreenlight_game_screen(screen):
-#     # First show the instructions screen
-#     result = show_redlightgreenlight_instructions_screen(screen)
-    
-#     if result == "Play":
-
-
-        
-#         pygame.display.set_caption("Red Light Green Light Instructions")
-#         pygame.mixer.music.stop()
-#         pygame.mixer.music.load("fly_me.mp3")  # Or another appropriate music
-#         pygame.mixer.music.play(-1)
-        
-#         # Set up LED control
-#         global component_button_RGB
-#         component_button_RGB = [
-#             DigitalInOut(board.D17),  # Red pin
-#             DigitalInOut(board.D27),  # Green pin
-#             DigitalInOut(board.D22)   # Blue pin
-#         ]
-        
-#         # Set each pin as output
-#         for pin in component_button_RGB:
-#             pin.direction = Direction.OUTPUT
-#             pin.value = True  # Initialize all LEDs to OFF
-        
-#         # Setup for button - FROM BOMB CONFIGS
-#         global component_button_state
-#         component_button_state = DigitalInOut(board.D4)
-#         component_button_state.direction = Direction.INPUT
-#         component_button_state.pull = Pull.DOWN
-        
-#         # Call the play function which contains the game logic
-#         return play_redlightgreenlight(screen)
-    
-#     return "Menu"  # If they didn't click Play
-
-# def play_redlightgreenlight(screen):
-#     red_light_sound = pygame.mixer.Sound("redlight.mp3")
-#     green_light_sound = pygame.mixer.Sound("greenlight.mp3")
-#     # Set up LED control
-#     def set_led(color):
-#         #Set the RGB LED based on the current light color
-#         if color == "green":
-#             component_button_RGB[0].value = True   # Red OFF
-#             component_button_RGB[1].value = False  # Green ON
-#             component_button_RGB[2].value = True   # Blue OFF
-#         elif color == "red":
-#             component_button_RGB[0].value = False  # Red ON
-#             component_button_RGB[1].value = True   # Green OFF
-#             component_button_RGB[2].value = True   # Blue OFF
-#         else:
-#             # turn everything off
-#             for pin in component_button_RGB:
-#                 pin.value = True
-    
-#     def check_button_press():
-#         """Check if the button is pressed."""
-#         return component_button_state.value
-    
-#     global component_button_RGB
-#     component_button_RGB = [
-#             DigitalInOut(board.D17),  # Red pin
-#             DigitalInOut(board.D27),  # Green pin
-#             DigitalInOut(board.D22)   # Blue pin
-#     ]
-    
-#     # Set each pin as output
-#     for pin in component_button_RGB:
-#         pin.direction = Direction.OUTPUT
-#         pin.value = True  # Initialize all LEDs to OFF
-    
-#         # Setup for button - FROM BOMB CONFIGS
-#     global component_button_state
-#     component_button_state = DigitalInOut(board.D4)
-#     component_button_state.direction = Direction.INPUT
-#     component_button_state.pull = Pull.DOWN
-    
-#     def RedLightGreenLight():
-#         # Initial light color
-#         light_color = "red"
-#         set_led(light_color)
-        
-#         game_time = 20  # seconds to win
-#         start_time = time.time()
-    
-#         while (time.time() - start_time) < game_time:
-#             # Randomly change the light every 2-5 seconds
-#             next_change = random.uniform(2, 5)
-#             change_time = time.time() + next_change
-    
-#             while time.time() < change_time:
-#                 if check_button_press():
-#                     if light_color == "green":
-#                         return True
-#                     else:
-#                         set_led("off")
-#                         return  False # End the game immediately
-#                     time.sleep(0.3)
-#                 time.sleep(0.05)  #
-    
-#             # Switch the light
-#             light_color = "green" if light_color == "red" else "red"
-#             set_led(light_color)
-#             print(f"The light is now {light_color.upper()}!")
-    
-#         # Survived the game
-#         set_led("off")
-#         return True
-    
-
-#     dev_width = 800
-#     dev_height = 600
-    
-#     WIDTH, HEIGHT = screen.get_size()
-#     bg_image = pygame.image.load("redlight_greenlight.png")
-#     bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
-#     pygame.display.set_caption("Red Light Green Light")
-#     clock = pygame.time.Clock()
-    
-#     # Colors
-#     BG = (183, 246, 244)      # Background
-#     SAFE = (180, 38, 38)      # For green light (red in this version)
-#     FAIL = (0, 144, 57)       # For red light (green in this version)
-#     TEXT = (0, 0, 0)          # Black text
-#     RED = (255, 0, 0)         # Bright red
-#     GREEN = (0, 255, 0)       # Bright green
-
-    
-#     # Scale font sizes based on screen dimensions
-#     base_font_size = 30
-#     base_big_font_size = 50
-#     font_size = int(base_font_size * WIDTH / dev_width)
-#     big_font_size = int(base_big_font_size * HEIGHT / dev_height)
-    
-#     # Fonts
-    
-#     FONT = pygame.font.Font("font1.otf", 16)
-#     BIG_FONT = pygame.font.Font("font1.otf", 26)
-    
-#     bg_image = pygame.image.load("redlight_greenlight.png") 
-#     bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
-#     screen.blit(bg_image, (0, 0))
-    
-#     # Scale elements based on screen size
-#     button_size = int(200 * WIDTH / dev_width)
-#     margin = int(50 * WIDTH / dev_width)
-    
-#     # Load doll images 
-#     doll_width = int(WIDTH * 0.5)  # 50% of screen width
-#     doll_height = int(doll_width * 1.8)  # aspect ratio of 1.8
-    
-    
-#     doll_red_img = pygame.image.load("redlightdoll.png")  # Doll facing player (red light)
-#     doll_green_img = pygame.image.load("greenlightdoll.png")  # Doll facing away (green light)
-        
-#         # Scale images to the desired size
-#     doll_red_img = pygame.transform.scale(doll_red_img, (doll_width, doll_height))
-#     doll_green_img = pygame.transform.scale(doll_green_img, (doll_width, doll_height))
-    
-
-#     # Game variables
-#     light_color = "red"
-#     game_time = 120  # seconds to win
-#     distance = 0
-#     target_distance = 40
-#     start_time = time.time()
-#     next_change_time = start_time  # Initialize for immediate first change
-#     message = "Press the button ONLY when the light is GREEN"
-
-#     # Game state variables
-#     running = True
-#     game_over = False
-#     won = False
-
-#     set_led(light_color)
-    
-#     while running:
-#         current_time = time.time()
-#         elapsed_time = current_time - start_time
-#         time_left = max(0, game_time - elapsed_time)
-#         screen.blit(bg_image, (0, 0))
-        
-#         # Process events
-#         button_pressed = False
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 running = False
-            
-#             if event.type == pygame.KEYDOWN:
-#                 if event.key == pygame.K_SPACE and not game_over:
-#                     button_pressed = True
-#                 if event.key == pygame.K_r and game_over:
-#                     # Restart the game
-#                     return show_redlightgreenlight_game_screen(screen)
-            
-#             if event.type == pygame.MOUSEBUTTONDOWN and not game_over:
-#                 button_pressed = True
-        
-#         # Check win condition (time elapsed)
-#         if time_left <= 0 and not game_over:
-#             message = "Congratulations! You survived and won!"
-#             game_over = True
-#             won = True
-#             pygame.display.flip()  # Make sure screen is updated
-#             pygame.time.delay(1000)  # Show the winning state briefly
-#             return "win"  # Return win result directly
-            
-    
-        
-#     # Set next change time (2-5 seconds)
-#     next_change = random.uniform(2, 5)
-#     next_change_time = current_time + next_change
-#     message = f"THE LIGHT IS NOW {light_color.upper()}!"
-#         # Change light color based on timing
-#     if current_time >= next_change_time and not game_over:
-#         # Switch the light
-#         light_color = "green" if light_color == "red" else "red"
-#         set_led(light_color)
-#         if light_color == "green":
-#            green_light_sound.play()
-#         else:
-#              red_light_sound.play()
-        
-            
-#         # Set next change time (2-5 seconds)
-#         next_change = random.uniform(2, 5)
-#         next_change_time = current_time + next_change
-#         message = f"THE LIGHT IS NOW {light_color.upper()}!"
-#         # print(f"THE LIGHT IS NOW {light_color.upper()}!")
-        
-
-#         # Check button press
-#         # if button_pressed and not game_over:
-#         if (button_pressed or check_button_press()) and not game_over:
-#             if light_color == "green":
-#                 distance += 1
-#                 message = f"Good move!"
-#                 print(message)
-#                 time.sleep(0.4)
-#             else:
-#                 message = "You pressed during RED! You lose!"
-#                 print(message)
-#                 pygame.display.flip()
-#                 # show_death_screen(screen)
-#                 return "lose"
-#         if distance > target_distance and not game_over:
-#             set_led("off")
-#             return "win"
-
-#         # Draw doll image based on light color
-#         # Select the appropriate image
-#         doll_img = doll_red_img if light_color == "red" else doll_green_img
-        
-#         # Position doll (centered)
-#         doll_x = WIDTH // 2 - doll_width // 2  # Center horizontally
-#         doll_y = HEIGHT // 2 - doll_height // 2  # Center vertically 
-#         screen.blit(doll_img, (doll_x, doll_y))
-        
-#         # Draw color indicator in top right
-#         color = SAFE if light_color == "green" else FAIL
-#         pygame.draw.rect(screen, color, (
-#             WIDTH - button_size - margin, 
-#             margin, 
-#             button_size, 
-#             button_size))
-        
-#         # Draw state and time display
-#         state_text = FONT.render(f"State: {light_color.upper()}", True, TEXT)
-#         screen.blit(state_text, (margin, margin))
-        
-#         time_text = FONT.render(f"Time: {time_left:.1f}s", True, TEXT)
-#         screen.blit(time_text, (margin, margin + font_size + 10))  # Position under state text
-        
-
-#         distance_text = FONT.render(f"Distance: {distance :.0f} / {target_distance :.0f}", True, TEXT)
-#         screen.blit(distance_text, (margin, margin + font_size + font_size + 20))  # Position under state text
-        
-#         # Draw message
-#         message_text = FONT.render(message, True, TEXT)
-#         message_x = WIDTH // 2 - message_text.get_width() // 2
-#         # Position message near the bottom of the screen
-#         message_y = HEIGHT - int(120 * HEIGHT / dev_height)
-#         screen.blit(message_text, (message_x, message_y))
-
-#         # Draw message
-#         message_text = FONT.render(message, True, TEXT)
-#         message_x = WIDTH // 2 - message_text.get_width() // 2
-#         # Position message near the bottom of the screen
-#         message_y = HEIGHT - int(120 * HEIGHT / dev_height)
-#         screen.blit(message_text, (message_x, message_y))
-
-        
-#         # # Draw instructions
-#         # if not game_over:
-#         #     instructions = FONT.render("Press SPACE or CLICK to move forward", True, TEXT)
-#         #     instructions_x = WIDTH // 2 - instructions.get_width() // 2
-#         #     # Position instructions at the bottom of the screen
-#         #     instructions_y = HEIGHT - int(60 * HEIGHT / dev_height)
-#         #     screen.blit(instructions, (instructions_x, instructions_y))
-        
-#         # Update display
-#         pygame.display.flip()
-        
-#         # Control frame rate
-#         clock.tick(60)
-#     set_led("off")
-#     return "lose"
-
-
-
-
-# return "win" if won else "lose"
-
-# pygame.init()
-# pygame.mixer.init()
-# screen = pygame.display.set_mode((576, 1024))
-# result = play_redlightgreenlight()
-# pygame.display.flip()
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # INSTRUCTIONS
 def show_redlightgreenlight_instructions_screen(screen):
     WIDTH, HEIGHT = screen.get_size()
@@ -4068,269 +2627,197 @@ def show_redlightgreenlight_instructions_screen(screen):
         pygame.display.flip()
         clock.tick(60)
 
-
-# # GAME LOGIC
-# def show_redlightgreenlight_game_screen(screen):
-#     dev_width = 800
-#     dev_height = 600
-
-#     # Default vertical reference dimensions for the portrait mode
-#     portrait_width = 576
-#     portrait_height = 1024
-
-#     # Set up LED control
-#     def set_led(color):
-#         #Set the RGB LED based on the current light color
-#         if not RPi:
-#             return
-#         if color == "green":
-#             component_button_RGB[0].value = True   # Red OFF
-#             component_button_RGB[1].value = False  # Green ON
-#             component_button_RGB[2].value = True   # Blue OFF
-#         elif color == "red":
-#             component_button_RGB[0].value = False  # Red ON
-#             component_button_RGB[1].value = True   # Green OFF
-#             component_button_RGB[2].value = True   # Blue OFF
-#         else:
-#             # turn everything off
-#             for pin in component_button_RGB:
-#                 pin.value = True
-
-#     def check_button_press():
-#         """Check if the button is pressed."""
-#         if not RPi:
-#             return False
-#         return component_button_state.value
-
-#     # First show the instructions screen
-#     result = show_redlightgreenlight_instructions_screen(screen)
+# GAME LOGIC
+def play_redlightgreenlight(screen):
+    dev_width = 800
+    dev_height = 600
     
-#     # Only proceed to the game if the player clicked "Play"
-#     if result == "Play":
-#         pygame.mixer.music.stop()
-#         pygame.mixer.music.load("fly_me.mp3")
-#         pygame.mixer.music.play(-1)
-#         # Get current screen dimensions
-#         def play_redlightgreenlight():
-#             WIDTH, HEIGHT = screen.get_size()
-#             #bg_image = pygame.image.load("redlightbg.png")
-#             #bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
-#             pygame.display.set_caption("Red Light Green Light")
-#             clock = pygame.time.Clock()
-            
-#             # Colors
-#             BG = (183, 246, 244)            # Background
-#             #SAFE = (0, 144, 57)          # Green for correct
-#             SAFE = (180, 38, 38)
-#             FAIL = (0, 144, 57)
-#             #FAIL = (180, 38, 38)         # Red for incorrect
-#             TEXT = (0, 0, 0)       # Light text
-#             RED = (255, 0, 0)            # Bright red
-#             GREEN = (0, 255, 0)          # Bright green
-            
-#             #screen.blit(bg_image, (0, 0))
-            
-#             # Scale font sizes based on screen dimensions
-#             base_font_size = 30
-#             base_big_font_size = 50
-#             font_size = int(base_font_size * WIDTH / dev_width)
-#             big_font_size = int(base_big_font_size * HEIGHT / dev_height)
-            
-#             # Fonts
-            
-#             FONT = pygame.font.Font("font1.otf", 16)
-#             BIG_FONT = pygame.font.Font("font1.otf", 26)
-            
-#             bg_image = pygame.image.load("redlight_greenlight.png") 
-#             bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
-#             screen.blit(bg_image, (0, 0))
-            
-#             # Scale elements based on screen size
-#             button_size = int(200 * WIDTH / dev_width)
-#             margin = int(50 * WIDTH / dev_width)
-            
-#             # Load doll images 
-#             doll_width = int(WIDTH * 0.5)  # 50% of screen width
-#             doll_height = int(doll_width * 1.8)  # aspect ratio of 1.8
-            
-            
-#             doll_red_img = pygame.image.load("redlightdoll.jpg")  # Doll facing player (red light)
-#             doll_green_img = pygame.image.load("greenlightdoll.jpg")  # Doll facing away (green light)
-                
-#                 # Scale images to the desired size
-#             doll_red_img = pygame.transform.scale(doll_red_img, (doll_width, doll_height))
-#             doll_green_img = pygame.transform.scale(doll_green_img, (doll_width, doll_height))
-            
-            
-#             # Game variables
-#             light_color = "red"
-#             game_time = 20  # seconds to win
-#             start_time = time.time()
-#             next_change_time = start_time  # Initialize for immediate first change
-#             #message = "Press the button ONLY when the light is GREEN"
-            
-#             # Game state variables
-#             running = True
-#             game_over = False
-#             won = False
-            
-#             while running:
-#                 current_time = time.time()
-#                 elapsed_time = current_time - start_time
-#                 time_left = max(0, game_time - elapsed_time)
-#                 screen.blit(bg_image, (0, 0))
-                
-#                 # Process events
-#                 button_pressed = False
-#                 for event in pygame.event.get():
-#                     if event.type == pygame.QUIT:
-#                         running = False
-                    
-#                     if event.type == pygame.KEYDOWN:
-#                         if event.key == pygame.K_SPACE and not game_over:
-#                             button_pressed = True
-#                         if event.key == pygame.K_r and game_over:
-#                             # Restart the game
-#                             return show_redlightgreenlight_game_screen(screen)
-                    
-#                     if event.type == pygame.MOUSEBUTTONDOWN and not game_over:
-#                         button_pressed = True
-                
-#                 # Check win condition (time elapsed)
-#                 if time_left <= 0 and not game_over:
-#                     message = "Congratulations! You survived and won!"
-#                     game_over = True
-#                     won = True
-#                     pygame.display.flip()  # Make sure screen is updated
-#                     pygame.time.delay(1000)  # Show the winning state briefly
-#                     return "win"  # Return win result directly
-                    
-                
-#                 # Change light color based on timing
-#                 if current_time >= next_change_time and not game_over:
-#                     # Switch the light
-#                     light_color = "green" if light_color == "red" else "red"
-#                     if light_color == "green":
-#                         pygame.mixer.music.stop()
-#                         pygame.mixer.music.load("redlight.mp3")
-#                         pygame.mixer.music.play()
-#                     else:
-#                         pygame.mixer.music.stop()
-#                         pygame.mixer.music.load("greenlight.mp3")
-#                         pygame.mixer.music.play()
-                        
-                         
-#                     # Set next change time (2-5 seconds)
-#                     next_change = random.uniform(2, 5)
-#                     next_change_time = current_time + next_change
-#                     message = f"THE LIGHT IS NOW {light_color.upper()}!"
-#                     print(f"THE LIGHT IS NOW {light_color.upper()}!")
-                
-#                 # Check button press
-#                 if button_pressed and not game_over:
-#                     print("Button Pressed!")
-#                     if light_color == "green":
-#                         message = "Good move!"
-#                         #print("Good move!")
-#                     else:
-#                         message = "You pressed during RED! You lose!"
-#                         pygame.display.flip()
-#                         #pygame.time.delay(1000)
-#                         show_death_screen(screen)
-#                         return "lose"
-#                         #print("You pressed during RED! You lose!")
-# #                         game_over = True
-# #                         won = False
-                
-#                 # Draw doll image based on light color
-#                 # Select the appropriate image
-#                 doll_img = doll_red_img if light_color == "red" else doll_green_img
-                
-#                 # Position doll (centered)
-#                 doll_x = WIDTH // 2 - doll_width // 2  # Center horizontally
-#                 doll_y = HEIGHT // 2 - doll_height // 2  # Center vertically 
-#                 screen.blit(doll_img, (doll_x, doll_y))
-                
-#                 # Draw color indicator in top right
-#                 color = SAFE if light_color == "green" else FAIL
-#                 pygame.draw.rect(screen, color, (
-#                     WIDTH - button_size - margin, 
-#                     margin, 
-#                     button_size, 
-#                     button_size))
-                
-#                 # Draw state and time display
-#                 state_text = FONT.render(f"State: {light_color.upper()}", True, TEXT)
-#                 screen.blit(state_text, (margin, margin))
-                
-#                 time_text = FONT.render(f"Time: {time_left:.1f}s", True, TEXT)
-#                 screen.blit(time_text, (margin, margin + font_size + 10))  # Position under state text
-                
-#                 # Draw message
-#                 message_text = FONT.render(message, True, TEXT)
-#                 message_x = WIDTH // 2 - message_text.get_width() // 2
-#                 # Position message near the bottom of the screen
-#                 message_y = HEIGHT - int(120 * HEIGHT / dev_height)
-#                 screen.blit(message_text, (message_x, message_y))
-                
-#                 # Draw instructions
-#                 if not game_over:
-#                     instructions = FONT.render("Press SPACE or CLICK to move forward", True, TEXT)
-#                     instructions_x = WIDTH // 2 - instructions.get_width() // 2
-#                     # Position instructions at the bottom of the screen
-#                     instructions_y = HEIGHT - int(60 * HEIGHT / dev_height)
-#                     screen.blit(instructions, (instructions_x, instructions_y))
-#                 else:
-#                     if "win":
-#                         return "win"
-#                         result = FONT.render("You won! Press R to restart", True, TEXT)
-#                     else:
-#                         return "lose"
-#                         result = FONT.render("You lost! Press R to restart", True, TEXT)
-#                     result_x = WIDTH // 2 - result.get_width() // 2
-#                     # Position result text at the bottom of the screen
-#                     result_y = HEIGHT - int(60 * HEIGHT / dev_height)
-#                     screen.blit(result, (result_x, result_y))
-                
-#                 # Update display
-#                 pygame.display.flip()
-                
-#                 # Control frame rate
-#                 clock.tick(60)
-            
-#         #return "win" if win else "lose"
-#             #return result
+    WIDTH, HEIGHT = screen.get_size()
+    bg_image = pygame.image.load("redlight_greenlight.png")
+    bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
+    pygame.display.set_caption("Red Light Green Light")
+    clock = pygame.time.Clock()
+    
+    # Colors
+    BG = (183, 246, 244)      # Background
+    SAFE = (180, 38, 38)      # For green light (red in this version)
+    FAIL = (0, 144, 57)       # For red light (green in this version)
+    TEXT = (0, 0, 0)          # Black text
+    RED = (255, 0, 0)         # Bright red
+    GREEN = (0, 255, 0)       # Bright green
+
+    
+    # Scale font sizes based on screen dimensions
+    base_font_size = 30
+    base_big_font_size = 50
+    font_size = int(base_font_size * WIDTH / dev_width)
+    big_font_size = int(base_big_font_size * HEIGHT / dev_height)
+    
+    # Fonts
+    
+    FONT = pygame.font.Font("font1.otf", 22)       
+    BIG_FONT = pygame.font.Font("font1.otf", 36)    
+    # MESSAGE_FONT = pygame.font.Font("font1.otf", 28)
+    
+    bg_image = pygame.image.load("redlight_greenlight.png") 
+    bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
+    screen.blit(bg_image, (0, 0))
+    
+    # Scale elements based on screen size
+    button_size = int(200 * WIDTH / dev_width)
+    margin = int(50 * WIDTH / dev_width)
+    
+    # Load doll images 
+    doll_width = int(WIDTH * 0.5)  # 50% of screen width
+    doll_height = int(doll_width * 1.8)  # aspect ratio of 1.8
+    
+    doll_red_img = pygame.image.load("redlightdoll.png")  # Doll facing player (red light)
+    doll_green_img = pygame.image.load("greenlightdoll.png")  # Doll facing away (green light)
         
-#         result = play_redlightgreenlight()
-#         #return "win" if win else "lose"
-#         return result
-#         pygame.display.flip()
+    # Scale images to the desired size
+    doll_red_img = pygame.transform.scale(doll_red_img, (doll_width, doll_height))
+    doll_green_img = pygame.transform.scale(doll_green_img, (doll_width, doll_height))
+    
+    # Game variables
+    light_color = "red"
+    game_time = 120  # seconds to win
+    distance = 0
+    target_distance = 40
+    start_time = time.time()
+    next_change_time = start_time  # Initialize for immediate first change
+    message = "Press the button ONLY when the light is GREEN"
 
+    # Game state variables
+    running = True
+    game_over = False
+    won = False
 
+    # Set up LED control
+    def set_led(color):
+        # Set the RGB LED based on the current light color
+        if color == "green":
+            component_button_RGB[0].value = True   # Red OFF
+            component_button_RGB[1].value = False  # Green ON
+            component_button_RGB[2].value = True   # Blue OFF
+        elif color == "red":
+            component_button_RGB[0].value = False  # Red ON
+            component_button_RGB[1].value = True   # Green OFF
+            component_button_RGB[2].value = True   # Blue OFF
+        else:
+            # turn everything off
+            for pin in component_button_RGB:
+                pin.value = True
 
+    def check_button_press():
+        """Check if the button is pressed."""
+        return component_button_state.value
+    
+    # Set initial LED state
+    set_led(light_color)
 
+    
+    while running:
+        current_time = time.time()
+        elapsed_time = current_time - start_time
+        time_left = max(0, game_time - elapsed_time)
+        screen.blit(bg_image, (0, 0))
+        
+        # Process events
+        button_pressed = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            
+        # Check win condition (time elapsed)
+        if time_left <= 0 and not game_over:
+            message = "Congratulations! You survived and won!"
+            game_over = True
+            won = True
+            pygame.display.flip()  # Make sure screen is updated
+            pygame.time.delay(1000)  # Show the winning state briefly
+            return "win"  # Return win result directly
+        
+        # Change light color based on timing
+        if current_time >= next_change_time and not game_over:
+            # Switch the light
+            light_color = "green" if light_color == "red" else "red"
+            set_led(light_color)
+            
+            if light_color == "green":
+                pygame.mixer.music.stop()
+                pygame.mixer.music.load("redlight.mp3")
+                pygame.mixer.music.play()
+                
+             else:
+                pygame.mixer.music.stop()
+                pygame.mixer.music.load("greenlight.mp3")
+                pygame.mixer.music.play()
+                
+            # Set next change time (2-5 seconds)
+            next_change = random.uniform(2, 5)
+            next_change_time = current_time + next_change
+        
+        # Check button press
+        if (button_pressed or check_button_press()) and not game_over:
+            if light_color == "green":
+                distance += 1
+                # message = f"Good move!"
+                print(message)
+                time.sleep(0.4)
+            else:
+                # message = "You pressed during RED! You lose!"
+                print(message)
+                pygame.display.flip()
+                set_led("off")
+                return "lose"
+                
+        if distance >= target_distance and not game_over:
+            set_led("off")
+            return "win"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        # Draw doll image based on light color
+        # Select the appropriate image
+        doll_img = doll_red_img if light_color == "red" else doll_green_img
+        
+        # Position doll (centered)
+        doll_x = WIDTH // 2 - doll_width // 2  # Center horizontally
+        doll_y = HEIGHT // 2 - doll_height // 2  # Center vertically 
+        screen.blit(doll_img, (doll_x, doll_y))
+        
+        # Draw color indicator in top right
+        color = SAFE if light_color == "green" else FAIL
+        pygame.draw.rect(screen, color, (
+            WIDTH - button_size - margin, 
+            margin, 
+            button_size, 
+            button_size))
+        
+        # Draw state and time display
+        state_text = FONT.render(f"State: {light_color.upper()}", True, TEXT)
+        screen.blit(state_text, (margin, margin))
+        
+        time_text = FONT.render(f"Time: {time_left:.1f}s", True, TEXT)
+        screen.blit(time_text, (margin, margin + font_size + 10))  # Position under state text
+        
+        distance_text = FONT.render(f"Distance: {distance:.0f} / {target_distance:.0f}", True, TEXT)
+        screen.blit(distance_text, (margin, margin + font_size + font_size + 20))  # Position under state text
+        
+        # Draw message
+        message_text = FONT.render(message, True, TEXT)
+        message_x = WIDTH // 2 - message_text.get_width() // 2
+        # Position message near the bottom of the screen
+        message_y = HEIGHT - int(140 * HEIGHT / dev_height)
+        screen.blit(message_text, (message_x, message_y))
+                
+        # Update display
+        pygame.display.flip()
+        
+        # Control frame rate
+        clock.tick(60)
+        
+    set_led("off")
+    return "lose"
+pygame.mixer.init()
 ####################################################################################################################
 # RESULT SCREENS
 # DEATH SCREEN
