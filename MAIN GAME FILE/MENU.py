@@ -3272,13 +3272,13 @@ def main():
     completed_games = set()
 
     while game_running:
-        # If timer is done, check win/loss immediately
+        # If timer is done, show death screen and exit
         if timer._value <= 0:
-            if len(completed_games) == len(mini_games):
-                game_state = "Live"  # Completed all games just in time
-            else:
-                game_state = "Die"   # Failed due to timeout
-            continue  # Skip rest of loop and handle above state next frame
+            game_state = "TimeUp"
+            timer.pause()
+            show_death_screen(screen)
+            pygame.quit()
+            sys.exit()
 
         # Handle main menu
         if game_state == "Menu":
@@ -3343,19 +3343,10 @@ def main():
             show_win_screen(screen)
             game_state = "Menu"
 
-        elif game_state == "Live":
-            timer.pause()
-            show_win_screen(screen)
-            game_state = "Menu"
-
-        elif game_state == "Die" or game_state == "Death":
+        elif game_state == "Die":
             timer.pause()
             show_death_screen(screen)
-            if timer._value <= 0:
-                pygame.quit()
-                sys.exit()
-            else:
-                game_state = "Menu"
+            game_state = "Menu"
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -3363,4 +3354,3 @@ def main():
 
     pygame.quit()
     sys.exit()
-
