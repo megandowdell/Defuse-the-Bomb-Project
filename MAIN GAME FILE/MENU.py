@@ -3272,11 +3272,15 @@ def main():
     completed_games = set()
 
     while game_running:
-        # If timer is done, show death screen and exit
+        # Check if timer is up and handle appropriately
         if timer._value <= 0:
-            game_state = "TimeUp"
             timer.pause()
-            show_death_screen(screen)
+            if len(completed_games) == len(mini_games):
+                # Completed all games just in time
+                show_win_screen(screen)
+            else:
+                # Failed due to time expiration
+                show_death_screen(screen)
             pygame.quit()
             sys.exit()
 
@@ -3354,3 +3358,5 @@ def main():
 
     pygame.quit()
     sys.exit()
+    
+
