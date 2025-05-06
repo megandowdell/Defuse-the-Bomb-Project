@@ -2150,7 +2150,7 @@ def show_simon_says_game_screen(screen):
                 result_text = font.render(f"Game Over - {'You Win!' if won else 'You Lose!'}", True, WHITE)
                 screen.blit(result_text, (SCREEN_WIDTH // 2 - result_text.get_width() // 2, 400))
                 pygame.display.update()
-                pygame.time.delay(2000)  # Show result for 2 seconds
+                # pygame.time.delay(2000)  # Show result for 2 seconds
             
             # Return "win" or "lose" based on game outcome
                 return "win" if won else "lose"
