@@ -156,24 +156,40 @@ class Timer(PhaseThread):
 
     # runs the thread - adds logic to code
     def run(self):
-        self._running = True
-        while (self._running):
-            if (not self._paused):
-                # update the timer and display its value on the 7-segment display
-                self._update()
-                self._component.print(str(self))
-                # wait 1s (default) and continue
-                sleep(self._interval)
-                # the timer has expired -> phase failed (explode)
-                self._value -= 1
-                if self._value <= 0:
-                    self._running = False
+    self._running = True
+    while self._running:
+        if not self._paused:
+            self._update()
+            self._component.print(str(self))
 
-                # if (self._value == 0):
-                #     self._running = False
-                # self._value -= 1
-            else:
-                sleep(0.1)
+            if self._value <= 0:
+                self._running = False
+                break  # important: exit immediately
+
+            sleep(self._interval)
+            self._value -= 1
+        else:
+            sleep(0.1)
+
+    # def run(self):
+    #     self._running = True
+    #     while (self._running):
+    #         if (not self._paused):
+    #             # update the timer and display its value on the 7-segment display
+    #             self._update()
+    #             self._component.print(str(self))
+    #             # wait 1s (default) and continue
+    #             sleep(self._interval)
+    #             # the timer has expired -> phase failed (explode)
+    #             # self._value -= 1
+    #             # if self._value <= 0:
+    #             #     self._running = False
+
+    #             if (self._value == 0):
+    #                 self._running = False
+    #             self._value -= 1
+    #         else:
+    #             sleep(0.1)
 
     # updates the timer (only internally called)
     def _update(self):
