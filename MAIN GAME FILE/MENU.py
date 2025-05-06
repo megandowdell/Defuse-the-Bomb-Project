@@ -3138,7 +3138,7 @@ def main():
     component_7seg = Seg7x4(i2c)
     # set the 7-segment display brightness (0 -> dimmest; 1 -> brightest)
     component_7seg.brightness = 0.5
-    timer = Timer(component_7seg, 600)
+    timer = Timer(component_7seg, 60) # 600 FOR 10 MINS
     timer.start()
 
     game_running = True
