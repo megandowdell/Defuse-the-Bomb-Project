@@ -1814,7 +1814,7 @@ wire_font = pygame.font.Font('font1.otf', 22)
 
 #Main game function
 def show_simon_says_game_screen(screen):
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    
 # First show the instructions screen
     result = show_simon_says_instructions_screen(screen)
     
@@ -2108,12 +2108,12 @@ def show_simon_says_game_screen(screen):
             screen.blit(overlay, (0, 0))  
             
             #Display wire names and statuses
-            wire_display_x = 30
-            wire_display_y = SCREEN_HEIGHT - 200
+            wire_display_x = 50
+            wire_display_y = 150
             wire_spacing = 40
             
             for i, color in enumerate(colors):
-                y_pos = wire_display_y + (4 - i) * wire_spacing
+                y_pos = wire_display_y + i * wire_spacing
                 is_connected = wires._value[i] == "1"
                 status_text = "CONNECTED" if is_connected else "DISCONNECTED"
                 
