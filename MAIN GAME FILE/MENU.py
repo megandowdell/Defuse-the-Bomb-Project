@@ -415,7 +415,7 @@ def show_about_game_screen(screen):
                         if item == "Back":
                             return "Menu"  
                         elif item == "Continue":
-                            return random.choice(["Hopscotch", "Tic Tac Toe"])  
+                            return random.choice(["Hopscotch", "Tic Tac Toe", "Simon Says"])  
         pygame.display.flip()
         clock.tick(60)
 ####################################################################################################################
@@ -1790,7 +1790,7 @@ pygame.init()
 SCREEN_WIDTH = 576
 SCREEN_HEIGHT = 1024
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Simon Says Wire Game")
+pygame.display.set_caption("Simon Says")
 
 #Define RGB color values 
 WHITE = (255, 255, 255)
@@ -2872,7 +2872,7 @@ def main():
     
     game_running = True
     game_state = "Menu"
-    mini_games = ["Hopscotch", "Tic Tac Toe"]
+    mini_games = ["Hopscotch", "Tic Tac Toe", "Simon Says"]
     completed_games = set()
 
     while game_running:
@@ -2882,7 +2882,7 @@ def main():
             pygame.mixer.music.play(-1)
             menu_choice = show_menu_screen(screen)
             if menu_choice == "Start":
-                game_state = random.choice(["Hopscotch", "Tic Tac Toe"])
+                game_state = random.choice(["Hopscotch", "Tic Tac Toe", "Simon Says"])
             elif menu_choice == "About Game":
                 game_state = "About Game"
             elif menu_choice == "Meet Team":
@@ -2918,11 +2918,11 @@ def main():
                 pygame.mixer.music.play(-1)
                 result = show_redlightgreenlight_game_screen(screen)
 
-#             elif game_state == "Simon Says":
-#                 pygame.mixer.music.load("salesman_sound.mp3")
-#                 pygame.mixer.music.play(-1)
-#                 result = show_simon_says_game_screen(screen)  
-#   
+            elif game_state == "Simon Says":
+                pygame.mixer.music.load("salesman_sound.mp3")
+                pygame.mixer.music.play(-1)
+                result = show_simon_says_game_screen(screen)  
+  
             # Handle result
             if result == "win":
                 completed_games.add(game_state)
