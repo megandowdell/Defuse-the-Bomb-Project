@@ -1859,7 +1859,6 @@ def show_simon_says_game_screen(screen):
             try:
                 #Load sounds 
                 command_sounds[command] = pygame.mixer.Sound(filename)
-                pygame.mixer.music.set_volume(0.8)
                 print(f"Successfully loaded sound: {filename}")
             except Exception as e:
                 print(f"Failed to load sound {filename}: {e}")
