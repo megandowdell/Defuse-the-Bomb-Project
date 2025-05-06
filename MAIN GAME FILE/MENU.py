@@ -2841,14 +2841,7 @@ def play_redlightgreenlight(screen):
     target_distance = 75
     start_time = time.time()
     next_change_time = start_time  # Initialize for immediate first change
-    # message = "Press the button ONLY when the light is GREEN"
-
-    # Game variables
-    light_color = "red"
-    game_time = 20  # seconds to win
-    start_time = time.time()
-    next_change_time = start_time  # Initialize for immediate first change
-    #message = "Press the button ONLY when the light is GREEN"
+    message = "Press the button ONLY when the light is GREEN"
 
     # Game state variables
     running = True
@@ -2903,7 +2896,7 @@ def play_redlightgreenlight(screen):
             # Set next change time (2-5 seconds)
             next_change = random.uniform(2, 5)
             next_change_time = current_time + next_change
-            # message = f"THE LIGHT IS NOW {light_color.upper()}!"
+            message = f"THE LIGHT IS NOW {light_color.upper()}!"
             # print(f"THE LIGHT IS NOW {light_color.upper()}!")
         
 
