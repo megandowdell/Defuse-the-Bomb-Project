@@ -4528,18 +4528,18 @@ def show_redlightgreenlight_instructions_screen(screen):
 ####################################################################################################################    
 # MAIN PROGRAM
 def main():
-    # Initialize pygame
-    pygame.init()
-    pygame.mixer.init()
-    pygame.display.set_caption("Squid-ish Games")
+    # # Initialize pygame
+    # pygame.init()
+    # pygame.mixer.init()
+    # pygame.display.set_caption("Squid-ish Games")
 
-    # Screen setup
-    WIDTH, HEIGHT = 576, 1024
-    screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SHOWN)
-    bg_image = pygame.image.load("menu.jpg")  # Use your menu background image
-    bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
-    screen.blit(bg_image, (0, 0))
-    pygame.display.flip() 
+    # # Screen setup
+    # WIDTH, HEIGHT = 576, 1024
+    # screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SHOWN)
+    # bg_image = pygame.image.load("menu.jpg")  # Use your menu background image
+    # bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
+    # screen.blit(bg_image, (0, 0))
+    # pygame.display.flip() 
     
     
     
