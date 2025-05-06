@@ -16,7 +16,7 @@ from adafruit_matrixkeypad import Matrix_Keypad
 import RPi.GPIO as GPIO  # Uncomment if using GPIO on Raspberry Pi
 import board
 from digitalio import DigitalInOut, Direction, Pull
-
+pygame.mixer.init()
 
 def show_redlightgreenlight_game_screen(screen):
     dev_width = 800
