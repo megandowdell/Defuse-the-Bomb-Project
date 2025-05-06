@@ -3010,9 +3010,11 @@ def main():
     mini_games = ["Hopscotch", "Tic Tac Toe", "Simon Says"]
     completed_games = set()
 
+   
+       
+    
     while game_running:
-        # Check if timer has expired
-        if timer.has_expired():
+         if timer.has_expired():
             # Show game over screen and exit
             show_death_screen(screen)
             game_running = False
@@ -3020,8 +3022,7 @@ def main():
         
         # Get current time string for display
         time_str = timer.get_time_str()
-    
-    while game_running:
+
         if game_state == "Menu":
             completed_games.clear()  # Reset progress when returning to menu
             pygame.mixer.music.load("pink_soldiers.mp3")
