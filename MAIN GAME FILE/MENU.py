@@ -3331,13 +3331,23 @@ def show_simon_says_instructions_screen(screen):
 ####################################################################################################################
 # # RED LIGHT GREEN LIGHT
 # # BUTTON
+#Initialize pygame
+pygame.init()
+
+#Screen dimensions and create display surface
+SCREEN_WIDTH = 576
+SCREEN_HEIGHT = 1024
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Simon Says")
 
 def show_redlightgreenlight_game_screen(screen):
     # First show the instructions screen
     result = show_redlightgreenlight_instructions_screen(screen)
     
     if result == "Play":
-        WIDTH, HEIGHT = screen.get_size()
+
+
+        
         pygame.display.set_caption("Red Light Green Light Instructions")
         pygame.mixer.music.stop()
         pygame.mixer.music.load("fly_me.mp3")  # Or another appropriate music
@@ -3368,6 +3378,8 @@ def show_redlightgreenlight_game_screen(screen):
     return "Menu"  # If they didn't click Play
 
 def play_redlightgreenlight(screen):
+    red_light_sound = pygame.mixer.Sound("redlight.mp3")
+    green_light_sound = pygame.mixer.Sound("greenlight.mp3")
     # Set up LED control
     def set_led(color):
         #Set the RGB LED based on the current light color
@@ -3536,8 +3548,7 @@ def play_redlightgreenlight(screen):
             pygame.time.delay(1000)  # Show the winning state briefly
             return "win"  # Return win result directly
             
-    red_light_sound = pygame.mixer.Sound("redlight.mp3")
-    green_light_sound = pygame.mixer.Sound("greenlight.mp3")
+    
         
     # Set next change time (2-5 seconds)
     next_change = random.uniform(2, 5)
