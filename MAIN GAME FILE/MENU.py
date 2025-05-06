@@ -1818,9 +1818,10 @@ def show_simon_says_game_screen(screen):
     result = show_simon_says_instructions_screen(screen)
     
     if result == "Play":
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load("salesman_sound.mp3")
+        pygame.mixer.music.play(-1)
 
-
-    
         #Load background image with error handling
         bg_image = pygame.image.load("simonsays.png")
         bg_image = pygame.transform.scale(bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -2194,7 +2195,7 @@ def show_simon_says_instructions_screen(screen):
     # Hint
     hint_text = [
         "HINT:",
-        "Act by ear, not only sight."
+        "Act by ear, not only sight.",
         "Misfortune nears when wrong is right.",
     ]
     
@@ -3011,7 +3012,7 @@ def main():
                 result = show_redlightgreenlight_game_screen(screen)
 
             elif game_state == "Simon Says":
-                pygame.mixer.music.load("salesman_sound.mp3")
+                pygame.mixer.music.load("simonsays_instructions.mp3")
                 pygame.mixer.music.play(-1)
                 result = show_simon_says_game_screen(screen)  
   
