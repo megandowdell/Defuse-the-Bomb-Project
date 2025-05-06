@@ -3446,10 +3446,7 @@ def play_redlightgreenlight(screen):
     
     # Set initial LED state
     set_led(light_color)
-    
-    # Load sound effects
-    red_light_sound = pygame.mixer.Sound("redlight.mp3")
-    green_light_sound = pygame.mixer.Sound("greenlight.mp3")
+
     
     while running:
         current_time = time.time()
@@ -3488,11 +3485,14 @@ def play_redlightgreenlight(screen):
             light_color = "green" if light_color == "red" else "red"
             set_led(light_color)
             
-            # Play the appropriate sound
             if light_color == "green":
-                green_light_sound.play()
+                    pygame.mixer.stop()
+                    pygame.mixer.music.load("greenlight.mp3")
+                    pygame.mixer.music.play()
             else:
-                red_light_sound.play()
+                    pygame.mixer.stop()
+                    pygame.mixer.music.load("redlight.mp3")
+                    pygame.mixer.music.play()
                 
             # Set next change time (2-5 seconds)
             next_change = random.uniform(2, 5)
