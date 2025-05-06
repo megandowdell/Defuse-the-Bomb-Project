@@ -3514,11 +3514,11 @@ def play_redlightgreenlight(screen):
         if (button_pressed or check_button_press()) and not game_over:
             if light_color == "green":
                 distance += 1
-                message = f"Good move!"
+                # message = f"Good move!"
                 print(message)
                 time.sleep(0.4)
             else:
-                message = "You pressed during RED! You lose!"
+                # message = "You pressed during RED! You lose!"
                 print(message)
                 pygame.display.flip()
                 set_led("off")
@@ -3980,7 +3980,7 @@ def show_redlightgreenlight_instructions_screen(screen):
         screen.blit(overlay, (0, 0))
         
         # Draw title - scale from reference position
-        title_text = title_font.render("Instructions", True, BEIGE)
+        title_text = title_font.render("RED LIGHT GREEN LIGHT", True, BEIGE)
         base_title_pos = (dev_width // 2, 30)
         title_x, title_y = scale_position(base_title_pos[0], base_title_pos[1], (WIDTH, HEIGHT))
         screen.blit(title_text, (title_x - title_text.get_width() // 2, title_y))
