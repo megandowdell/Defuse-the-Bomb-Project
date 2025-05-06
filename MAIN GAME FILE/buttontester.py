@@ -16,7 +16,7 @@ import board
 from digitalio import DigitalInOut, Direction, Pull
 RPi = True
 
-pygame.mixer.init() # for game sounds
+# pygame.mixer.init() # for game sounds
 
 # Set up LED control
 def set_led(color):
@@ -317,7 +317,9 @@ def play_redlightgreenlight():
         clock.tick(60)
     set_led("off")
     return "lose"
-    
+
+pygame.init()
+pygame.mixer.init()
 screen = pygame.display.set_mode((576, 1024))
 result = play_redlightgreenlight()
 pygame.display.flip()
