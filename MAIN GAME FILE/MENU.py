@@ -3338,7 +3338,7 @@ def show_redlightgreenlight_game_screen(screen):
     if result == "Play":
         pygame.display.set_caption("Red Light Green Light Instructions")
         pygame.mixer.music.stop()
-        pygame.mixer.music.load("fly_me.mp3")  # Or another appropriate music
+        pygame.mixer.music.load("fly_me.mp3")  
         pygame.mixer.music.play(-1)
         
         # Set up LED control
@@ -3490,7 +3490,7 @@ def play_redlightgreenlight(screen):
             
             if light_color == "green":
                 pygame.mixer.music.stop()
-                pygame.mixer.music.load("greenlight.mp3")
+                pygame.mixer.music.load("redlight.mp3")
                 pygame.mixer.music.play()
                 
                 
@@ -3498,7 +3498,7 @@ def play_redlightgreenlight(screen):
                 # pygame.mixer.mus
             else:
                 pygame.mixer.music.stop()
-                pygame.mixer.music.load("redlight.mp3")
+                pygame.mixer.music.load("greenight.mp3")
                 pygame.mixer.music.play()
               
             #     pygame.mixer.Sound("greenlight.mp3")
