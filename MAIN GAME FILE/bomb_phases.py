@@ -17,111 +17,111 @@ import sys
 #########
 # classes
 #########
-# the LCD display GUI
-class Lcd(Frame):
-    def __init__(self, window):
-        super().__init__(window, bg="black")
-        # make the GUI fullscreen
-        window.attributes("-fullscreen", True)
-        # we need to know about the timer (7-segment display) to be able to pause/unpause it
-        self._timer = None
-        # we need to know about the pushbutton to turn off its LED when the program exits
-        self._button = None
-        # setup the initial "boot" GUI
-        self.setupBoot()
+# # the LCD display GUI
+# class Lcd(Frame):
+#     def __init__(self, window):
+#         super().__init__(window, bg="black")
+#         # make the GUI fullscreen
+#         window.attributes("-fullscreen", True)
+#         # we need to know about the timer (7-segment display) to be able to pause/unpause it
+#         self._timer = None
+#         # we need to know about the pushbutton to turn off its LED when the program exits
+#         self._button = None
+#         # setup the initial "boot" GUI
+#         self.setupBoot()
 
-    # sets up the LCD "boot" GUI
-    def setupBoot(self):
-        # set column weights
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=2)
-        self.columnconfigure(2, weight=1)
-        # the scrolling informative "boot" text
-        self._lscroll = Label(self, bg="black", fg="white", font=("Courier New", 14), text="", justify=LEFT)
-        self._lscroll.grid(row=0, column=0, columnspan=3, sticky=W)
-        self.pack(fill=BOTH, expand=True)
+#     # sets up the LCD "boot" GUI
+#     def setupBoot(self):
+#         # set column weights
+#         self.columnconfigure(0, weight=1)
+#         self.columnconfigure(1, weight=2)
+#         self.columnconfigure(2, weight=1)
+#         # the scrolling informative "boot" text
+#         self._lscroll = Label(self, bg="black", fg="white", font=("Courier New", 14), text="", justify=LEFT)
+#         self._lscroll.grid(row=0, column=0, columnspan=3, sticky=W)
+#         self.pack(fill=BOTH, expand=True)
 
-    # sets up the LCD GUI
-    def setup(self):
-        # the timer
-        self._ltimer = Label(self, bg="black", fg="#00ff00", font=("Courier New", 18), text="Time left: ")
-        self._ltimer.grid(row=1, column=0, columnspan=3, sticky=W)
-        # the keypad passphrase
-        self._lkeypad = Label(self, bg="black", fg="#00ff00", font=("Courier New", 18), text="Keypad phase: ")
-        self._lkeypad.grid(row=2, column=0, columnspan=3, sticky=W)
-        # the jumper wires status
-        self._lwires = Label(self, bg="black", fg="#00ff00", font=("Courier New", 18), text="Wires phase: ")
-        self._lwires.grid(row=3, column=0, columnspan=3, sticky=W)
-        # the pushbutton status
-        self._lbutton = Label(self, bg="black", fg="#00ff00", font=("Courier New", 18), text="Button phase: ")
-        self._lbutton.grid(row=4, column=0, columnspan=3, sticky=W)
-        # the toggle switches status
-        self._ltoggles = Label(self, bg="black", fg="#00ff00", font=("Courier New", 18), text="Toggles phase: ")
-        self._ltoggles.grid(row=5, column=0, columnspan=2, sticky=W)
-        # the strikes left
-        self._lstrikes = Label(self, bg="black", fg="#00ff00", font=("Courier New", 18), text="Strikes left: ")
-        self._lstrikes.grid(row=5, column=2, sticky=W)
-        if (SHOW_BUTTONS):
-            # the pause button (pauses the timer)
-            self._bpause = tkinter.Button(self, bg="red", fg="white", font=("Courier New", 18), text="Pause", anchor=CENTER, command=self.pause)
-            self._bpause.grid(row=6, column=0, pady=40)
-            # the quit button
-            self._bquit = tkinter.Button(self, bg="red", fg="white", font=("Courier New", 18), text="Quit", anchor=CENTER, command=self.quit)
-            self._bquit.grid(row=6, column=2, pady=40)
+#     # sets up the LCD GUI
+#     def setup(self):
+#         # the timer
+#         self._ltimer = Label(self, bg="black", fg="#00ff00", font=("Courier New", 18), text="Time left: ")
+#         self._ltimer.grid(row=1, column=0, columnspan=3, sticky=W)
+#         # the keypad passphrase
+#         self._lkeypad = Label(self, bg="black", fg="#00ff00", font=("Courier New", 18), text="Keypad phase: ")
+#         self._lkeypad.grid(row=2, column=0, columnspan=3, sticky=W)
+#         # the jumper wires status
+#         self._lwires = Label(self, bg="black", fg="#00ff00", font=("Courier New", 18), text="Wires phase: ")
+#         self._lwires.grid(row=3, column=0, columnspan=3, sticky=W)
+#         # the pushbutton status
+#         self._lbutton = Label(self, bg="black", fg="#00ff00", font=("Courier New", 18), text="Button phase: ")
+#         self._lbutton.grid(row=4, column=0, columnspan=3, sticky=W)
+#         # the toggle switches status
+#         self._ltoggles = Label(self, bg="black", fg="#00ff00", font=("Courier New", 18), text="Toggles phase: ")
+#         self._ltoggles.grid(row=5, column=0, columnspan=2, sticky=W)
+#         # the strikes left
+#         self._lstrikes = Label(self, bg="black", fg="#00ff00", font=("Courier New", 18), text="Strikes left: ")
+#         self._lstrikes.grid(row=5, column=2, sticky=W)
+#         if (SHOW_BUTTONS):
+#             # the pause button (pauses the timer)
+#             self._bpause = tkinter.Button(self, bg="red", fg="white", font=("Courier New", 18), text="Pause", anchor=CENTER, command=self.pause)
+#             self._bpause.grid(row=6, column=0, pady=40)
+#             # the quit button
+#             self._bquit = tkinter.Button(self, bg="red", fg="white", font=("Courier New", 18), text="Quit", anchor=CENTER, command=self.quit)
+#             self._bquit.grid(row=6, column=2, pady=40)
 
-    # lets us pause/unpause the timer (7-segment display)
-    def setTimer(self, timer):
-        self._timer = timer
+#     # lets us pause/unpause the timer (7-segment display)
+#     def setTimer(self, timer):
+#         self._timer = timer
 
-    # lets us turn off the pushbutton's RGB LED
-    def setButton(self, button):
-        self._button = button
+#     # lets us turn off the pushbutton's RGB LED
+#     def setButton(self, button):
+#         self._button = button
 
-    # pauses the timer
-    def pause(self):
-        if (RPi):
-            self._timer.pause()
+#     # pauses the timer
+#     def pause(self):
+#         if (RPi):
+#             self._timer.pause()
 
-    # setup the conclusion GUI (explosion/defusion)
-    def conclusion(self, success=False):
-        # destroy/clear widgets that are no longer needed
-        self._lscroll["text"] = ""
-        self._ltimer.destroy()
-        self._lkeypad.destroy()
-        self._lwires.destroy()
-        self._lbutton.destroy()
-        self._ltoggles.destroy()
-        self._lstrikes.destroy()
-        if (SHOW_BUTTONS):
-            self._bpause.destroy()
-            self._bquit.destroy()
+#     # setup the conclusion GUI (explosion/defusion)
+#     def conclusion(self, success=False):
+#         # destroy/clear widgets that are no longer needed
+#         self._lscroll["text"] = ""
+#         self._ltimer.destroy()
+#         self._lkeypad.destroy()
+#         self._lwires.destroy()
+#         self._lbutton.destroy()
+#         self._ltoggles.destroy()
+#         self._lstrikes.destroy()
+#         if (SHOW_BUTTONS):
+#             self._bpause.destroy()
+#             self._bquit.destroy()
 
-        # reconfigure the GUI
-        # the retry button
-        self._bretry = tkinter.Button(self, bg="red", fg="white", font=("Courier New", 18), text="Retry", anchor=CENTER, command=self.retry)
-        self._bretry.grid(row=1, column=0, pady=40)
-        # the quit button
-        self._bquit = tkinter.Button(self, bg="red", fg="white", font=("Courier New", 18), text="Quit", anchor=CENTER, command=self.quit)
-        self._bquit.grid(row=1, column=2, pady=40)
+#         # reconfigure the GUI
+#         # the retry button
+#         self._bretry = tkinter.Button(self, bg="red", fg="white", font=("Courier New", 18), text="Retry", anchor=CENTER, command=self.retry)
+#         self._bretry.grid(row=1, column=0, pady=40)
+#         # the quit button
+#         self._bquit = tkinter.Button(self, bg="red", fg="white", font=("Courier New", 18), text="Quit", anchor=CENTER, command=self.quit)
+#         self._bquit.grid(row=1, column=2, pady=40)
 
-    # re-attempts the bomb (after an explosion or a successful defusion)
-    def retry(self):
-        # re-launch the program (and exit this one)
-        os.execv(sys.executable, ["python3"] + [sys.argv[0]])
-        exit(0)
+#     # re-attempts the bomb (after an explosion or a successful defusion)
+#     def retry(self):
+#         # re-launch the program (and exit this one)
+#         os.execv(sys.executable, ["python3"] + [sys.argv[0]])
+#         exit(0)
 
-    # quits the GUI, resetting some components
-    def quit(self):
-        if (RPi):
-            # turn off the 7-segment display
-            self._timer._running = False
-            self._timer._component.blink_rate = 0
-            self._timer._component.fill(0)
-            # turn off the pushbutton's LED
-            for pin in self._button._rgb:
-                pin.value = True
-        # exit the application
-        exit(0)
+#     # quits the GUI, resetting some components
+#     def quit(self):
+#         if (RPi):
+#             # turn off the 7-segment display
+#             self._timer._running = False
+#             self._timer._component.blink_rate = 0
+#             self._timer._component.fill(0)
+#             # turn off the pushbutton's LED
+#             for pin in self._button._rgb:
+#                 pin.value = True
+#         # exit the application
+#         exit(0)
 
 # template (superclass) for various bomb components/phases
 class PhaseThread(Thread): # Parent class connecting similarities across threads (thread -> phase thread -> individual threads)
