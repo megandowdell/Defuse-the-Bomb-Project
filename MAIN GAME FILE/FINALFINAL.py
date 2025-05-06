@@ -1120,7 +1120,7 @@ def show_hopscotch_game_screen(screen):
                             if rows_cleared == ROWS:
                                 print("User won the game!")
                                 # won game
-                                return True
+                                return "win"
                         # wrong answer
                         else:
                             tile_rect = get_tile_rect(0, selected_col)
@@ -1136,7 +1136,7 @@ def show_hopscotch_game_screen(screen):
                             lives -= 1
                                 
                             if lives == 0:    
-                                return False
+                                return "lose"
                             else:
                                 current_row = 0
                                 rows_cleared = 0
@@ -1146,8 +1146,7 @@ def show_hopscotch_game_screen(screen):
                             
                             print("WRONG TILE — Strike!")
                             if lives == 0:
-                                print("BOOM!")
-                                return False
+                                return "lose"
  
                     draw_board(board, current_row, lives, rows_cleared)
                     toggles._state_changed = False
@@ -1155,8 +1154,8 @@ def show_hopscotch_game_screen(screen):
                 clock.tick(60)
 
 
-        won = play_game()
-        return won #true if won, false if lost
+        result = play_game()
+        return result #true if won, false if lost
     
         screen.fill(BG)
         pygame.display.flip()
