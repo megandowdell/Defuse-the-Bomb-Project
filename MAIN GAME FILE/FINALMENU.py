@@ -2946,5 +2946,6 @@ def main():
     pygame.quit()
     sys.exit()
     
-os.environ['RPI_MODE'] = 'TRUE'
-main()
+if __name__ == "__main__":
+    os.environ['RPI_MODE'] = 'TRUE'
+    main()
