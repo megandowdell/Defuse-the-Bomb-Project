@@ -320,7 +320,7 @@ def play_redlightgreenlight():
     
 
     
-result = play_redlightgreenlight()
+    result = play_redlightgreenlight()
 #return "win" if win else "lose"
 return result
 pygame.display.flip()
