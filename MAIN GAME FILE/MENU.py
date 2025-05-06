@@ -3484,7 +3484,7 @@ def play_redlightgreenlight(screen):
             # Switch the light
             light_color = "green" if light_color == "red" else "red"
             set_led(light_color)
-            
+            pygame.mixer.init()
             if light_color == "green":
                     pygame.mixer.stop()
                     pygame.mixer.music.load("greenlight.mp3")
