@@ -1014,7 +1014,7 @@ def show_hopscotch_game_screen(screen):
                     screen.blit(label, (rect.x + TILE_WIDTH//2 - 10, rect.y + 15))
 
             # Level display
-            level_text = FONT.render(f"Level: {rows_cleared + 1}/{ROWS}", True, TEXT)
+            level_text = FONT.render(f"Level: {rows_cleared}/{ROWS}", True, TEXT)
             screen.blit(level_text, (20, 20))
 
             # Lives display 
