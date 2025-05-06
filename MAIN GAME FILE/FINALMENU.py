@@ -2867,8 +2867,6 @@ def main():
 
     # Screen setup
     WIDTH, HEIGHT = 576, 1024
-    
-
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     
     game_running = True
@@ -2947,6 +2945,5 @@ def main():
     pygame.quit()
     sys.exit()
     
-if __name__ == "__main__":
-    print("auhfahf")
-    main()
+os.environ['RPI_MODE'] = 'TRUE'
+main()
