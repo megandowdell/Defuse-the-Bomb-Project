@@ -1627,7 +1627,6 @@ def show_tictactoe_game_screen(screen):
                 if player_score == 3:
                     return "win"
                 elif cpu_score == 3:
-                    # show_death_screen(screen)
                     return "lose"
 
                 # Prepare for next round
@@ -3010,31 +3009,14 @@ pygame.mixer.init()
 ####################################################################################################################    
 # MAIN PROGRAM
 def main():
-    # # Initialize pygame
-    # pygame.init()
-    # pygame.mixer.init()
-    # pygame.display.set_caption("Squid-ish Games")
-
-    # # Screen setup
-    # WIDTH, HEIGHT = 576, 1024
-    # screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SHOWN)
-    # bg_image = pygame.image.load("menu.jpg")  # Use your menu background image
-    # bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
-    # screen.blit(bg_image, (0, 0))
-    # pygame.display.flip() 
-    
     # set up board
     i2c = board.I2C()
     component_7seg = Seg7x4(i2c)
     # set the 7-segment display brightness (0 -> dimmest; 1 -> brightest)
     component_7seg.brightness = 0.5
-
     timer = Timer(component_7seg, 600)
-
     timer.start()
 
-    
-    
     game_running = True
     game_state = "Menu"
     mini_games = ["Hopscotch", "Tic Tac Toe","Simon Says","Red Light Green Light"]
@@ -3110,5 +3092,6 @@ def main():
 
     pygame.quit()
     sys.exit()
+
 os.environ['RPI_MODE'] = 'TRUE'
 main()
