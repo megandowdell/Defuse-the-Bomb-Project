@@ -2157,9 +2157,15 @@ def show_simon_says_game_screen(screen):
             #Cap the frame rate
             clock.tick(60)
         
-        #Clean up
-        pygame.quit()
-        sys.exit()
+        won = play_game()
+        return won #true if won, false if lost
+    
+        screen.fill(BG)
+        pygame.display.flip()
+        
+        # #Clean up
+        # pygame.quit()
+        # sys.exit()
 # def show_simon_says_game_screen(screen):
     
 # # First show the instructions screen
