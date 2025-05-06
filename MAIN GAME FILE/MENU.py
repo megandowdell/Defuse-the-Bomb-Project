@@ -4530,14 +4530,11 @@ def show_redlightgreenlight_instructions_screen(screen):
 def main():
     # Initialize pygame
     pygame.init()
+    pygame.mixer.init()
     pygame.display.set_caption("Squid-ish Games")
 
     # Screen setup
-    if os.environ.get('RPI_MODE', 'False').lower() == 'true':
-        WIDTH, HEIGHT = 576, 1024
-    else:
-        WIDTH, HEIGHT = 800, 700
-
+    WIDTH, HEIGHT = 576, 1024
     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SHOWN)
     
     game_running = True
