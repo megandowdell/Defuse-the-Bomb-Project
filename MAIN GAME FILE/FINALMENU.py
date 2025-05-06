@@ -2936,7 +2936,7 @@ def main():
                 game_state = "Menu"
 
         elif game_state == "Win":
-            show_win_screen(screen)
+            # show_win_screen(screen)
             game_state = "Menu"
 
         for event in pygame.event.get():
@@ -2945,5 +2945,6 @@ def main():
 
     pygame.quit()
     sys.exit()
+    
 os.environ['RPI_MODE'] = 'TRUE'
 main()
