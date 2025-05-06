@@ -3147,7 +3147,7 @@ def main():
     completed_games = set()
     
     while game_running:
-        if timer._value == 0 and game_state not in ["Menu", "About Game", "Meet Team", "Win", "Death"]:
+        if timer._value == 0 and len(completed_games) < len(mini_games):
             game_state = "Death"  # Time's up, show death screen
             pygame.quit()
         if game_state == "Menu":
