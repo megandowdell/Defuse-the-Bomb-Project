@@ -3257,6 +3257,7 @@ def show_win_screen(screen):
 # main()
 def main():
     # set up board
+    pygame.init()
     i2c = board.I2C()
     component_7seg = Seg7x4(i2c)
     # set the 7-segment display brightness (0 -> dimmest; 1 -> brightest)
