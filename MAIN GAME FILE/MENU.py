@@ -3370,6 +3370,7 @@ def main():
                 pygame.quit()
                 sys.exit()
             else:
+                timer.restart()
                 game_state = "Menu"
 
         # Quit event
