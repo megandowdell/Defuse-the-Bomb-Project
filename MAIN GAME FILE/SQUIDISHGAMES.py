@@ -3018,132 +3018,136 @@ def show_win_screen(screen):
 ####################################################################################################################    
 # MAIN PROGRAM
 def main():
-    pygame.init()
-    screen = pygame.display.set_mode((576, 1024))
-    pygame.display.set_caption("Squid-ish Games")
+     pygame.init()
+     screen = pygame.display.set_mode((576, 1024))
+     pygame.display.set_caption("Squid-ish Games")
+ 
+     # Set up timer
+     i2c = board.I2C()
+     component_7seg = Seg7x4(i2c)
+     component_7seg.brightness = 0.5
+     timer = Timer(component_7seg, 10)  # 600 for 10 mins
+     timer.start()
+ 
+     game_running = True
+     game_state = "Menu"
+     mini_games = ["Hopscotch", "Tic Tac Toe", "Simon Says", "Red Light Green Light"]
+     completed_games = set()
+ 
+     while game_running:
+         # Check timer expiration
+         if str(timer._value) <= "0":
+         if timer._value <= 0:
+             if len(completed_games) == len(mini_games):
+                 game_state = "Live"
+             else:
+                 game_state = "Die"
+             continue
+ 
+         # MENU STATE
+         if game_state == "Menu":
+             completed_games.clear()
+             pygame.mixer.music.load("pink_soldiers.mp3")
+             pygame.mixer.music.play(-1)
+             menu_choice = show_menu_screen(screen)
+             if menu_choice == "Start":
+                 game_state = random.choice([g for g in mini_games if g not in completed_games])
+             elif menu_choice == "About Game":
+                 game_state = "About Game"
+             elif menu_choice == "Meet Team":
+                 game_state = "Meet Team"
+ 
+         # ABOUT GAME
+         elif game_state == "About Game":
+             game_state = show_about_game_screen(screen)
+ 
+         # MEET TEAM
+         elif game_state == "Meet Team":
+             show_meet_team(screen)
+             game_state = "Menu"
+ 
+         # MINI-GAMES
+         elif game_state in mini_games:
+             if game_state in completed_games:
+                 unplayed = [g for g in mini_games if g not in completed_games]
+                 game_state = random.choice(unplayed) if unplayed else "Win"
+                 continue
+ 
+             pygame.mixer.music.stop()
+             if game_state == "Hopscotch":
+                 pygame.mixer.music.load("hopscotch_instructions.mp3")
+                 pygame.mixer.music.play()
+                 result = show_hopscotch_game_screen(screen)
+             elif game_state == "Tic Tac Toe":
+                 pygame.mixer.music.load("tictactoe_instructions.mp3")
+                 pygame.mixer.music.play(-1)
+                 result = show_tictactoe_game_screen(screen)
+             elif game_state == "Red Light Green Light":
+                 pygame.mixer.music.load("redlightgreenlight_instructions.mp3")
+                 pygame.mixer.music.play(-1)
+                 result = show_redlightgreenlight_game_screen(screen)
+             elif game_state == "Simon Says":
+                 pygame.mixer.music.load("simonsays_instructions.mp3")
+                 pygame.mixer.music.play(-1)
+                 result = show_simon_says_game_screen(screen)
+ 
+             # RESULT HANDLING
+             if result == "win" or result is True:
+                 completed_games.add(game_state)
+                 if len(completed_games) == len(mini_games):
+                     game_state = "Win"
+                 else:
+                     unplayed = [g for g in mini_games if g not in completed_games]
+                     game_state = random.choice(unplayed)
+ 
+             elif result == "lose" or result is False:
+                 if timer._value > 1:
+                     game_state = "Die"  # Show death screen, return to menu
+                 else:
+                     game_state = "Die"  # Show death screen, exit
+ 
+             else:
+                 # If back button or unclear result
+                 if timer._value > 1:
+                     game_state = "Menu"
+                 else:
+                     game_state = "Die" if len(completed_games) < len(mini_games) else "Live"
+ 
+         # WIN STATE (before timer expires)
+         elif game_state == "Win":
+             timer.pause()
+             show_win_screen(screen)
+             game_state = "Menu"
+ 
+         # WIN STATE (just as timer expires)
+         elif game_state == "Live":
+             timer.pause()
+             show_win_screen(screen)
+             game_state = "Menu"
+ 
+         # DEATH SCREEN — exit if time's up, return if still time
+         elif game_state == "Die" or game_state == "Death":
+             show_death_screen(screen)
+             if timer._value <= 0:
+                 pygame.quit()
+                 sys.exit()
+             else:
+                 game_state = "Menu"
+ 
+         # Quit event
+         for event in pygame.event.get():
+             if event.type == pygame.QUIT:
+                 game_running = False
+ 
+     pygame.quit()
+     sys.exit()
+ 
+ # Ensure RPi mode set before running
+ os.environ['RPI_MODE'] = 'TRUE'
+ main()
 
-    # Set up timer
-    i2c = board.I2C()
-    component_7seg = Seg7x4(i2c)
-    component_7seg.brightness = 0.5
-    timer = Timer(component_7seg, 10)  # 600 for 10 mins
-    timer.start()
 
-    game_running = True
-    game_state = "Menu"
-    mini_games = ["Hopscotch", "Tic Tac Toe", "Simon Says", "Red Light Green Light"]
-    completed_games = set()
 
-    while game_running:
-        # Check timer expiration
-        if timer._value <= 0:
-            if len(completed_games) == len(mini_games):
-                game_state = "Live"
-            else:
-                game_state = "Die"
-            continue
-
-        # MENU STATE
-        if game_state == "Menu":
-            completed_games.clear()
-            pygame.mixer.music.load("pink_soldiers.mp3")
-            pygame.mixer.music.play(-1)
-            menu_choice = show_menu_screen(screen)
-            if menu_choice == "Start":
-                game_state = random.choice([g for g in mini_games if g not in completed_games])
-            elif menu_choice == "About Game":
-                game_state = "About Game"
-            elif menu_choice == "Meet Team":
-                game_state = "Meet Team"
-
-        # ABOUT GAME
-        elif game_state == "About Game":
-            game_state = show_about_game_screen(screen)
-
-        # MEET TEAM
-        elif game_state == "Meet Team":
-            show_meet_team(screen)
-            game_state = "Menu"
-
-        # MINI-GAMES
-        elif game_state in mini_games:
-            if game_state in completed_games:
-                unplayed = [g for g in mini_games if g not in completed_games]
-                game_state = random.choice(unplayed) if unplayed else "Win"
-                continue
-
-            pygame.mixer.music.stop()
-            if game_state == "Hopscotch":
-                pygame.mixer.music.load("hopscotch_instructions.mp3")
-                pygame.mixer.music.play()
-                result = show_hopscotch_game_screen(screen)
-            elif game_state == "Tic Tac Toe":
-                pygame.mixer.music.load("tictactoe_instructions.mp3")
-                pygame.mixer.music.play(-1)
-                result = show_tictactoe_game_screen(screen)
-            elif game_state == "Red Light Green Light":
-                pygame.mixer.music.load("redlightgreenlight_instructions.mp3")
-                pygame.mixer.music.play(-1)
-                result = show_redlightgreenlight_game_screen(screen)
-            elif game_state == "Simon Says":
-                pygame.mixer.music.load("simonsays_instructions.mp3")
-                pygame.mixer.music.play(-1)
-                result = show_simon_says_game_screen(screen)
-
-            # RESULT HANDLING
-            if result == "win" or result is True:
-                completed_games.add(game_state)
-                if len(completed_games) == len(mini_games):
-                    game_state = "Win"
-                else:
-                    unplayed = [g for g in mini_games if g not in completed_games]
-                    game_state = random.choice(unplayed)
-
-            elif result == "lose" or result is False:
-                if timer._value > 0:
-                    game_state = "Die"  # Show death screen, return to menu
-                else:
-                    game_state = "Die"  # Show death screen, exit
-
-            else:
-                # If back button or unclear result
-                if timer._value > 0:
-                    game_state = "Menu"
-                else:
-                    game_state = "Die" if len(completed_games) < len(mini_games) else "Live"
-
-        # WIN STATE (before timer expires)
-        elif game_state == "Win":
-            timer.pause()
-            show_win_screen(screen)
-            game_state = "Menu"
-
-        # WIN STATE (just as timer expires)
-        elif game_state == "Live":
-            timer.pause()
-            show_win_screen(screen)
-            game_state = "Menu"
-
-        # DEATH SCREEN — exit if time's up, return if still time
-        elif game_state == "Die" or game_state == "Death":
-            show_death_screen(screen)
-            if timer._value <= 0:
-                pygame.quit()
-                sys.exit()
-            else:
-                game_state = "Menu"
-
-        # Quit event
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                game_running = False
-
-    pygame.quit()
-    sys.exit()
-
-# Ensure RPi mode set before running
-os.environ['RPI_MODE'] = 'TRUE'
-main()
 # def main():
 #     pygame.init()
 #     screen = pygame.display.set_mode((576, 1024))
@@ -3153,7 +3157,7 @@ main()
 #     i2c = board.I2C()
 #     component_7seg = Seg7x4(i2c)
 #     component_7seg.brightness = 0.5
-#     timer = Timer(component_7seg, 600)  # 600 for 10 mins
+#     timer = Timer(component_7seg, 10)  # 600 for 10 mins
 #     timer.start()
 
 #     game_running = True
@@ -3230,7 +3234,7 @@ main()
 #                 if timer._value > 0:
 #                     game_state = "Die"  # Show death screen, return to menu
 #                 else:
-#                     game_state = "Death"  # Show death screen, exit
+#                     game_state = "Die"  # Show death screen, exit
 
 #             else:
 #                 # If back button or unclear result
@@ -3250,25 +3254,15 @@ main()
 #             timer.pause()
 #             show_win_screen(screen)
 #             game_state = "Menu"
-#         elif game_state == "Die":
+
+#         # DEATH SCREEN — exit if time's up, return if still time
+#         elif game_state == "Die" or game_state == "Death":
 #             show_death_screen(screen)
 #             if timer._value <= 0:
 #                 pygame.quit()
 #                 sys.exit()
-#             elif game_state == "Death":
-#                 show_death_screen(screen)
-#                 pygame.quit()
-#                 sys.exit()
-        
-
-#         # # DEATH SCREEN — exit if time's up, return if still time
-#         # elif game_state == "Die" or game_state == "Death":
-#         #     show_death_screen(screen)
-#         #     if timer._value <= 0:
-#         #         pygame.quit()
-#         #         sys.exit()
-#         #     else:
-#         #         game_state = "Menu"
+#             else:
+#                 game_state = "Menu"
 
 #         # Quit event
 #         for event in pygame.event.get():
@@ -3281,3 +3275,140 @@ main()
 # # Ensure RPi mode set before running
 # os.environ['RPI_MODE'] = 'TRUE'
 # main()
+# # def main():
+# #     pygame.init()
+# #     screen = pygame.display.set_mode((576, 1024))
+# #     pygame.display.set_caption("Squid-ish Games")
+
+# #     # Set up timer
+# #     i2c = board.I2C()
+# #     component_7seg = Seg7x4(i2c)
+# #     component_7seg.brightness = 0.5
+# #     timer = Timer(component_7seg, 600)  # 600 for 10 mins
+# #     timer.start()
+
+# #     game_running = True
+# #     game_state = "Menu"
+# #     mini_games = ["Hopscotch", "Tic Tac Toe", "Simon Says", "Red Light Green Light"]
+# #     completed_games = set()
+
+# #     while game_running:
+# #         # Check timer expiration
+# #         if timer._value <= 0:
+# #             if len(completed_games) == len(mini_games):
+# #                 game_state = "Live"
+# #             else:
+# #                 game_state = "Die"
+# #             continue
+
+# #         # MENU STATE
+# #         if game_state == "Menu":
+# #             completed_games.clear()
+# #             pygame.mixer.music.load("pink_soldiers.mp3")
+# #             pygame.mixer.music.play(-1)
+# #             menu_choice = show_menu_screen(screen)
+# #             if menu_choice == "Start":
+# #                 game_state = random.choice([g for g in mini_games if g not in completed_games])
+# #             elif menu_choice == "About Game":
+# #                 game_state = "About Game"
+# #             elif menu_choice == "Meet Team":
+# #                 game_state = "Meet Team"
+
+# #         # ABOUT GAME
+# #         elif game_state == "About Game":
+# #             game_state = show_about_game_screen(screen)
+
+# #         # MEET TEAM
+# #         elif game_state == "Meet Team":
+# #             show_meet_team(screen)
+# #             game_state = "Menu"
+
+# #         # MINI-GAMES
+# #         elif game_state in mini_games:
+# #             if game_state in completed_games:
+# #                 unplayed = [g for g in mini_games if g not in completed_games]
+# #                 game_state = random.choice(unplayed) if unplayed else "Win"
+# #                 continue
+
+# #             pygame.mixer.music.stop()
+# #             if game_state == "Hopscotch":
+# #                 pygame.mixer.music.load("hopscotch_instructions.mp3")
+# #                 pygame.mixer.music.play()
+# #                 result = show_hopscotch_game_screen(screen)
+# #             elif game_state == "Tic Tac Toe":
+# #                 pygame.mixer.music.load("tictactoe_instructions.mp3")
+# #                 pygame.mixer.music.play(-1)
+# #                 result = show_tictactoe_game_screen(screen)
+# #             elif game_state == "Red Light Green Light":
+# #                 pygame.mixer.music.load("redlightgreenlight_instructions.mp3")
+# #                 pygame.mixer.music.play(-1)
+# #                 result = show_redlightgreenlight_game_screen(screen)
+# #             elif game_state == "Simon Says":
+# #                 pygame.mixer.music.load("simonsays_instructions.mp3")
+# #                 pygame.mixer.music.play(-1)
+# #                 result = show_simon_says_game_screen(screen)
+
+# #             # RESULT HANDLING
+# #             if result == "win" or result is True:
+# #                 completed_games.add(game_state)
+# #                 if len(completed_games) == len(mini_games):
+# #                     game_state = "Win"
+# #                 else:
+# #                     unplayed = [g for g in mini_games if g not in completed_games]
+# #                     game_state = random.choice(unplayed)
+
+# #             elif result == "lose" or result is False:
+# #                 if timer._value > 0:
+# #                     game_state = "Die"  # Show death screen, return to menu
+# #                 else:
+# #                     game_state = "Death"  # Show death screen, exit
+
+# #             else:
+# #                 # If back button or unclear result
+# #                 if timer._value > 0:
+# #                     game_state = "Menu"
+# #                 else:
+# #                     game_state = "Die" if len(completed_games) < len(mini_games) else "Live"
+
+# #         # WIN STATE (before timer expires)
+# #         elif game_state == "Win":
+# #             timer.pause()
+# #             show_win_screen(screen)
+# #             game_state = "Menu"
+
+# #         # WIN STATE (just as timer expires)
+# #         elif game_state == "Live":
+# #             timer.pause()
+# #             show_win_screen(screen)
+# #             game_state = "Menu"
+# #         elif game_state == "Die":
+# #             show_death_screen(screen)
+# #             if timer._value <= 0:
+# #                 pygame.quit()
+# #                 sys.exit()
+# #             elif game_state == "Death":
+# #                 show_death_screen(screen)
+# #                 pygame.quit()
+# #                 sys.exit()
+        
+
+# #         # # DEATH SCREEN — exit if time's up, return if still time
+# #         # elif game_state == "Die" or game_state == "Death":
+# #         #     show_death_screen(screen)
+# #         #     if timer._value <= 0:
+# #         #         pygame.quit()
+# #         #         sys.exit()
+# #         #     else:
+# #         #         game_state = "Menu"
+
+# #         # Quit event
+# #         for event in pygame.event.get():
+# #             if event.type == pygame.QUIT:
+# #                 game_running = False
+
+# #     pygame.quit()
+# #     sys.exit()
+
+# # # Ensure RPi mode set before running
+# # os.environ['RPI_MODE'] = 'TRUE'
+# # main()
