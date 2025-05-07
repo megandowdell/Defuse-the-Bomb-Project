@@ -3274,7 +3274,7 @@ def main():
 
     while game_running:
         # Check timer expiration
-        if timer._value <= 0:
+        if timer._value <= -1:
             if len(completed_games) == len(mini_games):
                 game_state = "Live"
             else:
@@ -3338,14 +3338,14 @@ def main():
                     game_state = random.choice(unplayed)
 
             elif result == "lose" or result is False:
-                if timer._value > 0:
+                if timer._value > -1:
                     game_state = "Die"  # Show death screen, return to menu
                 else:
                     game_state = "Die"  # Show death screen, exit
 
             else:
                 # If back button or unclear result
-                if timer._value > 0:
+                if timer._value > -1:
                     game_state = "Menu"
                 else:
                     game_state = "Die" if len(completed_games) < len(mini_games) else "Live"
@@ -3365,7 +3365,7 @@ def main():
         # DEATH SCREEN — exit if time's up, return if still time
         elif game_state == "Die" or game_state == "Death":
             show_death_screen(screen)
-            if timer._value <= 0:
+            if timer._value <= -1:
                 pygame.quit()
                 sys.exit()
             else:
