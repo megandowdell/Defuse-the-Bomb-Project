@@ -408,8 +408,8 @@ def show_about_game_screen(screen):
                     if ag_items[selected_index] == "Back": # Back button returns to menu
                         return "Menu"  
                     elif ag_items[selected_index] == "Continue": # Continue button proceeds to game just as Start button would on the menu page
-                        random.choice(["Hopscotch", "Tic Tac Toe","Simon Says","Red Light Green Light"])
-                        return random.choice(["Hopscotch", "Tic Tac Toe","Simon Says","Red Light Green Light"]) 
+                        random.choice(["Hopscotch", "Tic Tac Toe","Simon Says"])
+                        return random.choice(["Hopscotch", "Tic Tac Toe","Simon Says"]) 
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = pygame.mouse.get_pos()
                 for rect, item in button_rects:
@@ -417,7 +417,7 @@ def show_about_game_screen(screen):
                         if item == "Back":
                             return "Menu"  
                         elif item == "Continue":
-                            return random.choice(["Hopscotch", "Tic Tac Toe","Simon Says","Red Light Green Light"])  
+                            return random.choice(["Hopscotch", "Tic Tac Toe","Simon Says"])  
         pygame.display.flip()
         clock.tick(60)
 ####################################################################################################################
@@ -452,9 +452,9 @@ def show_meet_team(screen):
         {"name": "Khalil", "status": "Senior", "role": "Sequence Strategist", 
          "description": "I am a Computer Science and Chemistry double major with minors in Mathematics and Sociology from Chicago, IL. My favorite basketball team is the Golden State Warriors."},
         {"name": "Matt", "status": "Junior",  "role": "Motion Engineer", 
-         "description": "I am a Chemistry and Mathematics double major from Tampa, FL. The Buffalo Bills are my favorite NFL team and my favorite passtime is playing with my dog or watching cows in my backyard."},
+         "description": "I am a Mathematics from... Some fun facts about me are.."},
         {"name": "Megan", "status": "Junior", "role": "Grid Tactician", 
-         "description": "I am a Mathematics with Computer Science major from Sarasota, FL. Some fun facts about me are I play lacrosse and drift cars."}
+         "description": "I am a Mathematics with Computer Science major from ....Some fun facts about me are.."}
     ]
     
     # Reference image size
@@ -662,12 +662,30 @@ def show_meet_team(screen):
 ####################################################################################################################       
 # HOPSCOTCH GAME
 # TOGGLES
-# Base class for toggles
+# Only import GPIO stuff if on a Pi
+# try:
+#     import board
+#     from digitalio import DigitalInOut, Direction, Pull
+#     RPi = True
+# except ImportError:
+#     RPi = False
+#     print("GPIO not available. Running in simulation mode.")
+
+# Base thread class for phases like toggles/wires/buttons
+
 class PhaseThread(Thread):
     def __init__(self, name):
         super().__init__(name=name, daemon=True)
         self._running = False
         self._value = None
+        
+# if RPi:
+#     for pin in self._pins:
+#                 pin.direction = Direction.INPUT
+#                 pin.pull = Pull.DOWN
+
+#     def reset(self):
+#         self._value = None
 
 # Toggle switch handler class
 class Toggles(PhaseThread):
@@ -710,6 +728,7 @@ class Toggles(PhaseThread):
         
         return changed
     
+ 
     def has_changed(self):
         """Checks if toggles changed since last time."""
         if self._state_changed:
@@ -1239,7 +1258,7 @@ def show_tictactoe_instructions_screen(screen):
     
     # instructions
     introduction_text = [
-        "In this challenge, you'll face off against the computer in a game of classic Tic Tac Toe. You must win 3 rounds to pass. Use the keypad numbers to place your X, either vertically, horizontally or diagonally, to form a line of three before the computer can. Good luck and think ahead. ",
+        "Welcome to the Tic Tac Toe game! In this challenge, you'll face off against the computer in a game of classic Tic Tac Toe. You must win 3 rounds to pass. Use the keypad numbers to place your X, either vertically, horizontally or diagonally, to form a line of three before the computer can. Good luck and think ahead. ",
     ]
     
     # Hint
@@ -1378,6 +1397,9 @@ def show_tictactoe_game_screen(screen):
     keypad = Keypad(matrix_keypad)
     keypad.start()
     
+    # Run the game
+    #show_tictactoe_game_screen(screen, keypad)
+    
     # Only proceed to the game if the player clicked "Play"
     if result == "Play":
         pygame.mixer.music.stop()
@@ -1386,6 +1408,7 @@ def show_tictactoe_game_screen(screen):
         
         # Window setup
         WIDTH, HEIGHT = screen.get_size()  # Dimensions of game window for tall screens
+        #screen = pygame.display.set_mode((WIDTH, HEIGHT))  # Create window
         pygame.display.set_caption('Tic Tac Toe')  # Window title
 
         # Game board setup
@@ -1629,6 +1652,7 @@ def show_tictactoe_game_screen(screen):
                 if player_score == 3:
                     return "win"
                 elif cpu_score == 3:
+                    # show_death_screen(screen)
                     return "lose"
 
                 # Prepare for next round
@@ -1638,6 +1662,9 @@ def show_tictactoe_game_screen(screen):
         result = play_tic_tac_toe()
         return result
 
+#     return None
+#     result = play_tic_tac_toe()
+#     return result
     pygame.display.flip()
     return None
 #####################################################################################################################
@@ -1759,6 +1786,34 @@ class Wires(PhaseThread):
         #Showing the binary values of the pins 
         return f"{self._value}/{int(self._value, 2)}"
 
+#Initialize pygame
+pygame.init()
+
+#Screen dimensions and create display surface
+SCREEN_WIDTH = 576
+SCREEN_HEIGHT = 1024
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Simon Says")
+
+#Define RGB color values 
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+
+#Defining the wire colors
+# Wire Text Colours
+BROWN_WIRE = (255, 255, 0) # TRUE COLOUR = YELLOW
+RED_WIRE = (0, 190, 104) # TRUE COLOUR =  GREEN
+ORANGE_WIRE = (255, 0, 0) # TRUE COLOUR =  RED
+YELLOW_WIRE =  (255, 165, 0)# TRUE COLOUR =  ORANGE
+GREEN_WIRE =  (174, 90, 0)# TRUE COLOUR =  BROWN
+
+#Loading the fonts for different UI elements 
+font = pygame.font.Font('font1.otf', 30)
+small_font = pygame.font.Font('font1.otf', 24)
+wire_font = pygame.font.Font('font1.otf', 22)
+
 #Main game function
 def show_simon_says_game_screen(screen):
 # First show the instructions screen
@@ -1766,30 +1821,6 @@ def show_simon_says_game_screen(screen):
     
     if result == "Play":
         pygame.mixer.music.stop()
-
-        SCREEN_WIDTH = 576
-        SCREEN_HEIGHT = 1024
-        screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption("Simon Says")
-        
-        #Define RGB color values 
-        WHITE = (255, 255, 255)
-        BLACK = (0, 0, 0)
-        RED = (255, 0, 0)
-        GREEN = (0, 255, 0)
-        
-        #Defining the wire colors
-        # Wire Text Colours
-        BROWN_WIRE = (255, 255, 0) # TRUE COLOUR = YELLOW
-        RED_WIRE = (0, 190, 104) # TRUE COLOUR =  GREEN
-        ORANGE_WIRE = (255, 0, 0) # TRUE COLOUR =  RED
-        YELLOW_WIRE =  (255, 165, 0)# TRUE COLOUR =  ORANGE
-        GREEN_WIRE =  (174, 90, 0)# TRUE COLOUR =  BROWN
-        
-        #Loading the fonts 
-        font = pygame.font.Font('font1.otf', 30)
-        small_font = pygame.font.Font('font1.otf', 24)
-        wire_font = pygame.font.Font('font1.otf', 22)
         
 
         #Load background image with error handling
@@ -1830,7 +1861,18 @@ def show_simon_says_game_screen(screen):
             sound = pygame.mixer.Sound(filename)
             sound.set_volume(1.0)  # Set volume to 80% (adjust as needed)
             command_sounds[command] = sound
-            
+                
+        
+        # #Test the first loaded sound if any were loaded
+        # if command_sounds:
+        #     #Play test sounds 
+        #     first_sound = list(command_sounds.values())[0]
+        #     first_sound.play()
+        #     print(f"Playing test sound from command file")
+        # else:
+        #     print("No sound files loaded successfully! Check your sound files.")
+    
+       
         wire_pins = [DigitalInOut(i) for i in (board.D14, board.D15, board.D18, board.D23, board.D24)]
         for pin in wire_pins:
             pin.direction = Direction.INPUT
@@ -2149,162 +2191,7 @@ def show_simon_says_instructions_screen(screen):
     
     # Hopscotch-specific instructions
     welcome_text = [
-        "In this challenge, your memory and focus will be put to the test. Listen carefully as Simon calls out a sequence of commands for you to execute using the wires. For each executed command, use the space bar to confirm whether or not you made the right decision. Remember,  don’t act unless Simon says! One wrong move, and it's game over. Stay sharp, follow only when told, and survive the mind games ahead. Good luck!",
-    ]
-    
-    # Hint
-    hint_text = [
-        "HINT:",
-        "Act by ear, not only sight.",
-        "Misfortune nears when wrong is right.",
-    ]
-    
-    # Character options (buttons for 'Play')
-    ag_items = ["Play"]  
-    selected_index = 0
-    clock = pygame.time.Clock()
-    
-    while True:
-        # Draw the background
-        screen.blit(bg_image, (0, 0))
-        
-        # Overlay for the how-to-play screen
-        overlay = pygame.Surface((WIDTH, HEIGHT))
-        overlay.set_alpha(150)  # More opaque for readability
-        overlay.fill((20, 20, 30))
-        screen.blit(overlay, (0, 0))
-        
-        # Draw title - scale from reference position
-        title_text = title_font.render("Instructions", True, BEIGE)
-        base_title_pos = (dev_width // 2, 30)
-        title_x, title_y = scale_position(base_title_pos[0], base_title_pos[1], (WIDTH, HEIGHT))
-        screen.blit(title_text, (title_x - title_text.get_width() // 2, title_y))
-        
-        # Reference info box dimensions and position
-        base_info_box = pygame.Rect(50, 80, dev_width-100, 300)
-        info_box_rect = scale_rect(base_info_box, (WIDTH, HEIGHT))
-        
-        # Draw info box
-        info_box = pygame.Surface((info_box_rect.width, info_box_rect.height), pygame.SRCALPHA)
-        info_box.fill((30, 30, 30, 180))  # Semi-transparent
-        screen.blit(info_box, (info_box_rect.x, info_box_rect.y))
-        pygame.draw.rect(screen, (100, 100, 150), info_box_rect, 2)
-        
-        # Draw intro text
-        y_pos = info_box_rect.y + 10
-        max_text_width = info_box_rect.width - 40
-        
-        for line in welcome_text:
-            wrapped_lines = wrap_text(line, text_font, max_text_width)
-            for wrapped_line in wrapped_lines:
-                text_surf = text_font.render(wrapped_line, True, BEIGE)
-                screen.blit(text_surf, (info_box_rect.x + 20, y_pos))
-                y_pos += text_surf.get_height() + 5
-                
-                # Stop if we reach the bottom of the box
-                if y_pos > info_box_rect.y + info_box_rect.height - text_surf.get_height():
-                    break
-            if y_pos > info_box_rect.y + info_box_rect.height - text_surf.get_height():
-                break
-        
-        # Reference instructions box dimensions and position
-        base_instructions_box = pygame.Rect(50, 400, dev_width-100, 180)
-        instructions_box_rect = scale_rect(base_instructions_box, (WIDTH, HEIGHT))
-        
-        # Draw instructions box
-        instructions_box = pygame.Surface((instructions_box_rect.width, instructions_box_rect.height), pygame.SRCALPHA)
-        instructions_box.fill((30, 30, 30, 180))  
-        screen.blit(instructions_box, (instructions_box_rect.x, instructions_box_rect.y))
-        pygame.draw.rect(screen, (100, 100, 150), instructions_box_rect, 2)
-        
-        # Draw gameplay instructions
-        y_pos = instructions_box_rect.y + 10
-        
-        for line in hint_text:
-            wrapped_lines = wrap_text(line, text_font, max_text_width)
-            for wrapped_line in wrapped_lines:
-                text_surf = text_font.render(wrapped_line, True, YELLOW)
-                screen.blit(text_surf, (instructions_box_rect.x + 20, y_pos))
-                y_pos += text_surf.get_height() + 5
-                
-                if y_pos > instructions_box_rect.y + instructions_box_rect.height - text_surf.get_height():
-                    break
-            if y_pos > instructions_box_rect.y + instructions_box_rect.height - text_surf.get_height():
-                break
-        
-        # 'Play' button - centered at bottom
-        base_button_height = 40
-        base_button_width = 200
-        base_button_y = dev_height - 90
-        
-        # Scale button dimensions
-        button_height = int(base_button_height * HEIGHT / dev_height)
-        button_width = int(base_button_width * WIDTH / dev_width)
-        
-        # Center button
-        button_x = (WIDTH - button_width) // 2
-        button_y = int(base_button_y * HEIGHT / dev_height)
-        
-        button_rects = []
-        name = ag_items[0]  # "Play"
-        color = YELLOW
-        bg_color = PURPLE
-        
-        box_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-        pygame.draw.rect(screen, bg_color, box_rect, border_radius=10)
-        
-        # Center text in button
-        text_surface = button_font.render(name, True, color)
-        text_x = box_rect.centerx - text_surface.get_width() // 2
-        text_y = box_rect.centery - text_surface.get_height() // 2
-        
-        screen.blit(text_surface, (text_x, text_y))
-        button_rects.append((box_rect, name))
-        
-        # Event Handling (key or mouse input)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    return "Play"  # Return "Play" to start the game
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                mouse_pos = pygame.mouse.get_pos()
-                for rect, item in button_rects:
-                    if rect.collidepoint(mouse_pos):
-                        return "Play"  # Return "Play" to start the game
-        
-        pygame.display.flip()
-        clock.tick(60)
-
-# INSTRUCTIONS
-def show_simon_says_instructions_screen(screen):
-    WIDTH, HEIGHT = screen.get_size()
-    pygame.display.set_caption("Simon Says Instructions")
-    
-    # Base font sizes for reference design
-    base_title_size = 40
-    base_button_size = 20
-    base_text_size = 20
-    
-    # Scale font sizes
-    title_size = scale_font_size(base_title_size, (WIDTH, HEIGHT))
-    button_size = scale_font_size(base_button_size, (WIDTH, HEIGHT))
-    text_size = scale_font_size(base_text_size, (WIDTH, HEIGHT))
-    
-    # Fonts
-    title_font = pygame.font.Font("font2.otf", title_size)
-    button_font = pygame.font.Font("font2.otf", button_size)
-    text_font = pygame.font.Font("font5.otf", text_size)
-    
-    # Background Image
-    bg_image = pygame.image.load("how_to_play.jpg")
-    bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
-    
-    # Hopscotch-specific instructions
-    welcome_text = [
-        "In this challenge, your memory and focus will be put to the test. Listen carefully as Simon calls out a sequence of commands for you to execute using the wires. For each executed command, use the space bar to confirm whether or not you made the right decision. Remember,  don’t act unless Simon says! One wrong move, and it's game over. Stay sharp, follow only when told, and survive the mind games ahead. Good luck!",
+        " In this challenge, your memory and focus will be put to the test. Listen carefully as Simon calls out a sequence of commands for you to execute using the wires. For each executed command, use the space bar to confirm whether or not you made the right decision. Remember,  don’t act unless Simon says! One wrong move, and it's game over. Stay sharp, follow only when told, and survive the mind games ahead. Good luck!",
     ]
     
     # Hint
@@ -2435,389 +2322,532 @@ def show_simon_says_instructions_screen(screen):
 ####################################################################################################################
 # # RED LIGHT GREEN LIGHT
 # # BUTTON
-def show_redlightgreenlight_game_screen(screen):
-    # First show the instructions screen
-    result = show_redlightgreenlight_instructions_screen(screen)
-    
-    if result == "Play":
-        pygame.display.set_caption("Red Light Green Light Instructions")
-        pygame.mixer.music.stop()
-        pygame.mixer.music.load("fly_me.mp3")  
-        pygame.mixer.music.play(-1)
-        
-        # Set up LED control
-        global component_button_RGB
-        component_button_RGB = [
-            DigitalInOut(board.D17),  # Red pin
-            DigitalInOut(board.D27),  # Green pin
-            DigitalInOut(board.D22)   # Blue pin
-        ]
-        
-        # Set each pin as output
-        for pin in component_button_RGB:
-            pin.direction = Direction.OUTPUT
-            pin.value = True  # Initialize all LEDs to OFF
-        
-        # Setup for button - FROM BOMB CONFIGS
-        global component_button_state
-        component_button_state = DigitalInOut(board.D4)
-        component_button_state.direction = Direction.INPUT
-        component_button_state.pull = Pull.DOWN
-        
-        # Call the play function which contains the game logic
-        return play_redlightgreenlight(screen)
-    
-    return "Menu"  # If they didn't click Play
 
-# INSTRUCTIONS
-def show_redlightgreenlight_instructions_screen(screen):
-    WIDTH, HEIGHT = screen.get_size()
-    pygame.display.set_caption("Red Light Green Light Instructions")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # INSTRUCTIONS
+# def show_redlightgreenlight_instructions_screen(screen):
+#     WIDTH, HEIGHT = screen.get_size()
+#     pygame.display.set_caption("Red Light Green Light Instructions")
     
-    # Base font sizes for reference design
-    base_title_size = 40
-    base_button_size = 20
-    base_text_size = 20
+#     # Base font sizes for reference design
+#     base_title_size = 40
+#     base_button_size = 20
+#     base_text_size = 20
     
-    # Scale font sizes
-    title_size = scale_font_size(base_title_size, (WIDTH, HEIGHT))
-    button_size = scale_font_size(base_button_size, (WIDTH, HEIGHT))
-    text_size = scale_font_size(base_text_size, (WIDTH, HEIGHT))
+#     # Scale font sizes
+#     title_size = scale_font_size(base_title_size, (WIDTH, HEIGHT))
+#     button_size = scale_font_size(base_button_size, (WIDTH, HEIGHT))
+#     text_size = scale_font_size(base_text_size, (WIDTH, HEIGHT))
     
-    # Fonts
-    title_font = pygame.font.Font("font2.otf", title_size)
-    button_font = pygame.font.Font("font2.otf", button_size)
-    text_font = pygame.font.Font("font5.otf", text_size)
+#     # Fonts
+#     title_font = pygame.font.Font("font2.otf", title_size)
+#     button_font = pygame.font.Font("font2.otf", button_size)
+#     text_font = pygame.font.Font("font5.otf", text_size)
     
-    # Background Image
-    bg_image = pygame.image.load("how_to_play.jpg")
-    bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
+#     # Background Image
+#     bg_image = pygame.image.load("how_to_play.jpg")
+#     bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
     
-    # Hopscotch-specific instructions
-    welcome_text = [
-        "In this challenge,In this challenge, you'll be playing a game of pattern recognition and response. Listen closely to the doll’s voice, she’ll tell you when to move and when to stop using the button. But beware, she’s watching for cheaters. Follow her instructions exactly or face the consequences. Good luck, and don’t move a muscle or you'll be eliminated." 
-    ]
+#     # Hopscotch-specific instructions
+#     welcome_text = [
+#         " In this challenge,In this challenge, you'll be playing a game of pattern recognition and response. Listen closely to the doll’s voice, she’ll tell you when to move and when to stop using the button. But beware, she’s watching for cheaters. Follow her instructions exactly or face the consequences. Good luck, and don’t move a muscle or you'll be eliminated." 
+#     ]
     
-    # Hint
-    hint_text = [
-        "HINT:",
-         " Don’t trust the flash, it tells a lie",
-         " Her turning head decides who’ll die.",
-    ]
+#     # Hint
+#     hint_text = [
+#         "HINT:",
+#          " Don’t trust the flash, it tells a lie",
+#          " Her turning head decides who’ll die.",
+#     ]
     
-    # Character options (buttons for 'Play')
-    ag_items = ["Play"]  
-    selected_index = 0
-    clock = pygame.time.Clock()
+#     # Character options (buttons for 'Play')
+#     ag_items = ["Play"]  
+#     selected_index = 0
+#     clock = pygame.time.Clock()
     
-    while True:
-        # Draw the background
-        screen.blit(bg_image, (0, 0))
+#     while True:
+#         # Draw the background
+#         screen.blit(bg_image, (0, 0))
         
-        # Overlay for the how-to-play screen
-        overlay = pygame.Surface((WIDTH, HEIGHT))
-        overlay.set_alpha(150)  # More opaque for readability
-        overlay.fill((20, 20, 30))
-        screen.blit(overlay, (0, 0))
+#         # Overlay for the how-to-play screen
+#         overlay = pygame.Surface((WIDTH, HEIGHT))
+#         overlay.set_alpha(150)  # More opaque for readability
+#         overlay.fill((20, 20, 30))
+#         screen.blit(overlay, (0, 0))
         
-        # Draw title - scale from reference position
-        title_text = title_font.render("INSTRUCTIONS", True, BEIGE)
-        base_title_pos = (dev_width // 2, 30)
-        title_x, title_y = scale_position(base_title_pos[0], base_title_pos[1], (WIDTH, HEIGHT))
-        screen.blit(title_text, (title_x - title_text.get_width() // 2, title_y))
+#         # Draw title - scale from reference position
+#         title_text = title_font.render("Instructions", True, BEIGE)
+#         base_title_pos = (dev_width // 2, 30)
+#         title_x, title_y = scale_position(base_title_pos[0], base_title_pos[1], (WIDTH, HEIGHT))
+#         screen.blit(title_text, (title_x - title_text.get_width() // 2, title_y))
         
-        # Reference info box dimensions and position
-        base_info_box = pygame.Rect(50, 80, dev_width-100, 300)
-        info_box_rect = scale_rect(base_info_box, (WIDTH, HEIGHT))
+#         # Reference info box dimensions and position
+#         base_info_box = pygame.Rect(50, 80, dev_width-100, 300)
+#         info_box_rect = scale_rect(base_info_box, (WIDTH, HEIGHT))
         
-        # Draw info box
-        info_box = pygame.Surface((info_box_rect.width, info_box_rect.height), pygame.SRCALPHA)
-        info_box.fill((30, 30, 30, 180))  # Semi-transparent
-        screen.blit(info_box, (info_box_rect.x, info_box_rect.y))
-        pygame.draw.rect(screen, (100, 100, 150), info_box_rect, 2)
+#         # Draw info box
+#         info_box = pygame.Surface((info_box_rect.width, info_box_rect.height), pygame.SRCALPHA)
+#         info_box.fill((30, 30, 30, 180))  # Semi-transparent
+#         screen.blit(info_box, (info_box_rect.x, info_box_rect.y))
+#         pygame.draw.rect(screen, (100, 100, 150), info_box_rect, 2)
         
-        # Draw intro text
-        y_pos = info_box_rect.y + 10
-        max_text_width = info_box_rect.width - 40
+#         # Draw intro text
+#         y_pos = info_box_rect.y + 10
+#         max_text_width = info_box_rect.width - 40
         
-        for line in welcome_text:
-            wrapped_lines = wrap_text(line, text_font, max_text_width)
-            for wrapped_line in wrapped_lines:
-                text_surf = text_font.render(wrapped_line, True, BEIGE)
-                screen.blit(text_surf, (info_box_rect.x + 20, y_pos))
-                y_pos += text_surf.get_height() + 5
+#         for line in welcome_text:
+#             wrapped_lines = wrap_text(line, text_font, max_text_width)
+#             for wrapped_line in wrapped_lines:
+#                 text_surf = text_font.render(wrapped_line, True, BEIGE)
+#                 screen.blit(text_surf, (info_box_rect.x + 20, y_pos))
+#                 y_pos += text_surf.get_height() + 5
                 
-                # Stop if we reach the bottom of the box
-                if y_pos > info_box_rect.y + info_box_rect.height - text_surf.get_height():
-                    break
-            if y_pos > info_box_rect.y + info_box_rect.height - text_surf.get_height():
-                break
+#                 # Stop if we reach the bottom of the box
+#                 if y_pos > info_box_rect.y + info_box_rect.height - text_surf.get_height():
+#                     break
+#             if y_pos > info_box_rect.y + info_box_rect.height - text_surf.get_height():
+#                 break
         
-        # Reference instructions box dimensions and position
-        base_instructions_box = pygame.Rect(50, 400, dev_width-100, 180)
-        instructions_box_rect = scale_rect(base_instructions_box, (WIDTH, HEIGHT))
+#         # Reference instructions box dimensions and position
+#         base_instructions_box = pygame.Rect(50, 400, dev_width-100, 180)
+#         instructions_box_rect = scale_rect(base_instructions_box, (WIDTH, HEIGHT))
         
-        # Draw instructions box
-        instructions_box = pygame.Surface((instructions_box_rect.width, instructions_box_rect.height), pygame.SRCALPHA)
-        instructions_box.fill((30, 30, 30, 180))  
-        screen.blit(instructions_box, (instructions_box_rect.x, instructions_box_rect.y))
-        pygame.draw.rect(screen, (100, 100, 150), instructions_box_rect, 2)
+#         # Draw instructions box
+#         instructions_box = pygame.Surface((instructions_box_rect.width, instructions_box_rect.height), pygame.SRCALPHA)
+#         instructions_box.fill((30, 30, 30, 180))  
+#         screen.blit(instructions_box, (instructions_box_rect.x, instructions_box_rect.y))
+#         pygame.draw.rect(screen, (100, 100, 150), instructions_box_rect, 2)
         
-        # Draw gameplay instructions
-        y_pos = instructions_box_rect.y + 10
+#         # Draw gameplay instructions
+#         y_pos = instructions_box_rect.y + 10
         
-        for line in hint_text:
-            wrapped_lines = wrap_text(line, text_font, max_text_width)
-            for wrapped_line in wrapped_lines:
-                text_surf = text_font.render(wrapped_line, True, YELLOW)
-                screen.blit(text_surf, (instructions_box_rect.x + 20, y_pos))
-                y_pos += text_surf.get_height() + 5
+#         for line in hint_text:
+#             wrapped_lines = wrap_text(line, text_font, max_text_width)
+#             for wrapped_line in wrapped_lines:
+#                 text_surf = text_font.render(wrapped_line, True, YELLOW)
+#                 screen.blit(text_surf, (instructions_box_rect.x + 20, y_pos))
+#                 y_pos += text_surf.get_height() + 5
                 
-                if y_pos > instructions_box_rect.y + instructions_box_rect.height - text_surf.get_height():
-                    break
-            if y_pos > instructions_box_rect.y + instructions_box_rect.height - text_surf.get_height():
-                break
+#                 if y_pos > instructions_box_rect.y + instructions_box_rect.height - text_surf.get_height():
+#                     break
+#             if y_pos > instructions_box_rect.y + instructions_box_rect.height - text_surf.get_height():
+#                 break
         
-        # 'Play' button - centered at bottom
-        base_button_height = 40
-        base_button_width = 200
-        base_button_y = dev_height - 90
+#         # 'Play' button - centered at bottom
+#         base_button_height = 40
+#         base_button_width = 200
+#         base_button_y = dev_height - 90
         
-        # Scale button dimensions
-        button_height = int(base_button_height * HEIGHT / dev_height)
-        button_width = int(base_button_width * WIDTH / dev_width)
+#         # Scale button dimensions
+#         button_height = int(base_button_height * HEIGHT / dev_height)
+#         button_width = int(base_button_width * WIDTH / dev_width)
         
-        # Center button
-        button_x = (WIDTH - button_width) // 2
-        button_y = int(base_button_y * HEIGHT / dev_height)
+#         # Center button
+#         button_x = (WIDTH - button_width) // 2
+#         button_y = int(base_button_y * HEIGHT / dev_height)
         
-        button_rects = []
-        name = ag_items[0]  # "Play"
-        color = YELLOW
-        bg_color = PURPLE
+#         button_rects = []
+#         name = ag_items[0]  # "Play"
+#         color = YELLOW
+#         bg_color = PURPLE
         
-        box_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-        pygame.draw.rect(screen, bg_color, box_rect, border_radius=10)
+#         box_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+#         pygame.draw.rect(screen, bg_color, box_rect, border_radius=10)
         
-        # Center text in button
-        text_surface = button_font.render(name, True, color)
-        text_x = box_rect.centerx - text_surface.get_width() // 2
-        text_y = box_rect.centery - text_surface.get_height() // 2
+#         # Center text in button
+#         text_surface = button_font.render(name, True, color)
+#         text_x = box_rect.centerx - text_surface.get_width() // 2
+#         text_y = box_rect.centery - text_surface.get_height() // 2
         
-        screen.blit(text_surface, (text_x, text_y))
-        button_rects.append((box_rect, name))
+#         screen.blit(text_surface, (text_x, text_y))
+#         button_rects.append((box_rect, name))
         
-        # Event Handling (key or mouse input)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    return "Play"  # Return "Play" to start the game
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                mouse_pos = pygame.mouse.get_pos()
-                for rect, item in button_rects:
-                    if rect.collidepoint(mouse_pos):
-                        return "Play"  # Return "Play" to start the game
+#         # Event Handling (key or mouse input)
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 pygame.quit()
+#                 sys.exit()
+#             elif event.type == pygame.KEYDOWN:
+#                 if event.key == pygame.K_RETURN:
+#                     return "Play"  # Return "Play" to start the game
+#             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+#                 mouse_pos = pygame.mouse.get_pos()
+#                 for rect, item in button_rects:
+#                     if rect.collidepoint(mouse_pos):
+#                         return "Play"  # Return "Play" to start the game
         
-        pygame.display.flip()
-        clock.tick(60)
+#         pygame.display.flip()
+#         clock.tick(60)
 
-# GAME LOGIC
-def play_redlightgreenlight(screen):
-    dev_width = 800
-    dev_height = 600
-    
-    WIDTH, HEIGHT = screen.get_size()
-    bg_image = pygame.image.load("redlight_greenlight.png")
-    bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
-    pygame.display.set_caption("Red Light Green Light")
-    clock = pygame.time.Clock()
-    
-    # Colors
-    BG = (183, 246, 244)      # Background
-    SAFE = (180, 38, 38)      # For green light (red in this version)
-    FAIL = (0, 144, 57)       # For red light (green in this version)
-    TEXT = (0, 0, 0)          # Black text
-    RED = (255, 0, 0)         # Bright red
-    GREEN = (0, 255, 0)       # Bright green
 
-    
-    # Scale font sizes based on screen dimensions
-    base_font_size = 30
-    base_big_font_size = 50
-    font_size = int(base_font_size * WIDTH / dev_width)
-    big_font_size = int(base_big_font_size * HEIGHT / dev_height)
-    
-    # Fonts
-    
-    FONT = pygame.font.Font("font1.otf", 22)       
-    BIG_FONT = pygame.font.Font("font1.otf", 36)    
-    # MESSAGE_FONT = pygame.font.Font("font1.otf", 28)
-    
-    bg_image = pygame.image.load("redlight_greenlight.png") 
-    bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
-    screen.blit(bg_image, (0, 0))
-    
-    # Scale elements based on screen size
-    button_size = int(200 * WIDTH / dev_width)
-    margin = int(50 * WIDTH / dev_width)
-    
-    # Load doll images 
-    doll_width = int(WIDTH * 0.5)  # 50% of screen width
-    doll_height = int(doll_width * 1.8)  # aspect ratio of 1.8
-    
-    doll_red_img = pygame.image.load("redlightdoll.png")  # Doll facing player (red light)
-    doll_green_img = pygame.image.load("greenlightdoll.png")  # Doll facing away (green light)
-        
-    # Scale images to the desired size
-    doll_red_img = pygame.transform.scale(doll_red_img, (doll_width, doll_height))
-    doll_green_img = pygame.transform.scale(doll_green_img, (doll_width, doll_height))
-    
-    # Game variables
-    light_color = "red"
-    game_time = 120  # seconds to win
-    distance = 0
-    target_distance = 40
-    start_time = time.time()
-    next_change_time = start_time  # Initialize for immediate first change
-    message = "Press the button ONLY when the light is GREEN"
+# # GAME LOGIC
+# def show_redlightgreenlight_game_screen(screen):
+#     dev_width = 800
+#     dev_height = 600
 
-    # Game state variables
-    running = True
-    game_over = False
-    won = False
+#     # Default vertical reference dimensions for the portrait mode
+#     portrait_width = 576
+#     portrait_height = 1024
 
-    # Set up LED control
-    def set_led(color):
-        # Set the RGB LED based on the current light color
-        if color == "green":
-            component_button_RGB[0].value = True   # Red OFF
-            component_button_RGB[1].value = False  # Green ON
-            component_button_RGB[2].value = True   # Blue OFF
-        elif color == "red":
-            component_button_RGB[0].value = False  # Red ON
-            component_button_RGB[1].value = True   # Green OFF
-            component_button_RGB[2].value = True   # Blue OFF
-        else:
-            # turn everything off
-            for pin in component_button_RGB:
-                pin.value = True
+#     # Set up LED control
+#     def set_led(color):
+#         #Set the RGB LED based on the current light color
+#         if not RPi:
+#             return
+#         if color == "green":
+#             component_button_RGB[0].value = True   # Red OFF
+#             component_button_RGB[1].value = False  # Green ON
+#             component_button_RGB[2].value = True   # Blue OFF
+#         elif color == "red":
+#             component_button_RGB[0].value = False  # Red ON
+#             component_button_RGB[1].value = True   # Green OFF
+#             component_button_RGB[2].value = True   # Blue OFF
+#         else:
+#             # turn everything off
+#             for pin in component_button_RGB:
+#                 pin.value = True
 
-    def check_button_press():
-        """Check if the button is pressed."""
-        return component_button_state.value
+#     def check_button_press():
+#         """Check if the button is pressed."""
+#         if not RPi:
+#             return False
+#         return component_button_state.value
+
+#     # First show the instructions screen
+#     result = show_redlightgreenlight_instructions_screen(screen)
     
-    # Set initial LED state
-    set_led(light_color)
-
-    
-    while running:
-        current_time = time.time()
-        elapsed_time = current_time - start_time
-        time_left = max(0, game_time - elapsed_time)
-        screen.blit(bg_image, (0, 0))
-        
-        # Process events
-        button_pressed = False
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+#     # Only proceed to the game if the player clicked "Play"
+#     if result == "Play":
+#         pygame.mixer.music.stop()
+#         pygame.mixer.music.load("fly_me.mp3")
+#         pygame.mixer.music.play(-1)
+#         # Get current screen dimensions
+#         def play_redlightgreenlight():
+#             WIDTH, HEIGHT = screen.get_size()
+#             #bg_image = pygame.image.load("redlightbg.png")
+#             #bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
+#             pygame.display.set_caption("Red Light Green Light")
+#             clock = pygame.time.Clock()
             
-        # Check win condition (time elapsed)
-        if time_left <= 0 and not game_over:
-            message = "Congratulations! You survived and won!"
-            game_over = True
-            won = True
-            pygame.display.flip()  # Make sure screen is updated
-            pygame.time.delay(1000)  # Show the winning state briefly
-            return "win"  # Return win result directly
-        
-        # Change light color based on timing
-        if current_time >= next_change_time and not game_over:
-            # Switch the light
-            light_color = "green" if light_color == "red" else "red"
-            set_led(light_color)
+#             # Colors
+#             BG = (183, 246, 244)            # Background
+#             #SAFE = (0, 144, 57)          # Green for correct
+#             SAFE = (180, 38, 38)
+#             FAIL = (0, 144, 57)
+#             #FAIL = (180, 38, 38)         # Red for incorrect
+#             TEXT = (0, 0, 0)       # Light text
+#             RED = (255, 0, 0)            # Bright red
+#             GREEN = (0, 255, 0)          # Bright green
             
-            if light_color == "green":
-                pygame.mixer.music.stop()
-                pygame.mixer.music.load("redlight.mp3")
-                pygame.mixer.music.play()
+#             #screen.blit(bg_image, (0, 0))
+            
+#             # Scale font sizes based on screen dimensions
+#             base_font_size = 30
+#             base_big_font_size = 50
+#             font_size = int(base_font_size * WIDTH / dev_width)
+#             big_font_size = int(base_big_font_size * HEIGHT / dev_height)
+            
+#             # Fonts
+            
+#             FONT = pygame.font.Font("font1.otf", 16)
+#             BIG_FONT = pygame.font.Font("font1.otf", 26)
+            
+#             bg_image = pygame.image.load("redlight_greenlight.png") 
+#             bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
+#             screen.blit(bg_image, (0, 0))
+            
+#             # Scale elements based on screen size
+#             button_size = int(200 * WIDTH / dev_width)
+#             margin = int(50 * WIDTH / dev_width)
+            
+#             # Load doll images 
+#             doll_width = int(WIDTH * 0.5)  # 50% of screen width
+#             doll_height = int(doll_width * 1.8)  # aspect ratio of 1.8
+            
+            
+#             doll_red_img = pygame.image.load("redlightdoll.jpg")  # Doll facing player (red light)
+#             doll_green_img = pygame.image.load("greenlightdoll.jpg")  # Doll facing away (green light)
                 
-            else:
-                pygame.mixer.music.stop()
-                pygame.mixer.music.load("greenlight.mp3")
-                pygame.mixer.music.play()
+#                 # Scale images to the desired size
+#             doll_red_img = pygame.transform.scale(doll_red_img, (doll_width, doll_height))
+#             doll_green_img = pygame.transform.scale(doll_green_img, (doll_width, doll_height))
+            
+            
+#             # Game variables
+#             light_color = "red"
+#             game_time = 20  # seconds to win
+#             start_time = time.time()
+#             next_change_time = start_time  # Initialize for immediate first change
+#             #message = "Press the button ONLY when the light is GREEN"
+            
+#             # Game state variables
+#             running = True
+#             game_over = False
+#             won = False
+            
+#             while running:
+#                 current_time = time.time()
+#                 elapsed_time = current_time - start_time
+#                 time_left = max(0, game_time - elapsed_time)
+#                 screen.blit(bg_image, (0, 0))
                 
-            # Set next change time (2-5 seconds)
-            next_change = random.uniform(2, 5)
-            next_change_time = current_time + next_change
+#                 # Process events
+#                 button_pressed = False
+#                 for event in pygame.event.get():
+#                     if event.type == pygame.QUIT:
+#                         running = False
+                    
+#                     if event.type == pygame.KEYDOWN:
+#                         if event.key == pygame.K_SPACE and not game_over:
+#                             button_pressed = True
+#                         if event.key == pygame.K_r and game_over:
+#                             # Restart the game
+#                             return show_redlightgreenlight_game_screen(screen)
+                    
+#                     if event.type == pygame.MOUSEBUTTONDOWN and not game_over:
+#                         button_pressed = True
+                
+#                 # Check win condition (time elapsed)
+#                 if time_left <= 0 and not game_over:
+#                     message = "Congratulations! You survived and won!"
+#                     game_over = True
+#                     won = True
+#                     pygame.display.flip()  # Make sure screen is updated
+#                     pygame.time.delay(1000)  # Show the winning state briefly
+#                     return "win"  # Return win result directly
+                    
+                
+#                 # Change light color based on timing
+#                 if current_time >= next_change_time and not game_over:
+#                     # Switch the light
+#                     light_color = "green" if light_color == "red" else "red"
+#                     if light_color == "green":
+#                         pygame.mixer.music.stop()
+#                         pygame.mixer.music.load("redlight.mp3")
+#                         pygame.mixer.music.play()
+#                     else:
+#                         pygame.mixer.music.stop()
+#                         pygame.mixer.music.load("greenlight.mp3")
+#                         pygame.mixer.music.play()
+                        
+                         
+#                     # Set next change time (2-5 seconds)
+#                     next_change = random.uniform(2, 5)
+#                     next_change_time = current_time + next_change
+#                     message = f"THE LIGHT IS NOW {light_color.upper()}!"
+#                     print(f"THE LIGHT IS NOW {light_color.upper()}!")
+                
+#                 # Check button press
+#                 if button_pressed and not game_over:
+#                     print("Button Pressed!")
+#                     if light_color == "green":
+#                         message = "Good move!"
+#                         #print("Good move!")
+#                     else:
+#                         message = "You pressed during RED! You lose!"
+#                         pygame.display.flip()
+#                         #pygame.time.delay(1000)
+#                         show_death_screen(screen)
+#                         return "lose"
+#                         #print("You pressed during RED! You lose!")
+# #                         game_over = True
+# #                         won = False
+                
+#                 # Draw doll image based on light color
+#                 # Select the appropriate image
+#                 doll_img = doll_red_img if light_color == "red" else doll_green_img
+                
+#                 # Position doll (centered)
+#                 doll_x = WIDTH // 2 - doll_width // 2  # Center horizontally
+#                 doll_y = HEIGHT // 2 - doll_height // 2  # Center vertically 
+#                 screen.blit(doll_img, (doll_x, doll_y))
+                
+#                 # Draw color indicator in top right
+#                 color = SAFE if light_color == "green" else FAIL
+#                 pygame.draw.rect(screen, color, (
+#                     WIDTH - button_size - margin, 
+#                     margin, 
+#                     button_size, 
+#                     button_size))
+                
+#                 # Draw state and time display
+#                 state_text = FONT.render(f"State: {light_color.upper()}", True, TEXT)
+#                 screen.blit(state_text, (margin, margin))
+                
+#                 time_text = FONT.render(f"Time: {time_left:.1f}s", True, TEXT)
+#                 screen.blit(time_text, (margin, margin + font_size + 10))  # Position under state text
+                
+#                 # Draw message
+#                 message_text = FONT.render(message, True, TEXT)
+#                 message_x = WIDTH // 2 - message_text.get_width() // 2
+#                 # Position message near the bottom of the screen
+#                 message_y = HEIGHT - int(120 * HEIGHT / dev_height)
+#                 screen.blit(message_text, (message_x, message_y))
+                
+#                 # Draw instructions
+#                 if not game_over:
+#                     instructions = FONT.render("Press SPACE or CLICK to move forward", True, TEXT)
+#                     instructions_x = WIDTH // 2 - instructions.get_width() // 2
+#                     # Position instructions at the bottom of the screen
+#                     instructions_y = HEIGHT - int(60 * HEIGHT / dev_height)
+#                     screen.blit(instructions, (instructions_x, instructions_y))
+#                 else:
+#                     if "win":
+#                         return "win"
+#                         result = FONT.render("You won! Press R to restart", True, TEXT)
+#                     else:
+#                         return "lose"
+#                         result = FONT.render("You lost! Press R to restart", True, TEXT)
+#                     result_x = WIDTH // 2 - result.get_width() // 2
+#                     # Position result text at the bottom of the screen
+#                     result_y = HEIGHT - int(60 * HEIGHT / dev_height)
+#                     screen.blit(result, (result_x, result_y))
+                
+#                 # Update display
+#                 pygame.display.flip()
+                
+#                 # Control frame rate
+#                 clock.tick(60)
+            
+#         #return "win" if win else "lose"
+#             #return result
         
-        # Check button press
-        if (button_pressed or check_button_press()) and not game_over:
-            if light_color == "green":
-                distance += 1
-                # message = f"Good move!"
-                print(message)
-                time.sleep(0.4)
-            else:
-                # message = "You pressed during RED! You lose!"
-                print(message)
-                pygame.display.flip()
-                set_led("off")
-                return "lose"
-                
-        if distance >= target_distance and not game_over:
-            set_led("off")
-            return "win"
+#         result = play_redlightgreenlight()
+#         #return "win" if win else "lose"
+#         return result
+#         pygame.display.flip()
 
-        # Draw doll image based on light color
-        # Select the appropriate image
-        doll_img = doll_red_img if light_color == "red" else doll_green_img
-        
-        # Position doll (centered)
-        doll_x = WIDTH // 2 - doll_width // 2  # Center horizontally
-        doll_y = HEIGHT // 2 - doll_height // 2  # Center vertically 
-        screen.blit(doll_img, (doll_x, doll_y))
-        
-        # Draw color indicator in top right
-        color = SAFE if light_color == "green" else FAIL
-        pygame.draw.rect(screen, color, (
-            WIDTH - button_size - margin, 
-            margin, 
-            button_size, 
-            button_size))
-        
-        # Draw state and time display
-        state_text = FONT.render(f"State: {light_color.upper()}", True, TEXT)
-        screen.blit(state_text, (margin, margin))
-        
-        time_text = FONT.render(f"Time: {time_left:.1f}s", True, TEXT)
-        screen.blit(time_text, (margin, margin + font_size + 10))  # Position under state text
-        
-        distance_text = FONT.render(f"Distance: {distance:.0f} / {target_distance:.0f}", True, TEXT)
-        screen.blit(distance_text, (margin, margin + font_size + font_size + 20))  # Position under state text
-        
-        # Draw message
-        message_text = FONT.render(message, True, TEXT)
-        message_x = WIDTH // 2 - message_text.get_width() // 2
-        # Position message near the bottom of the screen
-        message_y = HEIGHT - int(140 * HEIGHT / dev_height)
-        screen.blit(message_text, (message_x, message_y))
-                
-        # Update display
-        pygame.display.flip()
-        
-        # Control frame rate
-        clock.tick(60)
-        
-    set_led("off")
-    return "lose"
-pygame.mixer.init()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ####################################################################################################################
 # RESULT SCREENS
 # DEATH SCREEN
+# def show_death_screen(screen):
+#     # Get screen dimensions
+#     pygame.mixer.music.load("gunshot.mp3")
+#     pygame.mixer.music.play(2)
+#     WIDTH, HEIGHT = screen.get_size()
+    
+#     # Colors
+#     BLACK = (0, 0, 0)
+#     PINK = (255, 105, 180)
+    
+#     # Load and scale coffin sprite
+#     coffin_width = 300
+#     coffin_height = 150
+#     coffin_sprite = pygame.image.load("coffin.jpg")
+#     coffin_sprite = pygame.transform.scale(coffin_sprite, (coffin_width, coffin_height))
+    
+#     # Load font and prepare text
+#     font = pygame.font.Font("font1.otf", int(WIDTH * 0.15))
+#     game_over_text = font.render("GAME OVER", True, PINK)
+#     text_rect = game_over_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    
+#     # Animation settings
+#     duration = 4.0  # seconds for full animation
+#     fps = 60
+#     total_frames = int(duration * fps)
+#     text_delay = 30  # frames to wait after coffin passes center
+    
+#     # Animation loop variables
+#     clock = pygame.time.Clock()
+#     frame_count = 0
+#     passed_center = False
+#     text_counter = 0
+#     show_text = False
+    
+#     # Main animation loop
+#     running = True
+#     while running and frame_count < total_frames + 60:  # Add extra time at end
+#         screen.fill(BLACK)
+        
+#         # Calculate coffin position
+#         progress = min(1.0, frame_count / total_frames)
+#         start_y = -coffin_height
+#         end_y = HEIGHT + coffin_height
+#         current_y = start_y + progress * (end_y - start_y)
+        
+#         # Check if coffin passed center
+#         if current_y > HEIGHT / 2 and not passed_center:
+#             passed_center = True
+        
+#         # Handle text delay and appearance
+#         if passed_center:
+#             text_counter += 1
+#             if text_counter >= text_delay and not show_text:
+#                 show_text = True
+        
+#         # Draw coffin
+#         sprite_rect = coffin_sprite.get_rect(center=(WIDTH // 2, current_y))
+#         screen.blit(coffin_sprite, sprite_rect)
+        
+#         # Draw text with fade-in effect if it's time
+#         if show_text:
+#             fade_progress = min(1.0, (text_counter - text_delay) / 15)
+#             text_alpha = int(255 * fade_progress)
+            
+#             text_surface = pygame.Surface(text_rect.size, pygame.SRCALPHA)
+#             temp_text = font.render("GAME OVER", True, (PINK[0], PINK[1], PINK[2], text_alpha))
+#             text_surface.blit(temp_text, (0, 0))
+#             screen.blit(text_surface, text_rect)
+        
+#         # Update display
+#         pygame.display.flip()
+        
+#         # Check for exit
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 running = False
+#             elif (event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN) and show_text:
+#                 # Only allow exit after text has appeared
+#                 running = False
+        
+#         # Advance animation
+#         frame_count += 1
+#         clock.tick(fps)  
+#     return "Menu"
 def show_death_screen(screen):
     # Get screen dimensions
     pygame.mixer.music.load("gunshot.mp3")
@@ -2841,9 +2871,9 @@ def show_death_screen(screen):
     
     # Animation settings
     duration = 4.0  # seconds for full animation
-    fps = 60
+    fps = 100
     total_frames = int(duration * fps)
-    text_delay = 30  # frames to wait after coffin passes center
+    text_delay = 25  # frames to wait after coffin passes center
     
     # Animation loop variables
     clock = pygame.time.Clock()
@@ -2900,9 +2930,14 @@ def show_death_screen(screen):
         
         # Advance animation
         frame_count += 1
-        clock.tick(fps)  
+        clock.tick(fps)
+        
     return "Menu"
-# WIN SCREEN
+# # WIN SCREEN
+
+
+
+
 def show_win_screen(screen):
     pygame.mixer.init()
     pygame.mixer.music.load("coins1.mp3")
@@ -3015,259 +3050,157 @@ def show_win_screen(screen):
         clock.tick(60)
     
     video.release()
+    return "Menu"
+    
+
+
+
+
+####################################################################################################################  
+class Timer(PhaseThread):
+    def __init__(self, name="GameTimer"):
+        super().__init__(name)
+        self._value = 300 # Set initial value to 5 minutes (300 seconds)
+        self._min = ""
+        self._sec = ""
+        self._interval = 1  # Default tick interval is 1 second
+        self._expired = False # Track timer
+    
+    # Runs the thread
+    def run(self):
+        self._running = True
+        self._update()  # Initialize display format
+        
+        while self._running:
+            if self._value > 0:
+                self._value -= 1
+                self._update()
+            else:
+                self._expired = True
+                self._running = False
+        else:
+            sleep(0.1)
+    
+    # Updates the timer format
+    def _update(self):
+        self._min = f"{self._value // 60}".zfill(2)
+        self._sec = f"{self._value % 60}".zfill(2)
+    
+    # Check if timer has expired
+    def has_expired(self):
+        return self._expired
+    
+    # Get current time as string
+    def get_time_str(self):
+        return f"{self._min}:{self._sec}"
+    
+    # String representation
+    def __str__(self):
+        return self.get_time_str()
+
+
+
+
+
+
+
+
+
+
+
+
 ####################################################################################################################    
 # MAIN PROGRAM
 def main():
+    # Initialize pygame
     pygame.init()
-    screen = pygame.display.set_mode((576, 1024))
     pygame.display.set_caption("Squid-ish Games")
 
-    # Set up timer
-    i2c = board.I2C()
-    component_7seg = Seg7x4(i2c)
-    component_7seg.brightness = 0.5
-    timer = Timer(component_7seg, 10)  # 600 for 10 mins
-    timer.start()
+    # Screen setup
+    if os.environ.get('RPI_MODE', 'False').lower() == 'true':
+        WIDTH, HEIGHT = 576, 1024
+    else:
+        WIDTH, HEIGHT = 800, 700
 
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+    timer = Timer()
+    timer.start()
+    
     game_running = True
     game_state = "Menu"
-    mini_games = ["Hopscotch", "Tic Tac Toe", "Simon Says", "Red Light Green Light"]
+    mini_games = ["Hopscotch", "Tic Tac Toe", "Simon Says"]
     completed_games = set()
-
+    
     while game_running:
-        # Check timer expiration
-        if timer._value <= 0:
-            if len(completed_games) == len(mini_games):
-                game_state = "Live"
-            else:
-                game_state = "Die"
-            continue
-
-        # MENU STATE
         if game_state == "Menu":
-            completed_games.clear()
+            completed_games.clear()  # Reset progress when returning to menu
             pygame.mixer.music.load("pink_soldiers.mp3")
             pygame.mixer.music.play(-1)
             menu_choice = show_menu_screen(screen)
             if menu_choice == "Start":
-                game_state = random.choice([g for g in mini_games if g not in completed_games])
+                game_state = random.choice(["Hopscotch", "Tic Tac Toe","Simon Says"])
             elif menu_choice == "About Game":
                 game_state = "About Game"
             elif menu_choice == "Meet Team":
                 game_state = "Meet Team"
-
-        # ABOUT GAME
+        
         elif game_state == "About Game":
-            game_state = show_about_game_screen(screen)
-
-        # MEET TEAM
+            game_choice = show_about_game_screen(screen)
+            game_state = game_choice  # Will return a game name
+        
         elif game_state == "Meet Team":
-            show_meet_team(screen)
+            choice = show_meet_team(screen)
             game_state = "Menu"
-
-        # MINI-GAMES
+        
         elif game_state in mini_games:
             if game_state in completed_games:
+                # Skip already played game
                 unplayed = [g for g in mini_games if g not in completed_games]
                 game_state = random.choice(unplayed) if unplayed else "Win"
                 continue
-
-            pygame.mixer.music.stop()
             if game_state == "Hopscotch":
+                pygame.mixer.music.stop()
                 pygame.mixer.music.load("hopscotch_instructions.mp3")
                 pygame.mixer.music.play()
                 result = show_hopscotch_game_screen(screen)
+
             elif game_state == "Tic Tac Toe":
                 pygame.mixer.music.load("tictactoe_instructions.mp3")
                 pygame.mixer.music.play(-1)
                 result = show_tictactoe_game_screen(screen)
+                
             elif game_state == "Red Light Green Light":
                 pygame.mixer.music.load("redlightgreenlight_instructions.mp3")
                 pygame.mixer.music.play(-1)
                 result = show_redlightgreenlight_game_screen(screen)
+
             elif game_state == "Simon Says":
                 pygame.mixer.music.load("simonsays_instructions.mp3")
                 pygame.mixer.music.play(-1)
-                result = show_simon_says_game_screen(screen)
-
-            # RESULT HANDLING
-            if result == "win" or result is True:
+                result = show_simon_says_game_screen(screen)  
+           
+            
+            # Handle result
+            if result == "win":
                 completed_games.add(game_state)
                 if len(completed_games) == len(mini_games):
                     game_state = "Win"
                 else:
                     unplayed = [g for g in mini_games if g not in completed_games]
                     game_state = random.choice(unplayed)
-
-            elif result == "lose" or result is False:
-                if timer._value > 0:
-                    game_state = "Die"  # Show death screen, return to menu
-                else:
-                    game_state = "Die"  # Show death screen, exit
-
-            else:
-                # If back button or unclear result
-                if timer._value > 0:
-                    game_state = "Menu"
-                else:
-                    game_state = "Die" if len(completed_games) < len(mini_games) else "Live"
-
-        # WIN STATE (before timer expires)
-        elif game_state == "Win":
-            timer.pause()
-            show_win_screen(screen)
-            game_state = "Menu"
-
-        # WIN STATE (just as timer expires)
-        elif game_state == "Live":
-            timer.pause()
-            show_win_screen(screen)
-            game_state = "Menu"
-
-        # DEATH SCREEN — exit if time's up, return if still time
-        elif game_state == "Die" or game_state == "Death":
-            show_death_screen(screen)
-            if timer._value <= 0:
-                pygame.quit()
-                sys.exit()
             else:
                 game_state = "Menu"
 
-        # Quit event
+        elif game_state == "Win":
+            show_win_screen(screen)
+            game_state = "Menu"
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game_running = False
 
     pygame.quit()
     sys.exit()
-
-# Ensure RPi mode set before running
 os.environ['RPI_MODE'] = 'TRUE'
 main()
-# def main():
-#     pygame.init()
-#     screen = pygame.display.set_mode((576, 1024))
-#     pygame.display.set_caption("Squid-ish Games")
-
-#     # Set up timer
-#     i2c = board.I2C()
-#     component_7seg = Seg7x4(i2c)
-#     component_7seg.brightness = 0.5
-#     timer = Timer(component_7seg, 10)  # 600 for 10 mins
-#     timer.start()
-
-#     game_running = True
-#     game_state = "Menu"
-#     mini_games = ["Hopscotch", "Tic Tac Toe", "Simon Says", "Red Light Green Light"]
-#     completed_games = set()
-
-#     while game_running:
-#         # Check timer expiration
-#         if timer._value <= 0:
-#             if len(completed_games) == len(mini_games):
-#                 game_state = "Live"
-#             else:
-#                 game_state = "Die"
-#             continue
-
-#         # MENU STATE
-#         if game_state == "Menu":
-#             completed_games.clear()
-#             pygame.mixer.music.load("pink_soldiers.mp3")
-#             pygame.mixer.music.play(-1)
-#             menu_choice = show_menu_screen(screen)
-#             if menu_choice == "Start":
-#                 game_state = random.choice([g for g in mini_games if g not in completed_games])
-#             elif menu_choice == "About Game":
-#                 game_state = "About Game"
-#             elif menu_choice == "Meet Team":
-#                 game_state = "Meet Team"
-
-#         # ABOUT GAME
-#         elif game_state == "About Game":
-#             game_state = show_about_game_screen(screen)
-
-#         # MEET TEAM
-#         elif game_state == "Meet Team":
-#             show_meet_team(screen)
-#             game_state = "Menu"
-
-#         # MINI-GAMES
-#         elif game_state in mini_games:
-#             if game_state in completed_games:
-#                 unplayed = [g for g in mini_games if g not in completed_games]
-#                 game_state = random.choice(unplayed) if unplayed else "Win"
-#                 continue
-
-#             pygame.mixer.music.stop()
-#             if game_state == "Hopscotch":
-#                 pygame.mixer.music.load("hopscotch_instructions.mp3")
-#                 pygame.mixer.music.play()
-#                 result = show_hopscotch_game_screen(screen)
-#             elif game_state == "Tic Tac Toe":
-#                 pygame.mixer.music.load("tictactoe_instructions.mp3")
-#                 pygame.mixer.music.play(-1)
-#                 result = show_tictactoe_game_screen(screen)
-#             elif game_state == "Red Light Green Light":
-#                 pygame.mixer.music.load("redlightgreenlight_instructions.mp3")
-#                 pygame.mixer.music.play(-1)
-#                 result = show_redlightgreenlight_game_screen(screen)
-#             elif game_state == "Simon Says":
-#                 pygame.mixer.music.load("simonsays_instructions.mp3")
-#                 pygame.mixer.music.play(-1)
-#                 result = show_simon_says_game_screen(screen)
-
-#             # RESULT HANDLING
-#             if result == "win" or result is True:
-#                 completed_games.add(game_state)
-#                 if len(completed_games) == len(mini_games):
-#                     game_state = "Win"
-#                 else:
-#                     unplayed = [g for g in mini_games if g not in completed_games]
-#                     game_state = random.choice(unplayed)
-
-#             elif result == "lose" or result is False:
-#                 if timer._value > 1:
-#                     game_state = "Die"  # Show death screen, return to menu
-#                 else:
-#                     game_state = "Die"  # Show death screen, exit
-
-#             else:
-#                 # If back button or unclear result
-#                 if timer._value > 1:
-#                     game_state = "Menu"
-#                 else:
-#                     game_state = "Die" if len(completed_games) < len(mini_games) else "Live"
-
-#         # WIN STATE (before timer expires)
-#         elif game_state == "Win":
-#             timer.pause()
-#             show_win_screen(screen)
-#             game_state = "Menu"
-
-#         # WIN STATE (just as timer expires)
-#         elif game_state == "Live":
-#             timer.pause()
-#             show_win_screen(screen)
-#             game_state = "Menu"
-
-#         # DEATH SCREEN — exit if time's up, return if still time
-#         elif game_state == "Die" or game_state == "Death":
-#             show_death_screen(screen)
-#             if timer._value <= 0:
-#                 pygame.quit()
-#                 sys.exit()
-#             else:
-#                 game_state = "Menu"
-
-#         # Quit event
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 game_running = False
-
-#     pygame.quit()
-#     sys.exit()
-
-# # Ensure RPi mode set before running
-# os.environ['RPI_MODE'] = 'TRUE'
-# main()
