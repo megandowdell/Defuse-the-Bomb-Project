@@ -2714,6 +2714,7 @@ def play_redlightgreenlight(screen):
 
     
     while running:
+        # Get the time remaining in the game
         current_time = time.time()
         elapsed_time = current_time - start_time
         time_left = max(0, game_time - elapsed_time)
@@ -2739,12 +2740,14 @@ def play_redlightgreenlight(screen):
             # Switch the light
             light_color = "green" if light_color == "red" else "red"
             set_led(light_color)
-            
+
+            # If the light is green, play the red light sound as the light changes color
             if light_color == "green":
                 pygame.mixer.music.stop()
                 pygame.mixer.music.load("redlight.mp3")
                 pygame.mixer.music.play()
-                
+
+            # If the light is red, play the green light sound as the light changes color
             else:
                 pygame.mixer.music.stop()
                 pygame.mixer.music.load("greenlight.mp3")
@@ -2754,20 +2757,23 @@ def play_redlightgreenlight(screen):
             next_change = random.uniform(2, 5)
             next_change_time = current_time + next_change
         
-        # Check button press
+        # Check button press and if the game is not over
         if (button_pressed or check_button_press()) and not game_over:
             if light_color == "green":
+
+                # increment distance
                 distance += 1
                 # message = f"Good move!"
-                print(message)
+                # print(message)
                 time.sleep(0.4)
             else:
                 # message = "You pressed during RED! You lose!"
-                print(message)
+                # print(message)
                 pygame.display.flip()
                 set_led("off")
                 return "lose"
-                
+
+        # The only way to win is if the time is not over and the player is at the end
         if distance >= target_distance and not game_over:
             set_led("off")
             return "win"
@@ -2782,7 +2788,7 @@ def play_redlightgreenlight(screen):
         screen.blit(doll_img, (doll_x, doll_y))
         
         # Draw color indicator in top right
-        color = SAFE if light_color == "green" else FAIL
+        color = SAFE if light_color == "red" else FAIL
         pygame.draw.rect(screen, color, (
             WIDTH - button_size - margin, 
             margin, 
@@ -2795,7 +2801,8 @@ def play_redlightgreenlight(screen):
         
         time_text = FONT.render(f"Time: {time_left:.1f}s", True, TEXT)
         screen.blit(time_text, (margin, margin + font_size + 10))  # Position under state text
-        
+
+        # display the remaining distance
         distance_text = FONT.render(f"Distance: {distance:.0f} / {target_distance:.0f}", True, TEXT)
         screen.blit(distance_text, (margin, margin + font_size + font_size + 20))  # Position under state text
         
@@ -2813,6 +2820,7 @@ def play_redlightgreenlight(screen):
         clock.tick(60)
         
     set_led("off")
+    # The player loses else
     return "lose"
 pygame.mixer.init()
 ####################################################################################################################
@@ -3329,6 +3337,7 @@ def main():
                 game_state = random.choice(unplayed) if unplayed else "Win"
                 continue
 
+            # Play the instructions for each of the different games
             pygame.mixer.music.stop()
             if game_state == "Hopscotch":
                 pygame.mixer.music.load("hopscotch_instructions.mp3")
