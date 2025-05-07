@@ -3257,7 +3257,7 @@ def show_win_screen(screen):
 # main()
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((800, 600))
+    screen = pygame.display.set_mode((576, 1024))
     pygame.display.set_caption("Squid-ish Games")
 
     # Set up timer
