@@ -3123,12 +3123,12 @@ def main():
             timer.pause()
             show_win_screen(screen)
             game_state = "Menu"
-        elif game_state = "Die":
+        elif game_state == "Die":
             show_death_screen(screen)
             if timer._value <= 0:
                 pygame.quit()
                 sys.exit()
-            elif game_state = "Death":
+            elif game_state == "Death":
                 show_death_screen(screen)
                 pygame.quit()
                 sys.exit()
