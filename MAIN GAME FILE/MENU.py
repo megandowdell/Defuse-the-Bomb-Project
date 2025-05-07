@@ -3117,7 +3117,7 @@ def main():
     component_7seg = Seg7x4(i2c)
     # set the 7-segment display brightness (0 -> dimmest; 1 -> brightest)
     component_7seg.brightness = 0.5
-    timer = Timer(component_7seg, 60) # 600 FOR 10 MINS
+    timer = Timer(component_7seg, 600) # 600 FOR 10 MINS
     timer.start()
 
     game_running = True
@@ -3194,6 +3194,7 @@ def main():
             elif game_state == "Die" or game_state == "Death":
                 timer.pause()
                 show_death_screen(screen)
+                result = "Menu"
                 if timer._value <= 0:
                     # Timer expired — exit the game
                     pygame.quit()
