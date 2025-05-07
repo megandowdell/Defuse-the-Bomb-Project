@@ -3026,7 +3026,7 @@ def main():
     i2c = board.I2C()
     component_7seg = Seg7x4(i2c)
     component_7seg.brightness = 0.5
-    timer = Timer(component_7seg, 10)  # 600 for 10 mins
+    timer = Timer(component_7seg, 600)  # 600 for 10 mins
     timer.start()
 
     game_running = True
@@ -3100,14 +3100,14 @@ def main():
                     game_state = random.choice(unplayed)
 
             elif result == "lose" or result is False:
-                if timer._value > 1:
+                if timer._value > 0:
                     game_state = "Die"  # Show death screen, return to menu
                 else:
-                    game_state = "Die"  # Show death screen, exit
+                    game_state = "Death"  # Show death screen, exit
 
             else:
                 # If back button or unclear result
-                if timer._value > 1:
+                if timer._value > 0:
                     game_state = "Menu"
                 else:
                     game_state = "Die" if len(completed_games) < len(mini_games) else "Live"
@@ -3123,15 +3123,25 @@ def main():
             timer.pause()
             show_win_screen(screen)
             game_state = "Menu"
-
-        # DEATH SCREEN — exit if time's up, return if still time
-        elif game_state == "Die" or game_state == "Death":
+        elif game_state = "Die"
             show_death_screen(screen)
             if timer._value <= 0:
                 pygame.quit()
                 sys.exit()
-            else:
-                game_state = "Menu"
+            elif game_state = "Death"
+                show_death_screen(screen)
+                pygame.quit()
+                sys.exit()
+        
+
+        # # DEATH SCREEN — exit if time's up, return if still time
+        # elif game_state == "Die" or game_state == "Death":
+        #     show_death_screen(screen)
+        #     if timer._value <= 0:
+        #         pygame.quit()
+        #         sys.exit()
+        #     else:
+        #         game_state = "Menu"
 
         # Quit event
         for event in pygame.event.get():
