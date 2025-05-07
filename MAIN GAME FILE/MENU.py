@@ -3154,7 +3154,7 @@ def main():
 
     while game_running:
         # Check timer expiration
-        if str(timer._value) <= "0":
+        if timer._value <= 0:
             if len(completed_games) == len(mini_games):
                 game_state = "Live"
             else:
