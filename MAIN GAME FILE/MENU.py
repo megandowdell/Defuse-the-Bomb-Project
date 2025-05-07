@@ -1760,32 +1760,32 @@ class Wires(PhaseThread):
         return f"{self._value}/{int(self._value, 2)}"
 
 # #Initialize pygame
-# pygame.init()
+pygame.init()
 
-# #Screen dimensions and create display surface
-# SCREEN_WIDTH = 576
-# SCREEN_HEIGHT = 1024
-# screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-# pygame.display.set_caption("Simon Says")
+#Screen dimensions and create display surface
+SCREEN_WIDTH = 576
+SCREEN_HEIGHT = 1024
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Simon Says")
 
-# #Define RGB color values 
-# WHITE = (255, 255, 255)
-# BLACK = (0, 0, 0)
-# RED = (255, 0, 0)
-# GREEN = (0, 255, 0)
+#Define RGB color values 
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
 
-# #Defining the wire colors
-# # Wire Text Colours
-# BROWN_WIRE = (255, 255, 0) # TRUE COLOUR = YELLOW
-# RED_WIRE = (0, 190, 104) # TRUE COLOUR =  GREEN
-# ORANGE_WIRE = (255, 0, 0) # TRUE COLOUR =  RED
-# YELLOW_WIRE =  (255, 165, 0)# TRUE COLOUR =  ORANGE
-# GREEN_WIRE =  (174, 90, 0)# TRUE COLOUR =  BROWN
+#Defining the wire colors
+# Wire Text Colours
+BROWN_WIRE = (255, 255, 0) # TRUE COLOUR = YELLOW
+RED_WIRE = (0, 190, 104) # TRUE COLOUR =  GREEN
+ORANGE_WIRE = (255, 0, 0) # TRUE COLOUR =  RED
+YELLOW_WIRE =  (255, 165, 0)# TRUE COLOUR =  ORANGE
+GREEN_WIRE =  (174, 90, 0)# TRUE COLOUR =  BROWN
 
-# #Loading the fonts 
-# font = pygame.font.Font('font1.otf', 30)
-# small_font = pygame.font.Font('font1.otf', 24)
-# wire_font = pygame.font.Font('font1.otf', 22)
+#Loading the fonts 
+font = pygame.font.Font('font1.otf', 30)
+small_font = pygame.font.Font('font1.otf', 24)
+wire_font = pygame.font.Font('font1.otf', 22)
 
 #Main game function
 def show_simon_says_game_screen(screen):
