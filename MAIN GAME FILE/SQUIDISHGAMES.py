@@ -3036,7 +3036,6 @@ def main():
  
      while game_running:
          # Check timer expiration
-         if str(timer._value) <= "0":
          if timer._value <= 0:
              if len(completed_games) == len(mini_games):
                  game_state = "Live"
@@ -3101,14 +3100,14 @@ def main():
                      game_state = random.choice(unplayed)
  
              elif result == "lose" or result is False:
-                 if timer._value > 1:
+                 if timer._value > 0:
                      game_state = "Die"  # Show death screen, return to menu
                  else:
                      game_state = "Die"  # Show death screen, exit
  
              else:
                  # If back button or unclear result
-                 if timer._value > 1:
+                 if timer._value > 0:
                      game_state = "Menu"
                  else:
                      game_state = "Die" if len(completed_games) < len(mini_games) else "Live"
