@@ -3142,8 +3142,8 @@ def main():
      sys.exit()
  
  # Ensure RPi mode set before running
- os.environ['RPI_MODE'] = 'TRUE'
- main()
+os.environ['RPI_MODE'] = 'TRUE'
+main()
 
 
 
