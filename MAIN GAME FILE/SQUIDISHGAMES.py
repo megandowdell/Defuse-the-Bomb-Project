@@ -3380,25 +3380,25 @@ def main():
             timer.pause()
             show_win_screen(screen)
             game_state = "Menu"
-        elif game_state == "Die":
-            show_death_screen(screen)
-            if timer._value <= 0:
-                pygame.quit()
-                sys.exit()
-            elif game_state == "Death":
-                show_death_screen(screen)
-                pygame.quit()
-                sys.exit()
-        
-
-        # # DEATH SCREEN — exit if time's up, return if still time
-        # elif game_state == "Die" or game_state == "Death":
+        # elif game_state == "Die":
         #     show_death_screen(screen)
         #     if timer._value <= 0:
         #         pygame.quit()
         #         sys.exit()
-        #     else:
-        #         game_state = "Menu"
+        #     elif game_state == "Death":
+        #         show_death_screen(screen)
+        #         pygame.quit()
+        #         sys.exit()
+        
+
+        # DEATH SCREEN — exit if time's up, return if still time
+        elif game_state == "Die" or game_state == "Death":
+            show_death_screen(screen)
+            if timer._value <= 0:
+                pygame.quit()
+                sys.exit()
+            else:
+                game_state = "Menu"
 
         # Quit event
         for event in pygame.event.get():
