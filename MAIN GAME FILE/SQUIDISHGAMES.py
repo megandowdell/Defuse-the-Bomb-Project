@@ -694,14 +694,17 @@ class Toggles(PhaseThread):
  
         while self._running:
             if self.update_state():
-            # You could trigger logic here or just print for testing
+            # printing toggle change updates to computer to monitor
+                # this next line of code we had a lot of trouble with and got help from Dr. K, who found the "{next(i for i, (a, b) in enumerate(zip(self._value, self._prev_value)) if a != b)}" online
                 print(f"Toggles changed: {self._value}/{self._prev_value} - {self._state_changed}, {next(i for i, (a, b) in enumerate(zip(self._value, self._prev_value)) if a != b)}")
                 sleep(0.1)
-                
+
+    # subroutine to update toggle states
     def update_state(self):
         """Update toggle state and return True if the state changed."""
         new_state = "".join([str(int(pin.value)) for pin in self._pins])
- 
+
+        # changed is a boolean value
         changed = new_state != self._value
         if changed:
              self._prev_value = self._value
@@ -709,13 +712,13 @@ class Toggles(PhaseThread):
              self._state_changed = True
         
         return changed
-    
+
+    # subroutine for if a toggle has changed, returns true is the toggle state is different from the last time it was checked
     def has_changed(self):
         """Checks if toggles changed since last time."""
         if self._state_changed:
             self._state_changed = False
             return True
-            
         return False
  
     def __str__(self):
@@ -892,7 +895,7 @@ def show_hopscotch_game_screen(screen):
             
             #start toggles
             toggles.start()
-        
+        #pygame music
         pygame.mixer.music.stop()
         pygame.mixer.music.load("round_round.mp3")
         pygame.mixer.music.play(-1)
@@ -1005,6 +1008,7 @@ def show_hopscotch_game_screen(screen):
             screen.blit(lives_text, (20, 60))  # Position under level text
             pygame.display.flip()
 
+        # subroutine to animate the rows sliding up when a level is cleared
         def animate_row(board, current_row, lives, rows_cleared, duration=500):
             start_time = pygame.time.get_ticks() # Counts
             row_height = TILE_HEIGHT + 60
@@ -1048,32 +1052,36 @@ def show_hopscotch_game_screen(screen):
                 if all_down:
                     break
                 time.sleep(0.05)
-                
+
+        # subroutine to flash screen with a color to indicate if the step was a success or failure
+        # obsolete because we switched to color flashing tiles instead of the entire screen
         def flash_screen(color, delay=0.3):
              screen.fill(color)
              pygame.display.update()
              time.sleep(delay)  # Pause to show the color flash
                 
         
-        # Main Game (for local testing)
+        # Main Game for hopscotch (no longer with mouse functionality)
         def play_game():
             board = generate_board(successes_per_row=2)  # Create board once
-            rows_cleared = 0
-            current_row = 0
-            lives = 10  # Start with 5 lives
- 
+            rows_cleared = 0 #start with rows cleared = 0
+            current_row = 0 # and start at row 0 - this is where we will reset to if an incorrect tile is selected
+            lives = 10  # Start with 10 lives
+
+
+            # our main loop which is what continues playing the game and re drawing the board during all of the changes
             while True:
+                # drawing board initially
                 draw_board(board, current_row, lives, rows_cleared)  # Now we also pass lives to draw
                 
                 # Check for a toggle change (user flips one switch)
                 if toggles._state_changed:
                     # Get the index of the flipped toggle (0–3)
                     selected_col = next(i for i, (a, b) in enumerate(zip(toggles._value, toggles._prev_value)) if a != b)
+                    # print statements for debugging
                     print(f"Selected Col {selected_col}")
                     print(f"Board State:  {board[current_row]}")
                     print(f"Current Row:  {current_row}")
-                    
-                    #debug statement
                     print(f"Current level: {rows_cleared + 1}, Current row index: {current_row}")
 
                     # if a tile has been selected
@@ -1087,63 +1095,75 @@ def show_hopscotch_game_screen(screen):
                             pygame.draw.rect(screen, SAFE, tile_rect)
                             label = FONT.render(chr(65 + selected_col), True, TEXT)
                             screen.blit(label, (tile_rect.x + TILE_WIDTH//2 - 10, tile_rect.y + 15))
-        
+
+                            # update pygame display
                             pygame.display.flip()
                             pygame.time.delay(800)
                             
                             # move onto next row
                             rows_cleared += 1
+                            # animate rows moving up
                             current_row = animate_row(board, current_row, lives, rows_cleared)
         
-                            
+                            # redraw board because levels have changed
                             draw_board(board, current_row, lives, rows_cleared)
+                            # update pygame display
                             pygame.display.flip()
                             pygame.time.delay(300)
-                            
+
+                            #if you have reached the final row, you win
                             if rows_cleared == ROWS:
                                 print("User won the game!")
                                 # won game
                                 return True
+                                
                         # wrong answer
                         else:
+                            # flash red fail tile
                             tile_rect = get_tile_rect(0, selected_col)
                             pygame.draw.rect(screen, FAIL, tile_rect)
-                            
-                            # Redraw the letter label
                             label = FONT.render(chr(65 + selected_col), True, TEXT)
                             screen.blit(label, (tile_rect.x + TILE_WIDTH//2 - 10, tile_rect.y + 15))
-        
+
+                            # update pygame display
                             pygame.display.flip()
                             pygame.time.delay(800)
-        
+
+                            # lose a life
                             lives -= 1
-                                
+
+                            # if that was your last life, you die
                             if lives == 0:    
                                 print("BOOM!")
                                 # show_death_screen(screen)
                                 # lost game
                                 return False
+                            # if you still have lives left, reset to level 1 and continue game
                             else:
+                                # reset to level 1
                                 current_row = 0
                                 rows_cleared = 0
-                                draw_board(board, current_row, lives, rows_cleared) #redraws board after fail
-                                pygame.display.update()  # update display
+                                # redraw board because levels have changed
+                                draw_board(board, current_row, lives, rows_cleared) 
+                                # update pygame display
+                                pygame.display.update() 
 
-                            
-                            print("WRONG TILE — Strike!")
-                            if lives == 0:
-                                print("BOOM!")
-                                return False
- 
+
+                    
+                    # update draw board
                     draw_board(board, current_row, lives, rows_cleared)
+
+                    # set toggle state_changed to false to then move onto the next level so that you can detect a toggle state change
                     toggles._state_changed = False
                     
                 clock.tick(60)
 
 
         won = play_game()
-        return won #true if won, false if lost
-    
+        #true if won, false if lost
+        return won 
+
+        # update pygame display
         screen.fill(BG)
         pygame.display.flip()
 
