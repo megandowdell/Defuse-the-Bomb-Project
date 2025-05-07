@@ -3364,7 +3364,6 @@ def main():
 
         # DEATH SCREEN — exit if time's up, return if still time
         elif game_state == "Die" or game_state == "Death":
-            timer.pause()
             show_death_screen(screen)
             if timer._value <= 0:
                 pygame.quit()
