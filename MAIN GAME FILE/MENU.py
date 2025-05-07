@@ -3264,7 +3264,7 @@ def main():
     i2c = board.I2C()
     component_7seg = Seg7x4(i2c)
     component_7seg.brightness = 0.5
-    timer = Timer(component_7seg, 600)  # 600 for 10 mins
+    timer = Timer(component_7seg, 10)  # 600 for 10 mins
     timer.start()
 
     game_running = True
