@@ -1767,8 +1767,8 @@ def show_simon_says_game_screen(screen):
     if result == "Play":
         pygame.mixer.music.stop()
 
-        SCREEN_WIDTH = 576
-        SCREEN_HEIGHT = 1024
+        # SCREEN_WIDTH = 576
+        # SCREEN_HEIGHT = 1024
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption("Simon Says")
         
